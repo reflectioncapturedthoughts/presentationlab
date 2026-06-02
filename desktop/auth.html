@@ -1,218 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign In — Presentation Lab</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign In — ARCT</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="auth-page">
-<div id="toast-container"></div>
-
-<div style="max-width:480px;width:100%;margin:0 auto;">
-  <div class="auth-logo">
-    <div class="auth-logo-wrap">
-      <img src="../assets/l.png" alt="logo"/>
-      <video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video>
-    </div>
-    <div class="auth-logo-name">Presentation Lab</div>
-    <p style="font-size:0.78rem;color:var(--stone);margin-top:3px;">Powered by <a href="https://arct.onrender.com" target="_blank" style="color:var(--terra);font-weight:600;">ARCT — Reflection Captured Thoughts</a></p>
-  </div>
-
-  <div class="panel">
-    <div class="tabs" style="margin-bottom:22px;">
-      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
-      <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
-    </div>
-
-    <!-- LOGIN -->
-    <div id="panel-login">
-      <div class="panel-eyebrow">Welcome back</div>
-      <h2 class="panel-title">Sign in to your account</h2>
-      <p class="panel-subtitle">Continue with your preferred sign-in method.</p>
-      <button class="btn btn-google btn-full" id="google-btn" style="margin-bottom:10px;">
-        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.36-8.16 2.36-6.26 0-11.57-3.59-13.48-8.71l-7.98 6.2C6.51 42.62 14.62 48 24 48z"/></svg>
-        Continue with Google
-      </button>
-      <button class="btn btn-ms btn-full" id="ms-btn">
-        <svg width="18" height="18" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
-        Continue with Microsoft
-      </button>
-      <p style="font-size:0.78rem;color:var(--stone);text-align:center;margin-top:16px;">
-        Don't have an account? <button onclick="switchTab('signup')" style="background:none;border:none;color:var(--terra);cursor:pointer;font-weight:600;font-family:inherit;font-size:inherit;">Create one</button>
-      </p>
-    </div>
-
-    <!-- SIGNUP -->
-    <div id="panel-signup" class="hidden">
-      <div class="panel-eyebrow">Join us</div>
-      <h2 class="panel-title">Create your account</h2>
-      <p class="panel-subtitle">Sign up with Google or Microsoft to get started.</p>
-
-      <!-- Referral banner (shown if ref param present) -->
-      <div id="referral-banner" class="referral-banner hidden">
-        🎁 <strong>Referral bonus!</strong> You were invited — both you and your friend will earn <strong>+10 points</strong> when you sign up!
+<body>
+<div id="toast-wrap"></div>
+<div class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-wrap">
+        <img src="../assets/l.png" alt="ARCT">
+        <video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video>
       </div>
-
-      <div class="form-group" id="referral-field-wrap">
-        <label class="form-label">Referral Code <span style="color:var(--stone);font-weight:400;">(optional)</span></label>
-        <input type="text" class="form-input" id="referral-code-input" placeholder="Enter referral code e.g. A1B2C3D4" maxlength="8" style="text-transform:uppercase;letter-spacing:0.1em;"/>
-        <p class="form-hint">Have a referral code? Enter it to give your friend +10 points — and earn 10 yourself!</p>
-      </div>
-
-      <button class="btn btn-google btn-full" id="google-signup-btn" style="margin-bottom:10px;">
-        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.36-8.16 2.36-6.26 0-11.57-3.59-13.48-8.71l-7.98 6.2C6.51 42.62 14.62 48 24 48z"/></svg>
-        Sign up with Google
-      </button>
-      <button class="btn btn-ms btn-full" id="ms-signup-btn">
-        <svg width="18" height="18" viewBox="0 0 21 21"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
-        Sign up with Microsoft
-      </button>
-      <p style="font-size:0.78rem;color:var(--stone);text-align:center;margin-top:16px;">
-        Already have an account? <button onclick="switchTab('login')" style="background:none;border:none;color:var(--terra);cursor:pointer;font-weight:600;font-family:inherit;font-size:inherit;">Sign in</button>
-      </p>
+      <span class="auth-brand">ARCT</span>
     </div>
-
-    <p style="margin-top:20px;font-size:0.76rem;text-align:center;color:var(--stone);">
-      <a href="index.html" style="color:var(--terra);">← Back to Presentation Lab</a>
-    </p>
+    <h1 class="auth-title">Welcome back</h1>
+    <p class="auth-sub">Reflection Captured Thoughts — a space for ideas worth sharing.</p>
+    <div class="field" style="margin-bottom:14px">
+      <label class="label" for="ref-input">Referral code <span style="color:var(--text-3)">(optional — earn 50 pts)</span></label>
+      <input class="input" type="text" id="ref-input" placeholder="e.g. A3BF19E0" maxlength="12" autocomplete="off" style="text-transform:uppercase;letter-spacing:.08em">
+    </div>
+    <button class="google-btn" id="google-btn" onclick="signInGoogle()">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%234285F4' d='M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z'/%3E%3Cpath fill='%2334A853' d='M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z'/%3E%3Cpath fill='%23FBBC05' d='M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z'/%3E%3Cpath fill='%23EA4335' d='M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z'/%3E%3C/svg%3E" alt="Google" width="20" height="20">
+      Continue with Google
+    </button>
+    <p class="ref-optional" style="margin-top:14px;color:var(--text-3);font-size:.78rem">By signing in, you agree to our terms of service.<br>New users receive +50 pts with a valid referral code.</p>
   </div>
 </div>
-
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, OAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import{getFirestore,doc,getDoc,setDoc,getDocs,query,collection,where,updateDoc,increment,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import{getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
-const FB = { apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY", authDomain:"reflectioncapturedthoughts.firebaseapp.com", projectId:"reflectioncapturedthoughts", storageBucket:"reflectioncapturedthoughts.firebasestorage.app", messagingSenderId:"331335730832", appId:"1:331335730832:web:731df65bd40f9646adfa15" };
-const app = initializeApp(FB);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-const msProvider = new OAuthProvider("microsoft.com");
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15",measurementId:"G-7NXNZDNDRE"};
+const app=initializeApp(FB);
+const db=getFirestore(app);
+const auth=getAuth(app);
+const provider=new GoogleAuthProvider();
 
-function toast(msg, type="info") {
-  const c = document.getElementById("toast-container");
-  const t = document.createElement("div");
-  t.className = `toast toast-${type}`;
-  t.textContent = msg;
-  c.appendChild(t);
-  setTimeout(() => { t.style.opacity="0"; t.style.transition="opacity 0.3s"; setTimeout(()=>t.remove(),300); }, 4500);
-}
-function setLoading(btn, v) {
-  if(v){btn.dataset.orig=btn.innerHTML;btn.innerHTML=`<span class="spinner"></span>`;btn.disabled=true;}
-  else{btn.innerHTML=btn.dataset.orig||btn.innerHTML;btn.disabled=false;}
-}
+function toast(msg,type="info"){const w=document.getElementById("toast-wrap");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.transition="opacity .3s";t.style.opacity="0";setTimeout(()=>t.remove(),300)},4000);}
 
-// Check for ?ref= param
-const params = new URLSearchParams(window.location.search);
-const refCode = (params.get("ref") || "").toUpperCase().trim();
-if (refCode) {
-  document.getElementById("referral-code-input").value = refCode;
-  document.getElementById("referral-banner").classList.remove("hidden");
-  // Auto-switch to signup tab if referral code present
-  switchTab('signup');
-}
+// Already signed in? redirect
+onAuthStateChanged(auth,u=>{if(u){const redir=new URLSearchParams(location.search).get('redirect')||'index.html';location.replace(redir);}});
 
-// Generate referral code from UID
-function genReferralCode(uid) { return uid.substring(0, 8).toUpperCase(); }
-
-async function saveBlogger(user, isNew) {
-  const ref = doc(db, "bloggers", user.uid);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) {
-    const code = genReferralCode(user.uid);
-    await setDoc(ref, {
-      uid: user.uid,
-      fullName: user.displayName || "",
-      email: user.email || "",
-      photoURL: user.photoURL || "",
-      points: 0,
-      referralCode: code,
-      createdAt: new Date().toISOString()
-    });
-    return true; // new user
+window.signInGoogle=async function(){
+  const btn=document.getElementById("google-btn");
+  const refCode=(document.getElementById("ref-input").value||"").trim().toUpperCase();
+  btn.disabled=true;btn.textContent="Signing in…";
+  try{
+    const result=await signInWithPopup(auth,provider);
+    const user=result.user;
+    const buddyRef=doc(db,"buddies",user.uid);
+    const snap=await getDoc(buddyRef);
+    if(!snap.exists()){
+      const myCode=user.uid.substring(0,8).toUpperCase();
+      await setDoc(buddyRef,{
+        uid:user.uid,name:user.displayName||"Member",
+        email:user.email,photoURL:user.photoURL||"",
+        points:0,referralCode:myCode,
+        referredBy:null,referralCount:0,
+        presentationCount:0,likedPosts:[],purchases:[],
+        createdAt:serverTimestamp()
+      });
+      if(refCode&&refCode!==myCode){
+        const rq=query(collection(db,"buddies"),where("referralCode","==",refCode));
+        const rs=await getDocs(rq).catch(()=>null);
+        if(rs&&!rs.empty){
+          const rid=rs.docs[0].id;
+          await Promise.all([
+            updateDoc(doc(db,"buddies",rid),{points:increment(50),referralCount:increment(1)}),
+            updateDoc(buddyRef,{points:increment(50),referredBy:rid})
+          ]);
+          toast("Welcome! +50 pts from referral","success");
+        }
+      }
+      toast("Account created — welcome to ARCT","success");
+    }else{
+      toast("Welcome back","info");
+    }
+    const redir=new URLSearchParams(location.search).get('redirect')||'index.html';
+    setTimeout(()=>location.replace(redir),800);
+  }catch(e){
+    toast(e.code==="auth/popup-closed-by-user"?"Sign-in cancelled":`Error: ${e.message}`,"error");
+    btn.disabled=false;btn.innerHTML=`<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%234285F4' d='M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z'/%3E%3Cpath fill='%2334A853' d='M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z'/%3E%3Cpath fill='%23FBBC05' d='M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z'/%3E%3Cpath fill='%23EA4335' d='M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z'/%3E%3C/svg%3E" width="20" height="20">Continue with Google`;
   }
-  return false; // existing user
-}
-
-async function applyReferral(newUserUid) {
-  const codeVal = document.getElementById("referral-code-input").value.toUpperCase().trim();
-  if (!codeVal || codeVal.length < 6) return;
-
-  try {
-    // Find the referrer by their referral code
-    const q = query(collection(db, "bloggers"), where("referralCode", "==", codeVal));
-    const snap = await getDocs(q);
-    if (snap.empty) { toast("Referral code not found — starting with 0 points.", "info"); return; }
-
-    let referrerUid = null;
-    snap.forEach(d => { if (d.id !== newUserUid) referrerUid = d.id; });
-    if (!referrerUid) return;
-
-    // Check not already referred
-    const newUserRef = doc(db, "bloggers", newUserUid);
-    const newUserSnap = await getDoc(newUserRef);
-    if (newUserSnap.data()?.referredBy) return; // already processed
-
-    // Give both +10 points
-    await Promise.all([
-      updateDoc(doc(db, "bloggers", referrerUid), { points: increment(10) }),
-      updateDoc(newUserRef, { points: increment(10), referredBy: referrerUid })
-    ]);
-    toast("Referral applied! You both earned +10 points! 🎉", "success");
-  } catch(e) {
-    console.error("Referral error:", e);
-  }
-}
-
-onAuthStateChanged(auth, user => {
-  if (user) {
-    const redirect = params.get("redirect") || "index.html";
-    window.location.href = redirect;
-  }
-});
-
-window.switchTab = (tab) => {
-  document.getElementById("tab-login").classList.toggle("active", tab === "login");
-  document.getElementById("tab-signup").classList.toggle("active", tab === "signup");
-  document.getElementById("panel-login").classList.toggle("hidden", tab !== "login");
-  document.getElementById("panel-signup").classList.toggle("hidden", tab !== "signup");
 };
 
-// Make switchTab available before module fully evaluates
-if (refCode) {
-  setTimeout(() => { window.switchTab?.('signup'); }, 50);
-}
-
-async function oauthSignIn(provider, btn, isSignup) {
-  setLoading(btn, true);
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const isNewUser = await saveBlogger(result.user, isSignup);
-    if (isSignup && isNewUser) {
-      await applyReferral(result.user.uid);
-    }
-    toast("Welcome, " + (result.user.displayName || result.user.email) + "!", "success");
-    setTimeout(() => {
-      const redirect = params.get("redirect") || "index.html";
-      window.location.href = redirect;
-    }, 800);
-  } catch(e) {
-    const msg = e.code === "auth/popup-closed-by-user" ? "Sign-in cancelled." :
-                e.code === "auth/popup-blocked" ? "Popup blocked — please allow popups for this site." :
-                e.code === "auth/account-exists-with-different-credential" ? "Account exists with a different provider." :
-                e.message;
-    toast(msg, "error");
-    setLoading(btn, false);
-  }
-}
-
-document.getElementById("google-btn").addEventListener("click", e => oauthSignIn(googleProvider, e.currentTarget, false));
-document.getElementById("ms-btn").addEventListener("click", e => oauthSignIn(msProvider, e.currentTarget, false));
-document.getElementById("google-signup-btn").addEventListener("click", e => oauthSignIn(googleProvider, e.currentTarget, true));
-document.getElementById("ms-signup-btn").addEventListener("click", e => oauthSignIn(msProvider, e.currentTarget, true));
+// Pre-fill referral from URL
+const urlRef=new URLSearchParams(location.search).get('ref')||'';
+if(urlRef)document.getElementById("ref-input").value=urlRef.toUpperCase();
 </script>
 </body>
 </html>

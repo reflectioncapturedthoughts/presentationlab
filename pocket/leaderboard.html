@@ -1,104 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Leaderboard — Presentation Lab</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Leaderboard — ARCT</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="toast-container"></div>
-<header class="mobile-topbar">
-  <div class="mobile-brand">
-    <div class="mobile-logo-wrap"><img src="../assets/l.png" alt="logo"/><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
-    <span class="mobile-brand-name">Leaderboard</span>
-  </div>
-  <div class="mobile-topbar-actions">
-    <div id="pts-chip" class="mobile-pts-chip hidden">🏅 <span id="pts-val">0</span></div>
-  </div>
+<div id="toast-wrap"></div>
+<div class="app">
+<header class="topbar">
+  <div class="topbar-logo"><div class="logo-wrap"><img src="../assets/l.png" alt="ARCT"><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div><span class="topbar-brand">Leaderboard</span></div>
+  <div class="topbar-actions"><div class="topbar-avatar" id="tb-av" onclick="location.href='profile.html'" style="display:none"></div></div>
 </header>
-
-<main style="padding:16px 16px 20px;">
-  <div class="lb-hero">
-    <h1 class="lb-hero-title">🏆 Top Writers</h1>
-    <p class="lb-hero-sub">Ranked by points earned from likes &amp; referrals</p>
-  </div>
-  <!-- stats -->
-  <div style="display:flex;gap:10px;margin-bottom:20px;">
-    <div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;">
-      <div id="stat-writers" style="font-family:'Lora',serif;font-size:1.4rem;font-weight:700;color:var(--terra);">—</div>
-      <div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Writers</div>
+<main class="main">
+  <div class="page" style="padding-top:12px">
+    <div id="podium" class="lb-podium"></div>
+    <div class="card" style="padding:12px 12px 4px">
+      <div id="lb-list"></div>
+      <div id="loading-state" style="text-align:center;padding:32px"><div class="spinner spin"></div></div>
     </div>
-    <div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;">
-      <div id="stat-top" style="font-family:'Lora',serif;font-size:1.4rem;font-weight:700;color:var(--terra);">—</div>
-      <div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Top Score</div>
-    </div>
-  </div>
-  <div class="lb-card" id="lb-list">
-    <div style="padding:32px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 12px;"></div><p style="font-size:0.84rem;">Loading…</p></div>
   </div>
 </main>
-
 <nav class="bottom-nav">
-  <button class="bottom-nav-btn" onclick="location.href='index.html'"><span class="bottom-nav-icon">🏠</span>Home</button>
-  <button class="bottom-nav-btn active"><span class="bottom-nav-icon">🏆</span>Top</button>
-  <button class="bottom-nav-btn" onclick="location.href='creativecreator.html'"><span class="bottom-nav-icon">✏️</span>Create</button>
-  <button class="bottom-nav-btn" onclick="location.href='shop.html'"><span class="bottom-nav-icon">🛍️</span>Shop</button>
-  <button class="bottom-nav-btn" onclick="location.href='profile.html'"><span class="bottom-nav-icon">👤</span>Profile</button>
+  <button class="tab" onclick="location.href='index.html'"><svg viewBox="0 0 24 24"><path d="M2.25 12l8.954-8.955a1.125 1.125 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>Home</button>
+  <button class="tab active" onclick="location.href='leaderboard.html'"><svg viewBox="0 0 24 24"><path d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"/></svg>Top</button>
+  <button class="tab" onclick="location.href='creativecreator.html'"><svg viewBox="0 0 24 24"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>Create</button>
+  <button class="tab" onclick="location.href='shop.html'"><svg viewBox="0 0 24 24"><path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>Shop</button>
+  <button class="tab" onclick="location.href='profile.html'"><svg viewBox="0 0 24 24"><path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Me</button>
 </nav>
-
+</div>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-
-const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
-const app=initializeApp(FB);
-const db=getFirestore(app);
-const auth=getAuth(app);
-
-function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
-
-onAuthStateChanged(auth,async user=>{
-  if(user){
-    const bSnap=await getDoc(doc(db,"bloggers",user.uid)).catch(()=>null);
-    if(bSnap?.exists()){
-      document.getElementById("pts-chip").classList.remove("hidden");
-      document.getElementById("pts-val").textContent=bSnap.data().points||0;
-    }
-  }
-  loadLeaderboard(user);
-});
-
-async function loadLeaderboard(user){
-  try{
-    const snap=await getDocs(query(collection(db,"bloggers"),orderBy("points","desc"),limit(50)));
-    const writers=[];
-    snap.forEach(d=>writers.push({id:d.id,...d.data()}));
-    document.getElementById("stat-writers").textContent=writers.length;
-    document.getElementById("stat-top").textContent=writers[0]?.points||0;
-
-    const medals=["🥇","🥈","🥉"];
-    const rc=["gold","silver","bronze"];
-    const rows=writers.map((w,i)=>{
-      const isMe=user&&w.uid===user.uid;
-      return `<div class="lb-row" style="${isMe?"background:linear-gradient(to right,rgba(201,108,84,0.06),transparent);":""}">
-        <span class="lb-rank-num${i<3?" "+rc[i]:""}">${medals[i]||String(i+1)}</span>
-        <div class="lb-user-avatar">${initials(w.fullName||w.email)}</div>
-        <div class="lb-user-info">
-          <div class="lb-user-name">${esc(w.fullName||w.email?.split("@")[0]||"Anonymous")}${isMe?' <span style="font-size:0.68rem;color:var(--terra);">(you)</span>':""}</div>
-          <div class="lb-user-meta">${w.createdAt?new Date(w.createdAt).toLocaleDateString():""}</div>
-        </div>
-        <div class="lb-pts-badge"><span class="lb-pts-val">${w.points||0}</span><span class="lb-pts-lbl">pts</span></div>
-      </div>`;
-    });
-    document.getElementById("lb-list").innerHTML=rows.join("")||`<div style="padding:32px;text-align:center;color:var(--stone);">No writers yet — be first!</div>`;
-  }catch(e){
-    document.getElementById("lb-list").innerHTML=`<div style="padding:24px;text-align:center;color:var(--stone);">Failed to load.</div>`;
-  }
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import{getFirestore,doc,getDoc,collection,query,orderBy,limit,getDocs}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15",measurementId:"G-7NXNZDNDRE"};
+const app=initializeApp(FB);const db=getFirestore(app);const auth=getAuth(app);
+function esc(s=''){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+async function load(){
+  const snap=await getDocs(query(collection(db,'buddies'),orderBy('points','desc'),limit(50))).catch(()=>({docs:[]}));
+  const users=snap.docs.map(d=>({id:d.id,...d.data()}));
+  document.getElementById('loading-state').style.display='none';
+  if(!users.length)return;
+  const top3=users.slice(0,3);
+  const order=[top3[1],top3[0],top3[2]].filter(Boolean);
+  const oC=['p2','p1','p3'],oR=['r2','r1','r3'],oM=['2nd','1st','3rd'];
+  document.getElementById('podium').innerHTML=order.map((u,i)=>{
+    const ph=u.photoURL||'';
+    return`<div class="podium-item ${oC[i]}">
+      <div class="podium-rank ${oR[i]}">${oM[i]}</div>
+      <div class="avatar avatar-md">${ph?`<img src="${esc(ph)}" loading="lazy">`:esc(initials(u.name))}</div>
+      <div class="podium-name">${esc(u.name||'Member')}</div>
+      <div class="podium-pts">${(u.points||0).toLocaleString()}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('lb-list').innerHTML=users.slice(3).map((u,i)=>{
+    const ph=u.photoURL||'';
+    return`<div class="lb-row">
+      <div class="lb-rank">${i+4}</div>
+      <div class="avatar avatar-sm" style="width:32px;height:32px;font-size:.76rem">${ph?`<img src="${esc(ph)}" loading="lazy">`:esc(initials(u.name))}</div>
+      <div class="lb-info"><div class="lb-name">${esc(u.name||'Member')}</div><div class="lb-sub">${u.presentationCount||0} posts</div></div>
+      <div class="lb-pts">${(u.points||0).toLocaleString()}</div>
+    </div>`;
+  }).join('');
 }
+onAuthStateChanged(auth,async user=>{
+  if(user){const snap=await getDoc(doc(db,'buddies',user.uid)).catch(()=>null);const av=document.getElementById('tb-av');av.style.display='flex';if(user.photoURL)av.innerHTML=`<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover">`;else av.textContent=initials(user.displayName||'M');}
+  load();
+});
 </script>
 </body>
 </html>

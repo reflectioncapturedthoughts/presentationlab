@@ -1,207 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profile — Presentation Lab</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profile — ARCT</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="toast-container"></div>
-<div class="app-shell">
-  <aside class="sidebar-left">
-    <a href="index.html" class="brand">
-      <div class="brand-logo-wrap"><img src="../assets/l.png" alt="logo" class="brand-logo-img"/><video class="brand-logo-vid" autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
-      <div><div class="brand-name">Presentation Lab</div><div class="brand-parent">by ARCT</div></div>
-    </a>
-    <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
-    <a href="leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
-    <a href="creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
-    <a href="shop.html" class="nav-item"><span class="nav-icon">🛍️</span><span class="nav-label">Shop</span></a>
-    <a href="profile.html" class="nav-item active"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
-    <div class="sidebar-spacer"></div>
-    <a href="auth.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign in</a>
-    <div class="user-chip hidden" id="sb-chip">
-      <div class="user-avatar" id="sb-avatar">?</div>
-      <div class="user-info"><div class="user-name" id="sb-name">—</div><div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div></div>
+<div id="toast-wrap"></div>
+<div class="app">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none"><div class="logo-wrap"><img src="../assets/l.png" alt="ARCT"><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div><span class="logo-name">ARCT</span></a></div>
+  <nav class="sidebar-nav">
+    <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M2.25 12l8.954-8.955a1.125 1.125 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>Home</a>
+    <a href="leaderboard.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"/></svg>Leaderboard</a>
+    <a href="creativecreator.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>Create</a>
+    <a href="shop.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>Shop</a>
+    <a href="profile.html" class="nav-item active"><svg viewBox="0 0 24 24"><path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Profile</a>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-user" id="sb-user" onclick="location.href='profile.html'" style="display:none"><div class="avatar avatar-sm" id="sb-av"></div><div class="sidebar-user-info"><div class="sidebar-user-name" id="sb-name"></div><div class="sidebar-user-pts"><span id="sb-pts">0</span> pts</div></div></div><button class="sidebar-sign-in" id="sb-signin" onclick="location.href='auth.html'" style="display:none"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>Sign In</button></div>
+</aside>
+<main class="main">
+  <div class="page-wrap-narrow">
+    <div id="loading-state" style="text-align:center;padding:100px"><div class="spinner spin"></div></div>
+    <div id="no-user" style="display:none;text-align:center;padding:80px">
+      <p style="color:var(--text-2);margin-bottom:16px">Sign in to view your profile.</p>
+      <a href="auth.html?redirect=profile.html" class="btn btn-primary">Sign In</a>
     </div>
-  </aside>
-
-  <main class="feed">
-    <div class="feed-header">
-      <h1 class="feed-title">👤 My Profile</h1>
-      <p style="font-size:0.84rem;color:var(--brown);padding-bottom:14px;">Your account, points, referral code, and purchases.</p>
-    </div>
-    <div id="auth-gate" style="padding:80px 20px;text-align:center;" class="hidden">
-      <div style="font-size:3rem;margin-bottom:14px;">🔒</div>
-      <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to view your profile</h2>
-      <a href="auth.html?redirect=profile.html" class="btn btn-terra btn-lg" style="margin-top:8px;">Sign In / Sign Up</a>
-    </div>
-    <div id="profile-content" class="hidden" style="padding:24px 20px 60px;">
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;text-align:center;margin-bottom:16px;">
-        <div id="prof-photo" style="width:72px;height:72px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.8rem;font-family:'Lora',serif;margin:0 auto 14px;overflow:hidden;">?</div>
-        <div id="prof-name" style="font-family:'Lora',serif;font-size:1.4rem;font-weight:700;color:var(--espresso);margin-bottom:4px;">—</div>
-        <div id="prof-email" style="font-size:0.84rem;color:var(--stone);">—</div>
-        <div style="display:flex;gap:32px;justify-content:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border-light);">
-          <div style="text-align:center;"><div id="stat-pts" style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--terra);">—</div><div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Points</div></div>
-          <div style="text-align:center;"><div id="stat-posts" style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--terra);">—</div><div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Posts</div></div>
-          <div style="text-align:center;"><div id="stat-referrals" style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--terra);">—</div><div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Referrals</div></div>
-          <div style="text-align:center;"><div id="stat-purchases" style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--terra);">—</div><div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Purchases</div></div>
+    <div id="profile-content" style="display:none">
+      <div class="profile-hero">
+        <div class="avatar avatar-xl" id="pf-av"></div>
+        <div>
+          <h1 class="profile-name" id="pf-name"></h1>
+          <p style="font-size:.84rem;color:var(--text-2);margin-top:2px" id="pf-email"></p>
         </div>
+        <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="signOut()">
+          <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+          Sign Out
+        </button>
       </div>
-      <!-- Referral Card -->
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
-        <h3 style="font-family:'Lora',serif;font-size:1rem;font-weight:700;color:var(--espresso);margin-bottom:6px;">🎁 Your Referral Code</h3>
-        <p style="font-size:0.84rem;color:var(--brown);margin-bottom:16px;">Share this with friends — both of you earn <strong style="color:var(--terra);">+10 points</strong> when they create an account!</p>
-        <div style="background:var(--sand-warm);border:2px dashed rgba(201,108,84,0.3);border-radius:var(--radius-md);padding:20px;text-align:center;">
-          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--stone);margin-bottom:6px;">Referral Code</div>
-          <div id="ref-code" style="font-family:'Lora',serif;font-size:1.8rem;font-weight:700;color:var(--terra);letter-spacing:0.15em;margin-bottom:10px;">———</div>
-          <div id="ref-link" style="font-size:0.76rem;color:var(--stone);word-break:break-all;margin-bottom:14px;"></div>
-          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-            <button class="btn btn-terra btn-sm" onclick="copyInvite()">📋 Copy Invite Link</button>
-            <button class="btn btn-outline btn-sm" onclick="shareInvite()">📤 Share</button>
-          </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="stat-pts"></div><div class="stat-lbl">Points</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-posts"></div><div class="stat-lbl">Posts</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-refs"></div><div class="stat-lbl">Referrals</div></div>
+      </div>
+      <div class="card" style="margin-bottom:16px;padding:20px 24px">
+        <div style="font-size:.78rem;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Your Referral Code</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <code class="ref-code" id="pf-ref-code" style="font-size:1.1rem;letter-spacing:.14em;color:var(--accent);font-weight:700"></code>
+          <button class="btn btn-ghost btn-sm" onclick="copyRef()">Copy</button>
         </div>
+        <p style="font-size:.76rem;color:var(--text-3);margin-top:8px">Share this code — you both earn 50 pts when a new member joins.</p>
       </div>
-      <!-- Purchases -->
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
-        <h3 style="font-family:'Lora',serif;font-size:1rem;font-weight:700;color:var(--espresso);margin-bottom:14px;">🛍️ My Purchases</h3>
-        <div id="purchases-list"><div style="color:var(--stone);font-size:0.84rem;">Loading…</div></div>
-      </div>
-      <!-- My Posts -->
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
-        <h3 style="font-family:'Lora',serif;font-size:1rem;font-weight:700;color:var(--espresso);margin-bottom:14px;">📝 My Posts</h3>
-        <div id="my-posts-list"><div style="color:var(--stone);font-size:0.84rem;">Loading…</div></div>
-      </div>
-      <div style="text-align:center;">
-        <button onclick="doSignout()" class="btn btn-ghost btn-sm">Sign Out</button>
+      <div id="purchases-section" style="display:none;margin-bottom:16px">
+        <div class="section-title" style="margin-bottom:12px">Owned Items</div>
+        <div id="purchases-list" class="purchases-grid"></div>
       </div>
     </div>
-  </main>
-
-  <aside class="sidebar-right">
-    <div class="widget">
-      <h3 class="widget-title">💡 Earning Tips</h3>
-      <div style="font-size:0.84rem;color:var(--brown);line-height:1.85;">
-        <div>❤️ +1 pt per like on your post</div>
-        <div>🎁 +10 pts per referral</div>
-        <div>✏️ Create quality content daily</div>
-        <div>🔝 Consistent writers earn more</div>
-      </div>
-    </div>
-    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.06),var(--sand-warm));">
-      <div style="font-size:0.8rem;color:var(--brown);">
-        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
-        <a href="https://arct.onrender.com" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">ARCT — Reflection Captured Thoughts</a>
-        <div style="margin-top:8px;color:var(--stone);font-size:0.73rem;">Share speeches. Earn recognition. Build your voice.</div>
-      </div>
-    </div>
-  </aside>
+  </div>
+</main>
 </div>
-
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getFirestore, doc, getDoc, collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-
-const FB = {apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
-const app = initializeApp(FB);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
-function timeAgo(d){if(!d)return"";const diff=(Date.now()-new Date(d).getTime())/1000;if(diff<60)return"just now";if(diff<3600)return Math.floor(diff/60)+"m ago";if(diff<86400)return Math.floor(diff/3600)+"h ago";return Math.floor(diff/86400)+"d ago";}
-function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
-
-let refCode = "";
-let refUrl = "";
-
-window.doSignout = async () => { await signOut(auth); window.location.href = "index.html"; };
-window.copyInvite = async () => { await navigator.clipboard.writeText(refUrl).catch(()=>{}); toast("Invite link copied to clipboard!", "success"); };
-window.shareInvite = async () => {
-  if (navigator.share) {
-    try { await navigator.share({title:"Join Presentation Lab",text:"Use my referral link to earn bonus points on Presentation Lab!",url:refUrl}); return; } catch {}
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import{getFirestore,doc,getDoc}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import{getAuth,onAuthStateChanged,signOut as fbSignOut}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15",measurementId:"G-7NXNZDNDRE"};
+const app=initializeApp(FB);const db=getFirestore(app);const auth=getAuth(app);
+let refCode='';
+function esc(s=''){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+function toast(msg,type='info'){const w=document.getElementById('toast-wrap');const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},3500)}
+window.copyRef=function(){if(refCode)navigator.clipboard.writeText(refCode).then(()=>toast('Referral code copied!','success')).catch(()=>toast('Could not copy','error'));};
+window.signOut=async function(){await fbSignOut(auth);location.href='auth.html';};
+onAuthStateChanged(auth,async user=>{
+  document.getElementById('loading-state').style.display='none';
+  if(!user){document.getElementById('no-user').style.display='block';document.getElementById('sb-user').style.display='none';document.getElementById('sb-signin').style.display='flex';return;}
+  document.getElementById('sb-user').style.display='flex';document.getElementById('sb-signin').style.display='none';
+  const snap=await getDoc(doc(db,'buddies',user.uid)).catch(()=>null);
+  const data=snap?.data()||{};
+  const av=document.getElementById('pf-av');
+  if(user.photoURL)av.innerHTML=`<img src="${user.photoURL}" loading="lazy">`;else av.textContent=initials(user.displayName||'M');
+  document.getElementById('pf-name').textContent=user.displayName||'Member';
+  document.getElementById('pf-email').textContent=user.email||'';
+  const pts=data.points||0;
+  document.getElementById('stat-pts').textContent=pts.toLocaleString();
+  document.getElementById('stat-posts').textContent=(data.presentationCount||0).toLocaleString();
+  document.getElementById('stat-refs').textContent=(data.referralCount||0).toLocaleString();
+  refCode=data.referralCode||user.uid.substring(0,8).toUpperCase();
+  document.getElementById('pf-ref-code').textContent=refCode;
+  document.getElementById('sb-name').textContent=user.displayName||'Member';
+  document.getElementById('sb-pts').textContent=pts.toLocaleString();
+  const sbAv=document.getElementById('sb-av');
+  if(user.photoURL)sbAv.innerHTML=`<img src="${user.photoURL}">`;else sbAv.textContent=initials(user.displayName||'M');
+  const purchases=data.purchases||[];
+  if(purchases.length>0){
+    document.getElementById('purchases-section').style.display='block';
+    document.getElementById('purchases-list').innerHTML=purchases.map(p=>`
+      <div class="purchase-item">
+        <span style="font-weight:600;font-size:.88rem;color:var(--text)">${esc(p.productName||p.toString())}</span>
+        <span style="font-size:.76rem;color:var(--text-3)">${(p.pointPrice||0).toLocaleString()} pts</span>
+      </div>
+    `).join('');
   }
-  window.copyInvite();
-};
-
-onAuthStateChanged(auth, async user => {
-  if (!user) {
-    document.getElementById("auth-gate").classList.remove("hidden");
-    document.getElementById("sb-signin").classList.remove("hidden");
-    return;
-  }
-  document.getElementById("profile-content").classList.remove("hidden");
-  document.getElementById("sb-signin").classList.add("hidden");
-  document.getElementById("sb-chip").classList.remove("hidden");
-  document.getElementById("sb-avatar").textContent = initials(user.displayName||user.email);
-  document.getElementById("sb-name").textContent = user.displayName||user.email.split("@")[0];
-
-  // Set photo or initials
-  if (user.photoURL) {
-    document.getElementById("prof-photo").innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;" alt="photo"/>`;
-  } else {
-    document.getElementById("prof-photo").textContent = initials(user.displayName||user.email);
-  }
-  document.getElementById("prof-name").textContent = user.displayName || "Anonymous";
-  document.getElementById("prof-email").textContent = user.email || "";
-
-  // Load blogger doc
-  const bSnap = await getDoc(doc(db,"bloggers",user.uid)).catch(()=>null);
-  const bData = bSnap?.data() || {};
-
-  document.getElementById("stat-pts").textContent = bData.points || 0;
-  refCode = bData.referralCode || user.uid.substring(0,8).toUpperCase();
-  const origin = window.location.origin;
-  const base = window.location.pathname.includes("pocket") ? "../" : "../";
-  refUrl = origin + (window.location.pathname.split("/desktop")[0] || "") + "/index.html?ref=" + refCode;
-  document.getElementById("ref-code").textContent = refCode;
-  document.getElementById("ref-link").textContent = refUrl;
-
-  // Referrals count (how many users have referredBy = this uid)
-  const refSnap = await getDocs(query(collection(db,"bloggers"),where("referredBy","==",user.uid))).catch(()=>({size:0}));
-  document.getElementById("stat-referrals").textContent = refSnap.size || 0;
-
-  // Posts count
-  const postsSnap = await getDocs(query(collection(db,"bloggerblogs"),where("uid","==",user.uid))).catch(()=>({size:0,docs:[]}));
-  document.getElementById("stat-posts").textContent = postsSnap.size || 0;
-
-  // Purchases
-  const purchSnap = await getDocs(query(collection(db,"user_purchases"),where("uid","==",user.uid),orderBy("purchasedAt","desc"))).catch(()=>({size:0,docs:[]}));
-  document.getElementById("stat-purchases").textContent = purchSnap.size || 0;
-
-  const purchList = document.getElementById("purchases-list");
-  if (!purchSnap.size) {
-    purchList.innerHTML = `<div style="color:var(--stone);font-size:0.84rem;">No purchases yet. <a href="shop.html" style="color:var(--terra);">Visit the shop →</a></div>`;
-  } else {
-    const rows = [];
-    purchSnap.forEach(d => {
-      const p = d.data();
-      rows.push(`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light);">
-        <span style="font-size:1.2rem;">🎁</span>
-        <div style="flex:1;"><div style="font-weight:600;font-size:0.88rem;color:var(--espresso);">${esc(p.productName||"Item")}</div><div style="font-size:0.75rem;color:var(--stone);">${timeAgo(p.purchasedAt?.toDate?.()?.toISOString?.())} · ${p.pointPrice} pts</div></div>
-        <span class="shop-bought-badge">✓ Owned</span></div>`);
-    });
-    purchList.innerHTML = rows.join("");
-  }
-
-  // My posts
-  const postsList = document.getElementById("my-posts-list");
-  if (!postsSnap.size) {
-    postsList.innerHTML = `<div style="color:var(--stone);font-size:0.84rem;">No posts yet. <a href="creativecreator.html" style="color:var(--terra);">Create one →</a></div>`;
-  } else {
-    const rows = [];
-    postsSnap.docs.slice(0,10).forEach(d => {
-      const p = d.data();
-      rows.push(`<div style="padding:9px 0;border-bottom:1px solid var(--border-light);cursor:pointer;" onclick="window.location='presentation.html?id=${d.id}'">
-        <div style="font-family:'Lora',serif;font-size:0.9rem;font-weight:600;color:var(--espresso);margin-bottom:2px;">${esc(p.title||"Untitled")}</div>
-        <div style="font-size:0.75rem;color:var(--stone);">${timeAgo(p.createdAt)} · ❤️ ${p.likes||0} · 👁 ${p.views||0}</div>
-      </div>`);
-    });
-    postsList.innerHTML = rows.join("");
-  }
+  document.getElementById('profile-content').style.display='block';
 });
 </script>
 </body>

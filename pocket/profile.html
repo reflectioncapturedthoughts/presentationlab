@@ -1,172 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profile — Presentation Lab</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Profile — ARCT</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="toast-container"></div>
-<header class="mobile-topbar">
-  <div class="mobile-brand">
-    <div class="mobile-logo-wrap"><img src="../assets/l.png" alt="logo"/><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
-    <span class="mobile-brand-name">Profile</span>
-  </div>
-  <div class="mobile-topbar-actions">
-    <button class="mobile-icon-btn" id="signout-btn" style="display:none;" onclick="doSignout()">↩</button>
+<div id="toast-wrap"></div>
+<div class="app">
+<header class="topbar">
+  <div class="topbar-logo"><div class="logo-wrap"><img src="../assets/l.png" alt="ARCT"><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div><span class="topbar-brand">Profile</span></div>
+  <div class="topbar-actions">
+    <button class="topbar-icon-btn" id="signout-btn" onclick="doSignOut()" style="display:none" title="Sign Out">
+      <svg viewBox="0 0 24 24"><path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+    </button>
   </div>
 </header>
-
-<!-- Auth gate -->
-<div id="auth-gate" style="padding:60px 20px;text-align:center;display:none;">
-  <div style="font-size:3rem;margin-bottom:12px;">🔒</div>
-  <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to view profile</h2>
-  <a href="auth.html?redirect=profile.html" class="btn btn-terra">Sign In / Sign Up</a>
-</div>
-
-<!-- Profile content -->
-<main id="profile-content" style="padding:16px 16px 20px;display:none;">
-  <!-- User card -->
-  <div class="profile-card">
-    <div id="prof-photo" class="profile-avatar-lg">?</div>
-    <div id="prof-name" class="profile-name-lg">—</div>
-    <div id="prof-email" class="profile-email">—</div>
-    <div class="profile-stats">
-      <div class="profile-stat"><div class="profile-stat-val" id="stat-pts">—</div><div class="profile-stat-lbl">Points</div></div>
-      <div class="profile-stat"><div class="profile-stat-val" id="stat-posts">—</div><div class="profile-stat-lbl">Posts</div></div>
-      <div class="profile-stat"><div class="profile-stat-val" id="stat-refs">—</div><div class="profile-stat-lbl">Referrals</div></div>
+<main class="main">
+  <div class="page" style="padding-top:16px">
+    <div id="loading-state" style="text-align:center;padding:48px"><div class="spinner spin"></div></div>
+    <div id="no-user" style="display:none;text-align:center;padding:60px 0">
+      <p style="color:var(--text-2);margin-bottom:16px;font-size:.9rem">Sign in to view your profile.</p>
+      <button class="btn btn-primary" onclick="location.href='auth.html?redirect=profile.html'">Sign In</button>
     </div>
-  </div>
-
-  <!-- Referral card -->
-  <div class="profile-card">
-    <h3 style="font-family:'Lora',serif;font-size:0.95rem;font-weight:700;color:var(--espresso);margin-bottom:6px;">🎁 Your Referral Code</h3>
-    <p style="font-size:0.8rem;color:var(--brown);margin-bottom:14px;">Share it — you and your friend both earn <strong style="color:var(--terra);">+10 points!</strong></p>
-    <div class="referral-code-box">
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--stone);margin-bottom:6px;">Your Code</div>
-      <div id="ref-code" class="referral-code-val">———</div>
-      <div id="ref-link" class="referral-code-hint" style="word-break:break-all;margin-bottom:12px;"></div>
-      <div style="display:flex;gap:8px;justify-content:center;">
-        <button class="btn btn-terra btn-sm" onclick="copyInvite()">📋 Copy</button>
-        <button class="btn btn-outline btn-sm" onclick="shareInvite()">📤 Share</button>
+    <div id="profile-content" style="display:none">
+      <div style="display:flex;flex-direction:column;align-items:center;padding:16px 0 24px">
+        <div class="avatar avatar-xl" id="pf-av" style="margin-bottom:12px"></div>
+        <div style="font-size:1.1rem;font-weight:700;color:var(--text)" id="pf-name"></div>
+        <div style="font-size:.8rem;color:var(--text-3);margin-top:2px" id="pf-email"></div>
+      </div>
+      <div class="stats-row" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-num" id="stat-pts"></div><div class="stat-lbl">Points</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-posts"></div><div class="stat-lbl">Posts</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-refs"></div><div class="stat-lbl">Referrals</div></div>
+      </div>
+      <div class="card" style="margin-bottom:14px;padding:16px">
+        <div style="font-size:.72rem;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Referral Code</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <code style="font-size:1.05rem;letter-spacing:.12em;color:var(--accent);font-weight:700" id="pf-ref-code"></code>
+          <button class="btn btn-ghost btn-sm" onclick="copyRef()">Copy</button>
+        </div>
+        <p style="font-size:.72rem;color:var(--text-3);margin-top:6px">Share to earn 50 pts each when someone joins.</p>
+      </div>
+      <div id="purchases-section" style="display:none;margin-bottom:14px">
+        <div style="font-size:.78rem;font-weight:600;color:var(--text-2);margin-bottom:8px;padding:0 2px">Owned Items</div>
+        <div class="card" id="purchases-list" style="padding:8px 0"></div>
       </div>
     </div>
   </div>
-
-  <!-- Purchases card -->
-  <div class="profile-card">
-    <h3 style="font-family:'Lora',serif;font-size:0.95rem;font-weight:700;color:var(--espresso);margin-bottom:12px;">🛍️ My Purchases</h3>
-    <div id="purchases-list"><div style="color:var(--stone);font-size:0.84rem;">Loading…</div></div>
-  </div>
-
-  <!-- My posts card -->
-  <div class="profile-card">
-    <h3 style="font-family:'Lora',serif;font-size:0.95rem;font-weight:700;color:var(--espresso);margin-bottom:12px;">📝 My Posts</h3>
-    <div id="my-posts-list"><div style="color:var(--stone);font-size:0.84rem;">Loading…</div></div>
-  </div>
-
-  <div style="text-align:center;margin-top:8px;">
-    <button onclick="doSignout()" class="btn btn-ghost btn-sm">Sign Out</button>
-  </div>
 </main>
-
 <nav class="bottom-nav">
-  <button class="bottom-nav-btn" onclick="location.href='index.html'"><span class="bottom-nav-icon">🏠</span>Home</button>
-  <button class="bottom-nav-btn" onclick="location.href='leaderboard.html'"><span class="bottom-nav-icon">🏆</span>Top</button>
-  <button class="bottom-nav-btn" onclick="location.href='creativecreator.html'"><span class="bottom-nav-icon">✏️</span>Create</button>
-  <button class="bottom-nav-btn" onclick="location.href='shop.html'"><span class="bottom-nav-icon">🛍️</span>Shop</button>
-  <button class="bottom-nav-btn active"><span class="bottom-nav-icon">👤</span>Profile</button>
+  <button class="tab" onclick="location.href='index.html'"><svg viewBox="0 0 24 24"><path d="M2.25 12l8.954-8.955a1.125 1.125 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>Home</button>
+  <button class="tab" onclick="location.href='leaderboard.html'"><svg viewBox="0 0 24 24"><path d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"/></svg>Top</button>
+  <button class="tab" onclick="location.href='creativecreator.html'"><svg viewBox="0 0 24 24"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>Create</button>
+  <button class="tab" onclick="location.href='shop.html'"><svg viewBox="0 0 24 24"><path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>Shop</button>
+  <button class="tab active" onclick="location.href='profile.html'"><svg viewBox="0 0 24 24"><path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Me</button>
 </nav>
-
+</div>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getFirestore, doc, getDoc, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-
-const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
-const app=initializeApp(FB);
-const db=getFirestore(app);
-const auth=getAuth(app);
-
-function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
-function timeAgo(d){if(!d)return"";const diff=(Date.now()-new Date(d).getTime())/1000;if(diff<60)return"just now";if(diff<3600)return Math.floor(diff/60)+"m ago";if(diff<86400)return Math.floor(diff/3600)+"h ago";return Math.floor(diff/86400)+"d ago";}
-function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
-
-let refUrl="";
-window.doSignout=async()=>{await signOut(auth);window.location.href="index.html";};
-window.copyInvite=async()=>{await navigator.clipboard.writeText(refUrl).catch(()=>{});toast("Invite link copied!","success");};
-window.shareInvite=async()=>{
-  if(navigator.share){try{await navigator.share({title:"Join Presentation Lab",text:"Use my referral to get bonus points!",url:refUrl});return;}catch{}}
-  window.copyInvite();
-};
-
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import{getFirestore,doc,getDoc}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import{getAuth,onAuthStateChanged,signOut as fbSignOut}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15",measurementId:"G-7NXNZDNDRE"};
+const app=initializeApp(FB);const db=getFirestore(app);const auth=getAuth(app);
+let refCode='';
+function esc(s=''){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+function toast(msg,type='info'){const w=document.getElementById('toast-wrap');const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},3500)}
+window.copyRef=function(){if(refCode)navigator.clipboard.writeText(refCode).then(()=>toast('Code copied!','success')).catch(()=>toast('Could not copy','error'));}
+window.doSignOut=async function(){await fbSignOut(auth);location.href='auth.html';};
 onAuthStateChanged(auth,async user=>{
-  if(!user){
-    document.getElementById("auth-gate").style.display="block";
-    return;
+  document.getElementById('loading-state').style.display='none';
+  if(!user){document.getElementById('no-user').style.display='block';return;}
+  document.getElementById('signout-btn').style.display='flex';
+  const snap=await getDoc(doc(db,'buddies',user.uid)).catch(()=>null);
+  const data=snap?.data()||{};
+  const av=document.getElementById('pf-av');
+  if(user.photoURL)av.innerHTML=`<img src="${user.photoURL}" loading="lazy" style="width:100%;height:100%;object-fit:cover">`;else av.textContent=initials(user.displayName||'M');
+  document.getElementById('pf-name').textContent=user.displayName||'Member';
+  document.getElementById('pf-email').textContent=user.email||'';
+  document.getElementById('stat-pts').textContent=(data.points||0).toLocaleString();
+  document.getElementById('stat-posts').textContent=(data.presentationCount||0).toLocaleString();
+  document.getElementById('stat-refs').textContent=(data.referralCount||0).toLocaleString();
+  refCode=data.referralCode||user.uid.substring(0,8).toUpperCase();
+  document.getElementById('pf-ref-code').textContent=refCode;
+  const purchases=data.purchases||[];
+  if(purchases.length>0){
+    document.getElementById('purchases-section').style.display='block';
+    document.getElementById('purchases-list').innerHTML=purchases.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border)"><span style="font-size:.86rem;color:var(--text)">${esc(p.productName||p.toString())}</span><span style="font-size:.76rem;color:var(--text-3)">${(p.pointPrice||0).toLocaleString()} pts</span></div>`).join('');
   }
-  document.getElementById("profile-content").style.display="block";
-  document.getElementById("signout-btn").style.display="flex";
-
-  if(user.photoURL){
-    document.getElementById("prof-photo").innerHTML=`<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;" alt="photo"/>`;
-  }else{
-    document.getElementById("prof-photo").textContent=initials(user.displayName||user.email);
-  }
-  document.getElementById("prof-name").textContent=user.displayName||"Anonymous";
-  document.getElementById("prof-email").textContent=user.email||"";
-
-  const bSnap=await getDoc(doc(db,"bloggers",user.uid)).catch(()=>null);
-  const bData=bSnap?.data()||{};
-  document.getElementById("stat-pts").textContent=bData.points||0;
-
-  const refCode=bData.referralCode||user.uid.substring(0,8).toUpperCase();
-  refUrl=`${window.location.origin}/index.html?ref=${refCode}`;
-  document.getElementById("ref-code").textContent=refCode;
-  document.getElementById("ref-link").textContent=refUrl;
-
-  const [postsSnap,purchSnap,refSnap]=await Promise.all([
-    getDocs(query(collection(db,"bloggerblogs"),where("uid","==",user.uid))).catch(()=>({size:0,docs:[]})),
-    getDocs(query(collection(db,"user_purchases"),where("uid","==",user.uid),orderBy("purchasedAt","desc"))).catch(()=>({size:0,docs:[]})),
-    getDocs(query(collection(db,"bloggers"),where("referredBy","==",user.uid))).catch(()=>({size:0}))
-  ]);
-
-  document.getElementById("stat-posts").textContent=postsSnap.size||0;
-  document.getElementById("stat-refs").textContent=refSnap.size||0;
-
-  // Purchases
-  const pl=document.getElementById("purchases-list");
-  if(!purchSnap.size){
-    pl.innerHTML=`<div style="color:var(--stone);font-size:0.84rem;">No purchases yet. <a href="shop.html" style="color:var(--terra);">Visit shop →</a></div>`;
-  }else{
-    const rows=[];
-    purchSnap.docs.forEach(d=>{
-      const p=d.data();
-      rows.push(`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light);">
-        <span style="font-size:1.2rem;">🎁</span>
-        <div style="flex:1;"><div style="font-weight:600;font-size:0.85rem;color:var(--espresso);">${esc(p.productName||"Item")}</div><div style="font-size:0.72rem;color:var(--stone);">${p.pointPrice} pts</div></div>
-        <span class="shop-bought-badge">✓</span></div>`);
-    });
-    pl.innerHTML=rows.join("");
-  }
-
-  // My posts
-  const postsList=document.getElementById("my-posts-list");
-  if(!postsSnap.size){
-    postsList.innerHTML=`<div style="color:var(--stone);font-size:0.84rem;">No posts yet. <a href="creativecreator.html" style="color:var(--terra);">Create one →</a></div>`;
-  }else{
-    const rows=[];
-    postsSnap.docs.slice(0,8).forEach(d=>{
-      const p=d.data();
-      rows.push(`<div style="padding:9px 0;border-bottom:1px solid var(--border-light);cursor:pointer;" onclick="location.href='presentation.html?id=${d.id}'">
-        <div style="font-family:'Lora',serif;font-size:0.88rem;font-weight:600;color:var(--espresso);margin-bottom:2px;">${esc(p.title||"Untitled")}</div>
-        <div style="font-size:0.72rem;color:var(--stone);">${timeAgo(p.createdAt)} · ❤️ ${p.likes||0}</div></div>`);
-    });
-    postsList.innerHTML=rows.join("");
-  }
+  document.getElementById('profile-content').style.display='block';
 });
 </script>
 </body>

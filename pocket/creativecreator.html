@@ -1,114 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Create — Presentation Lab</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Create — ARCT</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="toast-container"></div>
-<header class="mobile-topbar">
-  <div class="mobile-brand">
-    <div class="mobile-logo-wrap"><img src="../assets/l.png" alt="logo"/><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
-    <span class="mobile-brand-name">Create</span>
-  </div>
-  <div class="mobile-topbar-actions">
-    <a href="auth.html?redirect=creativecreator.html" id="signin-btn" class="btn btn-terra btn-sm" style="display:none;">Sign In</a>
+<div id="toast-wrap"></div>
+<div class="app">
+<header class="topbar">
+  <div class="topbar-logo"><div class="logo-wrap"><img src="../assets/l.png" alt="ARCT"><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div><span class="topbar-brand">Create</span></div>
+  <div class="topbar-actions">
+    <button class="btn btn-primary btn-sm" id="publish-btn" onclick="publish()" style="display:none">Publish</button>
   </div>
 </header>
-
-<!-- Auth gate -->
-<div id="auth-gate" style="padding:60px 20px;text-align:center;display:none;">
-  <div style="font-size:3rem;margin-bottom:14px;">🔒</div>
-  <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to create</h2>
-  <a href="auth.html?redirect=creativecreator.html" class="btn btn-terra btn-lg">Sign In / Sign Up</a>
-</div>
-
-<!-- Form -->
-<div id="create-form" style="padding:16px 16px 20px;display:none;">
-  <div class="form-group">
-    <label class="form-label">Title <span style="color:#ef4444;">*</span></label>
-    <input type="text" class="form-input" id="post-title" placeholder="Give your presentation a title…" maxlength="120"/>
+<main class="main">
+  <div class="page" style="padding-top:12px">
+    <div id="auth-gate" style="display:none;text-align:center;padding:48px 0">
+      <p style="color:var(--text-2);margin-bottom:16px;font-size:.9rem">Sign in to share your ideas.</p>
+      <button class="btn btn-primary" onclick="location.href='auth.html?redirect=creativecreator.html'">Sign In to Create</button>
+    </div>
+    <div id="editor-section" style="display:none">
+      <div class="editor-wrap">
+        <input class="editor-title-input" id="title-input" type="text" placeholder="Title your piece…" maxlength="120">
+        <textarea class="editor-body" id="body-input" placeholder="Write your ideas, story, or reflection…" rows="14"></textarea>
+      </div>
+      <div class="tag-input-wrap" id="tag-wrap" onclick="document.getElementById('tag-field').focus()" style="margin-bottom:12px">
+        <div id="tags-list"></div>
+        <input class="tag-field" id="tag-field" placeholder="Add tags (Enter to add)" maxlength="30">
+      </div>
+      <div class="field" style="margin-bottom:12px">
+        <label class="label">Collection</label>
+        <select class="input" id="col-select">
+          <option value="presentations">Presentations</option>
+          <option value="gitjit">GitJit</option>
+        </select>
+      </div>
+      <p style="font-size:.75rem;color:var(--text-3);text-align:center">Publishing earns points when others like your work.</p>
+    </div>
   </div>
-  <div class="form-group">
-    <label class="form-label">Category</label>
-    <select class="form-select" id="post-category">
-      <option value="">Select category…</option>
-      <option>Speech</option><option>Essay</option><option>Creative Writing</option>
-      <option>Motivational</option><option>Academic</option><option>Debate</option>
-      <option>Poetry</option><option>Other</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label class="form-label">Content <span style="color:#ef4444;">*</span></label>
-    <textarea class="form-textarea" id="post-content" placeholder="Write your presentation here…" style="min-height:220px;"></textarea>
-  </div>
-  <div class="form-group">
-    <label class="form-label">Tags <span style="color:var(--stone);font-weight:400;">(comma-separated)</span></label>
-    <input type="text" class="form-input" id="post-tags" placeholder="e.g. leadership, motivation"/>
-  </div>
-  <button class="btn btn-terra btn-full btn-lg" id="submit-btn" onclick="submitPost()" style="margin-top:4px;">Publish 🚀</button>
-</div>
-
+</main>
 <nav class="bottom-nav">
-  <button class="bottom-nav-btn" onclick="location.href='index.html'"><span class="bottom-nav-icon">🏠</span>Home</button>
-  <button class="bottom-nav-btn" onclick="location.href='leaderboard.html'"><span class="bottom-nav-icon">🏆</span>Top</button>
-  <button class="bottom-nav-btn active"><span class="bottom-nav-icon">✏️</span>Create</button>
-  <button class="bottom-nav-btn" onclick="location.href='shop.html'"><span class="bottom-nav-icon">🛍️</span>Shop</button>
-  <button class="bottom-nav-btn" onclick="location.href='profile.html'"><span class="bottom-nav-icon">👤</span>Profile</button>
+  <button class="tab" onclick="location.href='index.html'"><svg viewBox="0 0 24 24"><path d="M2.25 12l8.954-8.955a1.125 1.125 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>Home</button>
+  <button class="tab" onclick="location.href='leaderboard.html'"><svg viewBox="0 0 24 24"><path d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"/></svg>Top</button>
+  <button class="tab active" onclick="location.href='creativecreator.html'"><svg viewBox="0 0 24 24"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>Create</button>
+  <button class="tab" onclick="location.href='shop.html'"><svg viewBox="0 0 24 24"><path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>Shop</button>
+  <button class="tab" onclick="location.href='profile.html'"><svg viewBox="0 0 24 24"><path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Me</button>
 </nav>
-
+</div>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-
-const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
-const app=initializeApp(FB);
-const db=getFirestore(app);
-const auth=getAuth(app);
-
-function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
-
-let currentUser=null;
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import{getFirestore,doc,getDoc,addDoc,updateDoc,increment,collection,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15",measurementId:"G-7NXNZDNDRE"};
+const app=initializeApp(FB);const db=getFirestore(app);const auth=getAuth(app);
+let currentUser=null,tags=[];
+function toast(msg,type='info'){const w=document.getElementById('toast-wrap');const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},4000)}
+function renderTags(){document.getElementById('tags-list').innerHTML=tags.map((t,i)=>`<span class="tag-pill">${t}<button onclick="removeTag(${i})">×</button></span>`).join('');}
+window.removeTag=function(i){tags.splice(i,1);renderTags();}
+document.getElementById('tag-field').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.value.trim()){e.preventDefault();const v=e.target.value.trim();if(v&&!tags.includes(v)&&tags.length<6)tags.push(v);e.target.value='';renderTags();}
+});
+window.publish=async function(){
+  if(!currentUser){toast('Please sign in','error');return;}
+  const title=document.getElementById('title-input').value.trim();
+  const content=document.getElementById('body-input').value.trim();
+  const col=document.getElementById('col-select').value;
+  if(!title){toast('Add a title','error');return;}
+  if(!content||content.length<10){toast('Content too short','error');return;}
+  const btn=document.getElementById('publish-btn');btn.disabled=true;btn.textContent='…';
+  try{
+    const ref=await addDoc(collection(db,col),{
+      uid:currentUser.uid,authorName:currentUser.displayName||'Member',
+      authorEmail:currentUser.email,authorPhoto:currentUser.photoURL||'',
+      title,content,tags,likes:0,likedBy:[],isAVRPick:false,
+      createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+    });
+    await updateDoc(doc(db,'buddies',currentUser.uid),{presentationCount:increment(1)});
+    toast('Published!','success');
+    setTimeout(()=>location.href=`presentation.html?id=${ref.id}&col=${col}`,1000);
+  }catch(e){toast('Failed: '+e.message,'error');btn.disabled=false;btn.textContent='Publish';}
+};
 onAuthStateChanged(auth,user=>{
   currentUser=user;
   if(user){
-    document.getElementById("auth-gate").style.display="none";
-    document.getElementById("create-form").style.display="block";
-    document.getElementById("signin-btn").style.display="none";
+    document.getElementById('auth-gate').style.display='none';
+    document.getElementById('editor-section').style.display='block';
+    document.getElementById('publish-btn').style.display='flex';
   }else{
-    document.getElementById("auth-gate").style.display="block";
-    document.getElementById("create-form").style.display="none";
-    document.getElementById("signin-btn").style.display="flex";
+    document.getElementById('auth-gate').style.display='block';
+    document.getElementById('editor-section').style.display='none';
+    document.getElementById('publish-btn').style.display='none';
   }
 });
-
-window.submitPost=async()=>{
-  const btn=document.getElementById("submit-btn");
-  const title=document.getElementById("post-title").value.trim();
-  const content=document.getElementById("post-content").value.trim();
-  const category=document.getElementById("post-category").value;
-  const tags=document.getElementById("post-tags").value.split(",").map(t=>t.trim()).filter(Boolean);
-  if(!title){toast("Please add a title","error");return;}
-  if(content.length<30){toast("Content too short (min 30 chars)","error");return;}
-  if(!currentUser){toast("Please sign in","error");return;}
-  btn.disabled=true;btn.innerHTML=`<span class="spinner" style="margin:0 auto;display:block;width:18px;height:18px;border-width:2px;"></span>`;
-  try{
-    const ref=await addDoc(collection(db,"bloggerblogs"),{
-      uid:currentUser.uid,fullName:currentUser.displayName||"",email:currentUser.email||"",
-      title,content,category,tags,likes:0,dislikes:0,views:0,likedBy:[],savedBy:[],
-      featured:false,createdAt:new Date().toISOString()
-    });
-    toast("Published! 🎉","success");
-    setTimeout(()=>window.location.href=`presentation.html?id=${ref.id}&coll=bloggerblogs`,900);
-  }catch(e){
-    toast("Failed: "+e.message,"error");
-    btn.disabled=false;btn.innerHTML="Publish 🚀";
-  }
-};
 </script>
 </body>
 </html>

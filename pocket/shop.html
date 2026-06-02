@@ -1,157 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shop — Presentation Lab</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Shop — ARCT</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="toast-container"></div>
-<header class="mobile-topbar">
-  <div class="mobile-brand">
-    <div class="mobile-logo-wrap"><img src="../assets/l.png" alt="logo"/><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
-    <span class="mobile-brand-name">🛍️ Shop</span>
+<div id="toast-wrap"></div>
+<div class="modal-bg" id="buy-modal">
+  <div class="modal"><div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">Confirm Purchase</div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;margin-bottom:18px;display:flex;justify-content:space-between">
+      <span style="font-size:.82rem;color:var(--text-2)">Balance</span><span style="font-weight:700;color:var(--accent)" id="modal-bal">0 pts</span>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost btn-full" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-full" id="confirm-btn" onclick="confirmPurchase()">Confirm</button>
+    </div>
   </div>
-  <div class="mobile-topbar-actions">
-    <div id="pts-chip" class="mobile-pts-chip hidden">🏅 <span id="pts-val">0</span></div>
-  </div>
+</div>
+<div class="app">
+<header class="topbar">
+  <div class="topbar-logo"><div class="logo-wrap"><img src="../assets/l.png" alt="ARCT"><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div><span class="topbar-brand">Shop</span></div>
+  <div class="topbar-actions"><span class="topbar-pts" id="tb-pts" style="display:none">0 pts</span></div>
 </header>
-
-<!-- Balance bar -->
-<div style="padding:12px 16px;background:linear-gradient(135deg,rgba(201,108,84,0.06),var(--sand-warm));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;" id="balance-bar">
-  <div style="font-size:1.3rem;">🏅</div>
-  <div><div style="font-size:0.72rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Balance</div><div id="bal-val" style="font-family:'Lora',serif;font-size:1.2rem;font-weight:700;color:var(--terra);">— pts</div></div>
-  <a href="profile.html" class="btn btn-outline btn-sm" style="margin-left:auto;font-size:0.75rem;">Profile →</a>
-</div>
-
-<!-- Auth gate -->
-<div id="auth-gate" style="padding:60px 20px;text-align:center;display:none;">
-  <div style="font-size:3rem;margin-bottom:12px;">🔒</div>
-  <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to shop</h2>
-  <a href="auth.html?redirect=shop.html" class="btn btn-terra">Sign In / Sign Up</a>
-</div>
-
-<!-- Products -->
-<main id="shop-content">
-  <div style="padding:40px 16px;text-align:center;color:var(--stone);">
-    <div class="spinner" style="margin:0 auto 12px;"></div>
-    <p style="font-size:0.84rem;">Loading shop…</p>
+<main class="main">
+  <div class="page" style="padding-top:12px">
+    <div class="pts-bar"><div><div class="pts-val" id="pts-val">—</div><div class="pts-lbl">Your Points</div></div></div>
+    <div class="filter-row" id="cat-filter">
+      <button class="filter-chip active" data-cat="">All</button>
+      <button class="filter-chip" data-cat="Profile">Profile</button>
+      <button class="filter-chip" data-cat="Boost">Boost</button>
+      <button class="filter-chip" data-cat="Access">Access</button>
+      <button class="filter-chip" data-cat="Creator">Creator</button>
+    </div>
+    <div id="shop-list"></div>
+    <div id="loading-state" style="text-align:center;padding:40px"><div class="spinner spin"></div></div>
+    <div id="empty-state" class="empty" style="display:none"><p class="empty-title">Shop coming soon</p></div>
   </div>
 </main>
-
 <nav class="bottom-nav">
-  <button class="bottom-nav-btn" onclick="location.href='index.html'"><span class="bottom-nav-icon">🏠</span>Home</button>
-  <button class="bottom-nav-btn" onclick="location.href='leaderboard.html'"><span class="bottom-nav-icon">🏆</span>Top</button>
-  <button class="bottom-nav-btn" onclick="location.href='creativecreator.html'"><span class="bottom-nav-icon">✏️</span>Create</button>
-  <button class="bottom-nav-btn active"><span class="bottom-nav-icon">🛍️</span>Shop</button>
-  <button class="bottom-nav-btn" onclick="location.href='profile.html'"><span class="bottom-nav-icon">👤</span>Profile</button>
+  <button class="tab" onclick="location.href='index.html'"><svg viewBox="0 0 24 24"><path d="M2.25 12l8.954-8.955a1.125 1.125 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>Home</button>
+  <button class="tab" onclick="location.href='leaderboard.html'"><svg viewBox="0 0 24 24"><path d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"/></svg>Top</button>
+  <button class="tab" onclick="location.href='creativecreator.html'"><svg viewBox="0 0 24 24"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>Create</button>
+  <button class="tab active" onclick="location.href='shop.html'"><svg viewBox="0 0 24 24"><path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>Shop</button>
+  <button class="tab" onclick="location.href='profile.html'"><svg viewBox="0 0 24 24"><path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Me</button>
 </nav>
-
+</div>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, increment, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-
-const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
-const app=initializeApp(FB);
-const db=getFirestore(app);
-const auth=getAuth(app);
-
-function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
-
-const SAMPLE=[
-  {id:"featured-badge",emoji:"✨",name:"Featured Badge",description:"Display a featured badge next to your name on all posts for 30 days.",pointPrice:50,category:"Profile"},
-  {id:"post-pin",emoji:"📌",name:"Post Pin",description:"Pin your best post to the top of your profile for 30 days.",pointPrice:100,category:"Content"},
-  {id:"custom-title",emoji:"🎖️",name:"Custom Title",description:"Set a custom title displayed next to your name.",pointPrice:200,category:"Profile"},
-  {id:"gold-avatar",emoji:"🌟",name:"Gold Avatar",description:"Get a glowing gold border on your avatar for 30 days.",pointPrice:150,category:"Profile"},
-  {id:"profile-boost",emoji:"🔝",name:"Profile Boost",description:"Appear at the top of the Leaderboard sidebar for 7 days.",pointPrice:300,category:"Visibility"},
-  {id:"dark-mode",emoji:"🌙",name:"Dark Mode",description:"Early access to Dark Mode theme.",pointPrice:75,category:"Feature"},
-  {id:"dm-access",emoji:"💌",name:"DM Access",description:"Unlock direct messaging with other writers.",pointPrice:120,category:"Social"},
-  {id:"speech-coach",emoji:"🎤",name:"Speech Coach Badge",description:"Show the Speech Coach badge on your profile.",pointPrice:250,category:"Achievement"},
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import{getFirestore,doc,getDoc,collection,query,orderBy,getDocs,updateDoc,increment,arrayUnion}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15",measurementId:"G-7NXNZDNDRE"};
+const app=initializeApp(FB);const db=getFirestore(app);const auth=getAuth(app);
+let currentUser=null,userPts=0,userPurchases=[],allProducts=[],currentCat='',pendingProduct=null;
+function esc(s=''){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function toast(msg,type='info'){const w=document.getElementById('toast-wrap');const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},4000)}
+function productRow(p){
+  const owned=userPurchases.some(x=>(x.productId||x)===p.id);
+  const canAfford=userPts>=p.pointPrice;
+  return`<div class="shop-card">
+    <div class="shop-icon">${esc(p.icon||'?')}</div>
+    <div class="shop-info"><div class="shop-name">${esc(p.name)}</div><div class="shop-desc">${esc(p.description||'')}</div></div>
+    <div class="shop-right">
+      <div class="shop-price">${(p.pointPrice||0).toLocaleString()} <span>pts</span></div>
+      ${owned?`<span style="font-size:.72rem;font-weight:600;color:var(--green)">Owned</span>`:currentUser?`<button class="btn btn-primary btn-sm" ${canAfford?'':'disabled'} onclick="buyProduct('${p.id}','${esc(p.name)}',${p.pointPrice})">${canAfford?'Buy':'—'}</button>`:`<button class="btn btn-ghost btn-sm" onclick="location.href='auth.html'">Sign in</button>`}
+    </div>
+  </div>`;
+}
+function renderProducts(){
+  const filtered=currentCat?allProducts.filter(p=>p.category===currentCat):allProducts;
+  document.getElementById('loading-state').style.display='none';
+  if(!filtered.length){document.getElementById('empty-state').style.display='block';document.getElementById('shop-list').innerHTML='';return;}
+  document.getElementById('empty-state').style.display='none';
+  document.getElementById('shop-list').innerHTML=filtered.map(productRow).join('');
+}
+window.buyProduct=function(id,name,price){
+  if(!currentUser){location.href='auth.html';return;}
+  pendingProduct={id,name,price};
+  document.getElementById('modal-title').textContent=name;
+  document.getElementById('modal-sub').textContent=`Deducts ${price.toLocaleString()} pts from your balance.`;
+  document.getElementById('modal-bal').textContent=userPts.toLocaleString()+' pts';
+  document.getElementById('buy-modal').classList.add('open');
+};
+window.closeModal=function(){document.getElementById('buy-modal').classList.remove('open');pendingProduct=null;};
+window.confirmPurchase=async function(){
+  if(!pendingProduct||!currentUser)return;
+  const btn=document.getElementById('confirm-btn');btn.disabled=true;
+  try{
+    const bRef=doc(db,'buddies',currentUser.uid);const snap=await getDoc(bRef);const data=snap?.data()||{};
+    if((data.points||0)<pendingProduct.price){toast('Insufficient points','error');return;}
+    const pr={productId:pendingProduct.id,productName:pendingProduct.name,pointPrice:pendingProduct.price,purchasedAt:new Date().toISOString()};
+    await updateDoc(bRef,{points:increment(-pendingProduct.price),purchases:arrayUnion(pr)});
+    userPts-=pendingProduct.price;userPurchases.push(pr);
+    document.getElementById('pts-val').textContent=userPts.toLocaleString();
+    document.getElementById('tb-pts').textContent=userPts+' pts';
+    toast(pendingProduct.name+' purchased!','success');closeModal();renderProducts();
+  }catch(e){toast('Failed: '+e.message,'error');}
+  btn.disabled=false;
+};
+document.querySelectorAll('.filter-chip').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#cat-filter .filter-chip').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');currentCat=b.dataset.cat||'';renderProducts();
+}));
+const FALLBACK=[
+  {id:'badge',name:'Creator Badge',description:'Exclusive badge on your profile.',icon:'◆',category:'Profile',pointPrice:125,available:true},
+  {id:'theme',name:'Custom Profile Theme',description:'Premium themes and accent colors.',icon:'◈',category:'Profile',pointPrice:250,available:true},
+  {id:'boost',name:'Post Feature Boost',description:'Boost your post to top of feed for 24h.',icon:'▲',category:'Boost',pointPrice:500,available:true},
+  {id:'pack',name:'Creator Resource Pack',description:'Templates, prompts, and writing tools.',icon:'◇',category:'Creator',pointPrice:750,available:true},
+  {id:'access',name:'Exclusive Content Access',description:'Premium community content and early features.',icon:'◉',category:'Access',pointPrice:1000,available:true},
+  {id:'mentor',name:'Mentorship Session',description:'45-min session with a top ARCT creator.',icon:'●',category:'Creator',pointPrice:1500,available:true},
+  {id:'vip',name:'VIP Status',description:'VIP badge, priority support, monthly perks.',icon:'◎',category:'Access',pointPrice:2500,available:true},
+  {id:'lifetime',name:'Lifetime Creator Pass',description:'Unlock all premium features forever.',icon:'★',category:'Access',pointPrice:5000,available:true},
 ];
-
-let currentUser=null;
-let userPoints=0;
-let purchasedIds=new Set();
-let products=[];
-
+async function loadProducts(){
+  const snap=await getDocs(query(collection(db,'realms'),orderBy('order','asc'))).catch(()=>({docs:[]}));
+  allProducts=snap.docs.length>0?snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.available!==false):FALLBACK;
+  renderProducts();
+}
 onAuthStateChanged(auth,async user=>{
   currentUser=user;
   if(user){
-    document.getElementById("auth-gate").style.display="none";
-    document.getElementById("pts-chip").classList.remove("hidden");
-    const bSnap=await getDoc(doc(db,"bloggers",user.uid)).catch(()=>null);
-    if(bSnap?.exists()){
-      userPoints=bSnap.data().points||0;
-      document.getElementById("pts-val").textContent=userPoints;
-      document.getElementById("bal-val").textContent=userPoints+" pts";
-    }
-    const pSnap=await getDocs(query(collection(db,"user_purchases"),where("uid","==",user.uid))).catch(()=>({forEach:()=>{}}));
-    pSnap.forEach(d=>purchasedIds.add(d.data().productId));
-  }else{
-    document.getElementById("auth-gate").style.display="block";
-  }
+    const snap=await getDoc(doc(db,'buddies',user.uid)).catch(()=>null);const data=snap?.data()||{};
+    userPts=data.points||0;userPurchases=data.purchases||[];
+    document.getElementById('pts-val').textContent=userPts.toLocaleString();
+    document.getElementById('tb-pts').style.display='block';document.getElementById('tb-pts').textContent=userPts+' pts';
+  }else{document.getElementById('pts-val').textContent='—';}
   loadProducts();
 });
-
-async function loadProducts(){
-  try{
-    const snap=await getDocs(collection(db,"shop_products"));
-    products=[];
-    snap.forEach(d=>products.push({id:d.id,...d.data()}));
-    if(!products.length) products=SAMPLE;
-  }catch{products=SAMPLE;}
-  renderShop();
-}
-
-function renderShop(){
-  const c=document.getElementById("shop-content");
-  if(!products.length){c.innerHTML=`<div style="padding:40px;text-align:center;color:var(--stone);">Shop coming soon!</div>`;return;}
-  c.innerHTML=`<div class="shop-grid">`+products.map(p=>{
-    const bought=purchasedIds.has(p.id);
-    const canAfford=currentUser&&userPoints>=p.pointPrice;
-    return `<div class="shop-card">
-      <div class="shop-card-icon">${esc(p.emoji||"🎁")}</div>
-      <div class="shop-card-body">
-        <div class="shop-card-name">${esc(p.name)}</div>
-        <div class="shop-card-desc">${esc(p.description)}</div>
-      </div>
-      <div class="shop-card-right">
-        <span class="shop-price-badge">🏅 ${p.pointPrice}</span>
-        ${bought
-          ?`<span class="shop-bought-badge">✓ Owned</span>`
-          :currentUser
-            ?`<button class="btn btn-terra btn-sm" ${canAfford?'':'disabled'} onclick="buy('${p.id}',${p.pointPrice},'${esc(p.name)}')">
-                ${canAfford?'Buy':'Need '+p.pointPrice}
-              </button>`
-            :`<a href="auth.html?redirect=shop.html" class="btn btn-outline btn-sm">Sign in</a>`
-        }
-      </div>
-    </div>`;
-  }).join("")+`</div>`;
-}
-
-window.buy=async(productId,price,name)=>{
-  if(!currentUser) return;
-  if(purchasedIds.has(productId)){toast("Already owned!","info");return;}
-  if(userPoints<price){toast("Not enough points!","error");return;}
-  if(!confirm(`Buy "${name}" for ${price} points?`)) return;
-  try{
-    await Promise.all([
-      updateDoc(doc(db,"bloggers",currentUser.uid),{points:increment(-price)}),
-      addDoc(collection(db,"user_purchases"),{uid:currentUser.uid,productId,productName:name,pointPrice:price,purchasedAt:serverTimestamp()})
-    ]);
-    userPoints-=price;
-    purchasedIds.add(productId);
-    document.getElementById("pts-val").textContent=userPoints;
-    document.getElementById("bal-val").textContent=userPoints+" pts";
-    toast(`"${name}" purchased! 🎉`,"success");
-    renderShop();
-  }catch(e){toast("Failed: "+e.message,"error");}
-};
 </script>
 </body>
 </html>

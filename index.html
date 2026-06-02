@@ -1,43 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Presentation Lab</title>
-  <style>
-    body { margin:0; background:#FBF8F5; display:flex; align-items:center; justify-content:center; min-height:100vh; font-family:'DM Sans',system-ui,sans-serif; }
-    .loader { text-align:center; }
-    .spinner { width:32px; height:32px; border:3px solid rgba(201,108,84,0.2); border-top-color:#C96C54; border-radius:50%; animation:spin 0.7s linear infinite; margin:0 auto 12px; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-    p { color:#B09A93; font-size:0.88rem; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCT — Reflection Captured Thoughts</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#08080A;height:100%}
+  body{display:flex;align-items:center;justify-content:center}
+  .ring{width:40px;height:40px;border:2px solid #252530;border-top-color:#A78BFA;border-radius:50%;animation:s .7s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
-<div class="loader">
-  <div class="spinner"></div>
-  <p>Loading Presentation Lab…</p>
-</div>
+<div class="ring"></div>
 <script>
-  // Device detection — redirect to optimised version
-  function isMobile() {
-    // Check by user agent first
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-    if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua)) return true;
-    // Check by screen width as fallback
-    if (window.innerWidth <= 768) return true;
-    // Check touch as secondary signal (desktops can have touch screens, so weight UA higher)
-    if ('maxTouchPoints' in navigator && navigator.maxTouchPoints > 0 && window.innerWidth <= 1024) return true;
-    return false;
-  }
-
-  // Preserve query string when redirecting
-  const qs = window.location.search;
-  const hash = window.location.hash;
-  if (isMobile()) {
-    window.location.replace('pocket/index.html' + qs + hash);
-  } else {
-    window.location.replace('desktop/index.html' + qs + hash);
-  }
+(function(){
+  var ua=navigator.userAgent||'';
+  var m=/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua)||window.innerWidth<800;
+  var ref=new URLSearchParams(location.search).get('ref')||'';
+  var d=(m?'pocket':'desktop')+'/index.html'+(ref?'?ref='+encodeURIComponent(ref):'');
+  location.replace(d);
+})();
 </script>
 </body>
 </html>

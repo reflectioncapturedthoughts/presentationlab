@@ -1,257 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin — Presentation Lab</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — ARCT</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="toast-container"></div>
-<div class="admin-shell">
-  <div class="admin-topbar">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:32px;height:32px;border-radius:8px;overflow:hidden;position:relative;background:var(--sand-deep);">
-        <img src="../assets/l.png" alt="logo" style="width:100%;height:100%;object-fit:cover;"/>
-        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><source src="../assets/logo.mp4" type="video/mp4"></video>
+<div id="toast-wrap"></div>
+<div class="app">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none"><div class="logo-wrap"><img src="../assets/l.png" alt="ARCT"><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div><span class="logo-name">ARCT</span></a></div>
+  <nav class="sidebar-nav">
+    <a href="index.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M2.25 12l8.954-8.955a1.125 1.125 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>Home</a>
+    <a href="leaderboard.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"/></svg>Leaderboard</a>
+    <a href="creativecreator.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>Create</a>
+    <a href="shop.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>Shop</a>
+    <a href="profile.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Profile</a>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-user" id="sb-user" onclick="location.href='profile.html'" style="display:none"><div class="avatar avatar-sm" id="sb-av"></div><div class="sidebar-user-info"><div class="sidebar-user-name" id="sb-name"></div><div class="sidebar-user-pts"><span id="sb-pts">0</span> pts</div></div></div><button class="sidebar-sign-in" id="sb-signin" onclick="location.href='auth.html'" style="display:none"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>Sign In</button></div>
+</aside>
+<main class="main">
+  <div class="page-wrap">
+    <div style="margin-bottom:32px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+        <h1 class="page-title" style="margin:0">Admin Panel</h1>
+        <span class="badge badge-surface" style="background:rgba(168,85,247,.15);color:#a855f7;border-color:rgba(168,85,247,.3)">ARCT HQ</span>
       </div>
-      <span style="font-family:'Lora',serif;font-weight:700;color:var(--terra);">Presentation Lab</span>
-      <span style="background:var(--terra);color:#fff;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:var(--radius-pill);margin-left:4px;">ADMIN</span>
+      <p class="page-subtitle">Manage content, mark AVR Picks, and seed the shop.</p>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <span id="admin-email" style="font-size:0.82rem;color:var(--stone);"></span>
-      <button class="btn btn-ghost btn-sm" onclick="doSignout()">Sign Out</button>
-      <a href="index.html" class="btn btn-outline btn-sm">← Home</a>
-    </div>
-  </div>
-  <div class="admin-content">
-    <!-- Auth gate -->
-    <div id="auth-gate" style="text-align:center;padding:80px 0;" class="hidden">
-      <div style="font-size:3rem;margin-bottom:14px;">🔒</div>
-      <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Admin access required</h2>
-      <a href="auth.html?redirect=admin.html" class="btn btn-terra btn-lg" style="margin-top:8px;">Sign In</a>
-    </div>
-    <div id="admin-main" class="hidden">
-      <!-- Stats -->
-      <div class="stats-grid" id="admin-stats">
-        <div class="stat-card"><div class="stat-value" id="s-writers">—</div><div class="stat-label">Writers</div></div>
-        <div class="stat-card"><div class="stat-value" id="s-posts">—</div><div class="stat-label">Blog Posts</div></div>
-        <div class="stat-card"><div class="stat-value" id="s-pres">—</div><div class="stat-label">Presentations</div></div>
-        <div class="stat-card"><div class="stat-value" id="s-pts">—</div><div class="stat-label">Total Points Issued</div></div>
-      </div>
-
-      <!-- Actions row -->
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
-        <button class="btn btn-terra" onclick="seedShop()">🌱 Seed Shop Products</button>
-        <button class="btn btn-outline" onclick="loadWriters()">🔄 Refresh Writers</button>
-        <a href="avr.html" class="btn btn-ghost">👑 AVR Portal</a>
-        <a href="init.html" class="btn btn-ghost">⚙️ Init Setup</a>
-      </div>
-
-      <!-- Tabs -->
-      <div class="tabs">
-        <button class="tab-btn active" onclick="showTab('writers')">Writers</button>
-        <button class="tab-btn" onclick="showTab('posts')">Blog Posts</button>
-        <button class="tab-btn" onclick="showTab('shop')">Shop Products</button>
-      </div>
-
-      <!-- Writers table -->
-      <div id="tab-writers">
-        <div class="table-wrap" id="writers-table">
-          <div style="padding:32px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div>Loading…</div>
+    <div id="no-access" style="display:none" class="empty"><p class="empty-title">Access Denied</p><p class="empty-sub">Sign in with an admin account to access this panel.</p><a href="index.html" class="btn btn-primary">Go Home</a></div>
+    <div id="admin-content" style="display:none">
+      <div class="grid-2" style="gap:16px;margin-bottom:24px">
+        <div class="card" style="padding:20px 24px">
+          <div style="font-size:.78rem;font-weight:600;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Total Members</div>
+          <div class="stat-num" id="stat-members">—</div>
+        </div>
+        <div class="card" style="padding:20px 24px">
+          <div style="font-size:.78rem;font-weight:600;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Total Posts</div>
+          <div class="stat-num" id="stat-posts">—</div>
+        </div>
+        <div class="card" style="padding:20px 24px">
+          <div style="font-size:.78rem;font-weight:600;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">AVR Picks</div>
+          <div class="stat-num" id="stat-avr">—</div>
+        </div>
+        <div class="card" style="padding:20px 24px">
+          <div style="font-size:.78rem;font-weight:600;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Shop Items</div>
+          <div class="stat-num" id="stat-shop">—</div>
         </div>
       </div>
-
-      <!-- Posts -->
-      <div id="tab-posts" class="hidden">
-        <div class="table-wrap" id="posts-table">
-          <div style="padding:32px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div>Loading…</div>
+      <div style="margin-bottom:24px">
+        <div class="section-header"><span class="section-title">Seed Shop Products</span></div>
+        <div class="card" style="padding:20px 24px">
+          <p style="font-size:.86rem;color:var(--text-2);margin-bottom:16px">Writes the default 8 products to the <code>realms</code> collection. Safe to run multiple times (uses set with merge).</p>
+          <button class="btn btn-primary" id="seed-btn" onclick="seedShop()">Seed Shop Products</button>
         </div>
       </div>
-
-      <!-- Shop products -->
-      <div id="tab-shop" class="hidden">
-        <div style="margin-bottom:14px;display:flex;gap:8px;">
-          <button class="btn btn-terra btn-sm" onclick="seedShop()">🌱 Seed Sample Products</button>
-        </div>
-        <div class="table-wrap" id="shop-table">
-          <div style="padding:32px;text-align:center;color:var(--stone);">Click "Seed Shop Products" to populate sample products.</div>
+      <div>
+        <div class="section-header"><span class="section-title">Mark AVR Picks</span></div>
+        <div class="card" style="padding:0">
+          <div id="posts-admin-list" style="padding:0 8px"></div>
+          <div id="posts-loading" style="text-align:center;padding:40px"><div class="spinner spin"></div></div>
         </div>
       </div>
     </div>
   </div>
+</main>
 </div>
-
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-
-const FB = {apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
-const app = initializeApp(FB);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
-function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
-
-const ADMIN_EMAILS = ["admin@arct.com","reflectioncapturedthoughts@gmail.com"];
-const SAMPLE_PRODUCTS = [
-  {emoji:"✨",name:"Featured Badge",description:"Display a shiny featured badge on all your posts for 30 days.",pointPrice:50,category:"Profile"},
-  {emoji:"📌",name:"Post Pin",description:"Pin your best post to the top of your profile for 30 days.",pointPrice:100,category:"Content"},
-  {emoji:"🎖️",name:"Custom Title",description:"Set a custom title displayed next to your name (e.g. 'Top Orator').",pointPrice:200,category:"Profile"},
-  {emoji:"🌟",name:"Gold Avatar",description:"Unlock a glowing gold border on your profile avatar for 30 days.",pointPrice:150,category:"Profile"},
-  {emoji:"🔝",name:"Profile Boost",description:"Appear at the top of the Leaderboard sidebar widget for 7 days.",pointPrice:300,category:"Visibility"},
-  {emoji:"🌙",name:"Dark Mode",description:"Early access to the Dark Mode theme for Presentation Lab.",pointPrice:75,category:"Feature"},
-  {emoji:"💌",name:"DM Access",description:"Unlock direct messaging with other writers on the platform.",pointPrice:120,category:"Social"},
-  {emoji:"🎤",name:"Speech Coach Badge",description:"Show the Speech Coach badge on your profile.",pointPrice:250,category:"Achievement"},
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import{getFirestore,doc,getDoc,setDoc,updateDoc,collection,query,orderBy,limit,getDocs,getCountFromServer}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15",measurementId:"G-7NXNZDNDRE"};
+const app=initializeApp(FB);const db=getFirestore(app);const auth=getAuth(app);
+let allPosts=[];
+function esc(s=''){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+function toast(msg,type='info'){const w=document.getElementById('toast-wrap');const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},5000)}
+const SHOP_PRODUCTS=[
+  {id:'badge',name:'Creator Badge',description:'Exclusive badge on your profile.',icon:'◆',category:'Profile',pointPrice:125,available:true,order:1},
+  {id:'theme',name:'Custom Profile Theme',description:'Premium themes and accent colors.',icon:'◈',category:'Profile',pointPrice:250,available:true,order:2},
+  {id:'boost',name:'Post Feature Boost',description:'Boost your post to top of feed for 24h.',icon:'▲',category:'Boost',pointPrice:500,available:true,order:3},
+  {id:'pack',name:'Creator Resource Pack',description:'Templates, prompts, and writing tools.',icon:'◇',category:'Creator',pointPrice:750,available:true,order:4},
+  {id:'access',name:'Exclusive Content Access',description:'Premium community content and early features.',icon:'◉',category:'Access',pointPrice:1000,available:true,order:5},
+  {id:'mentor',name:'Mentorship Session',description:'45-min session with a top ARCT creator.',icon:'●',category:'Creator',pointPrice:1500,available:true,order:6},
+  {id:'vip',name:'VIP Status',description:'VIP badge, priority support, monthly perks.',icon:'◎',category:'Access',pointPrice:2500,available:true,order:7},
+  {id:'lifetime',name:'Lifetime Creator Pass',description:'Unlock all premium features forever.',icon:'★',category:'Access',pointPrice:5000,available:true,order:8},
 ];
-
-window.doSignout = async () => { await signOut(auth); window.location.href="index.html"; };
-
-window.showTab = (tab) => {
-  ["writers","posts","shop"].forEach(t=>{
-    document.getElementById("tab-"+t).classList.toggle("hidden",t!==tab);
-  });
-  document.querySelectorAll(".tab-btn").forEach((b,i)=>{
-    b.classList.toggle("active",["writers","posts","shop"][i]===tab);
-  });
-  if(tab==="posts") loadPosts();
-  if(tab==="shop") loadShopProducts();
+window.seedShop=async function(){
+  const btn=document.getElementById('seed-btn');btn.disabled=true;btn.textContent='Seeding…';
+  try{
+    await Promise.all(SHOP_PRODUCTS.map(p=>setDoc(doc(db,'realms',p.id),p,{merge:true})));
+    toast('Shop seeded with 8 products!','success');
+    document.getElementById('stat-shop').textContent=SHOP_PRODUCTS.length;
+  }catch(e){toast('Seed failed: '+e.message,'error');}
+  btn.disabled=false;btn.textContent='Seed Shop Products';
 };
-
-onAuthStateChanged(auth, async user=>{
-  if(!user){document.getElementById("auth-gate").classList.remove("hidden");return;}
-  document.getElementById("admin-main").classList.remove("hidden");
-  document.getElementById("admin-email").textContent=user.email;
-  loadStats();
-  loadWriters();
+window.toggleAVR=async function(id,col,current){
+  const newVal=!current;
+  try{
+    await updateDoc(doc(db,col,id),{isAVRPick:newVal});
+    allPosts=allPosts.map(p=>p.id===id?{...p,isAVRPick:newVal}:p);
+    renderPostsList();
+    toast(newVal?'Marked as AVR Pick':'Removed from AVR Picks','success');
+    document.getElementById('stat-avr').textContent=allPosts.filter(p=>p.isAVRPick).length;
+  }catch(e){toast('Update failed: '+e.message,'error');}
+};
+function renderPostsList(){
+  document.getElementById('posts-loading').style.display='none';
+  document.getElementById('posts-admin-list').innerHTML=allPosts.map(p=>`
+    <div class="admin-post-row">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:.88rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.title||'Untitled')}</div>
+        <div style="font-size:.75rem;color:var(--text-3);margin-top:2px">${esc(p.authorName||'Member')} · ${esc(p._col)} · ${p.likes||0} likes</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        ${p.isAVRPick?'<span class="avr-badge">AVR Pick</span>':''}
+        <button class="btn btn-sm ${p.isAVRPick?'btn-ghost':'btn-primary'}" onclick="toggleAVR('${p.id}','${p._col}',${p.isAVRPick})" style="white-space:nowrap">
+          ${p.isAVRPick?'Remove Pick':'✦ Mark AVR Pick'}
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+async function loadAdminData(){
+  const[presSnap,gitSnap,buddiesSnap,shopSnap]=await Promise.all([
+    getDocs(query(collection(db,'presentations'),orderBy('createdAt','desc'),limit(40))).catch(()=>({docs:[]})),
+    getDocs(query(collection(db,'gitjit'),orderBy('createdAt','desc'),limit(40))).catch(()=>({docs:[]})),
+    getCountFromServer(collection(db,'buddies')).catch(()=>null),
+    getDocs(collection(db,'realms')).catch(()=>({docs:[]}))
+  ]);
+  const posts=[];
+  presSnap.docs.forEach(d=>posts.push({id:d.id,...d.data(),_col:'presentations'}));
+  gitSnap.docs.forEach(d=>posts.push({id:d.id,...d.data(),_col:'gitjit'}));
+  posts.sort((a,b)=>(b.createdAt?.toMillis?.()??0)-(a.createdAt?.toMillis?.()??0));
+  allPosts=posts;
+  document.getElementById('stat-members').textContent=buddiesSnap?.data()?.count??'—';
+  document.getElementById('stat-posts').textContent=posts.length;
+  document.getElementById('stat-avr').textContent=posts.filter(p=>p.isAVRPick).length;
+  document.getElementById('stat-shop').textContent=shopSnap.docs.length;
+  renderPostsList();
+}
+onAuthStateChanged(auth,async user=>{
+  if(!user){document.getElementById('no-access').style.display='block';document.getElementById('sb-user').style.display='none';document.getElementById('sb-signin').style.display='flex';return;}
+  document.getElementById('sb-user').style.display='flex';document.getElementById('sb-signin').style.display='none';
+  const snap=await getDoc(doc(db,'buddies',user.uid)).catch(()=>null);const data=snap?.data()||{};
+  document.getElementById('sb-name').textContent=user.displayName||'Member';
+  document.getElementById('sb-pts').textContent=(data.points||0).toLocaleString();
+  const av=document.getElementById('sb-av');if(user.photoURL)av.innerHTML=`<img src="${user.photoURL}">`;else av.textContent=initials(user.displayName||'M');
+  document.getElementById('admin-content').style.display='block';
+  loadAdminData();
 });
-
-async function loadStats() {
-  try {
-    const [b,p,pr] = await Promise.all([
-      getDocs(collection(db,"bloggers")),
-      getDocs(collection(db,"bloggerblogs")),
-      getDocs(collection(db,"presentations"))
-    ]);
-    document.getElementById("s-writers").textContent = b.size;
-    document.getElementById("s-posts").textContent = p.size;
-    document.getElementById("s-pres").textContent = pr.size;
-    let total = 0;
-    b.forEach(d=>total+=(d.data().points||0));
-    document.getElementById("s-pts").textContent = total;
-  } catch{}
-}
-
-window.loadWriters = async () => {
-  const t = document.getElementById("writers-table");
-  t.innerHTML=`<div style="padding:24px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div>Loading…</div>`;
-  try {
-    const snap = await getDocs(query(collection(db,"bloggers"),orderBy("points","desc"),limit(100)));
-    if(!snap.size){t.innerHTML=`<div style="padding:24px;text-align:center;color:var(--stone);">No writers yet.</div>`;return;}
-    let rows = "<table><thead><tr><th>Writer</th><th>Email</th><th>Points</th><th>Referral Code</th><th>Joined</th><th>Action</th></tr></thead><tbody>";
-    snap.forEach(d=>{
-      const u = d.data();
-      rows+=`<tr>
-        <td><strong>${esc(u.fullName||"Anonymous")}</strong></td>
-        <td>${esc(u.email||"—")}</td>
-        <td><strong style="color:var(--terra);">${u.points||0}</strong></td>
-        <td><code>${esc(u.referralCode||"—")}</code></td>
-        <td>${u.createdAt?new Date(u.createdAt).toLocaleDateString():"—"}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteWriter('${d.id}')">Delete</button></td>
-      </tr>`;
-    });
-    rows+="</tbody></table>";
-    t.innerHTML=rows;
-  } catch(e){t.innerHTML=`<div style="padding:24px;color:var(--stone);">Error: ${esc(e.message)}</div>`;}
-};
-
-async function loadPosts() {
-  const t = document.getElementById("posts-table");
-  t.innerHTML=`<div style="padding:24px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div>Loading…</div>`;
-  try {
-    const snap = await getDocs(query(collection(db,"bloggerblogs"),orderBy("createdAt","desc"),limit(50)));
-    if(!snap.size){t.innerHTML=`<div style="padding:24px;color:var(--stone);">No posts yet.</div>`;return;}
-    let rows = "<table><thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Likes</th><th>Views</th><th>Featured</th><th>Actions</th></tr></thead><tbody>";
-    snap.forEach(d=>{
-      const p = d.data();
-      rows+=`<tr>
-        <td><a href="presentation.html?id=${d.id}" style="color:var(--terra);">${esc((p.title||"Untitled").substring(0,40))}</a></td>
-        <td>${esc(p.fullName||"Anonymous")}</td>
-        <td>${esc(p.category||"—")}</td>
-        <td>${p.likes||0}</td>
-        <td>${p.views||0}</td>
-        <td><button class="btn btn-sm ${p.featured?"btn-terra":"btn-outline"}" onclick="toggleFeatured('${d.id}',${!p.featured})">${p.featured?"★ Featured":"☆ Feature"}</button></td>
-        <td><button class="btn btn-sm btn-danger" onclick="deletePost('${d.id}')">Del</button></td>
-      </tr>`;
-    });
-    rows+="</tbody></table>";
-    t.innerHTML=rows;
-  } catch(e){t.innerHTML=`<div style="padding:24px;color:var(--stone);">Error: ${esc(e.message)}</div>`;}
-}
-
-async function loadShopProducts() {
-  const t = document.getElementById("shop-table");
-  try {
-    const snap = await getDocs(collection(db,"shop_products"));
-    if(!snap.size){t.innerHTML=`<div style="padding:24px;text-align:center;color:var(--stone);">No products yet. Click "Seed Sample Products".</div>`;return;}
-    let rows="<table><thead><tr><th>Emoji</th><th>Name</th><th>Category</th><th>Price</th><th>Description</th><th>Action</th></tr></thead><tbody>";
-    snap.forEach(d=>{
-      const p=d.data();
-      rows+=`<tr><td>${esc(p.emoji)}</td><td><strong>${esc(p.name)}</strong></td><td>${esc(p.category)}</td><td><strong style="color:var(--terra);">${p.pointPrice} pts</strong></td><td style="max-width:240px;">${esc((p.description||"").substring(0,60))}</td><td><button class="btn btn-sm btn-danger" onclick="deleteProd('${d.id}')">Del</button></td></tr>`;
-    });
-    rows+="</tbody></table>";
-    t.innerHTML=rows;
-  } catch(e){t.innerHTML=`<div style="padding:24px;color:var(--stone);">Error: ${esc(e.message)}</div>`;}
-}
-
-window.seedShop = async () => {
-  if(!confirm("Seed shop with 8 sample products? Existing products won't be replaced.")) return;
-  const btn = event.target;
-  btn.disabled=true;btn.textContent="Seeding…";
-  try {
-    for(const p of SAMPLE_PRODUCTS) {
-      const id = p.name.toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9-]/g,"");
-      await setDoc(doc(db,"shop_products",id), {...p, createdAt:new Date().toISOString()}, {merge:true});
-    }
-    toast("Shop seeded with 8 products! ✅","success");
-    loadShopProducts();
-    window.showTab("shop");
-  } catch(e){ toast("Seed failed: "+e.message,"error"); }
-  finally{btn.disabled=false;btn.textContent="🌱 Seed Shop Products";}
-};
-
-window.toggleFeatured = async (id, val) => {
-  await updateDoc(doc(db,"bloggerblogs",id),{featured:val}).catch(()=>{});
-  toast(val?"Post featured!":"Feature removed","info");
-  loadPosts();
-};
-
-window.deleteWriter = async (id) => {
-  if(!confirm("Delete this writer? This only removes their blogger record, not their auth account.")) return;
-  await deleteDoc(doc(db,"bloggers",id)).catch(()=>{});
-  toast("Writer record deleted","success");
-  loadWriters();
-  loadStats();
-};
-
-window.deletePost = async (id) => {
-  if(!confirm("Delete this post?")) return;
-  await deleteDoc(doc(db,"bloggerblogs",id)).catch(()=>{});
-  toast("Post deleted","success");
-  loadPosts();
-  loadStats();
-};
-
-window.deleteProd = async (id) => {
-  if(!confirm("Delete this product?")) return;
-  await deleteDoc(doc(db,"shop_products",id)).catch(()=>{});
-  toast("Product deleted","success");
-  loadShopProducts();
-};
 </script>
 </body>
 </html>

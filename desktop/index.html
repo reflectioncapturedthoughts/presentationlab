@@ -1,313 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Presentation Lab — Home</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Home — ARCT</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="toast-container"></div>
-
-<!-- AD OVERLAY -->
-<div class="ad-overlay" id="ad-overlay">
-  <div class="ad-modal">
-    <img src="../assets/1.ad5.png" alt="ARCT advertisement" class="ad-image"/>
-    <p class="ad-caption">Sponsored by <a href="https://arct.onrender.com" target="_blank" style="color:var(--terra);font-weight:700;">ARCT — Reflection Captured Thoughts</a></p>
-    <p class="ad-countdown">Ad closes in <span id="ad-timer">5</span>s</p>
+<div id="toast-wrap"></div>
+<div class="app">
+<aside class="sidebar">
+  <div class="sidebar-logo"><a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none"><div class="logo-wrap"><img src="../assets/l.png" alt="ARCT"><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div><span class="logo-name">ARCT</span></a></div>
+  <nav class="sidebar-nav">
+    <a href="index.html" class="nav-item active"><svg viewBox="0 0 24 24"><path d="M2.25 12l8.954-8.955a1.125 1.125 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>Home</a>
+    <a href="leaderboard.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"/></svg>Leaderboard</a>
+    <a href="creativecreator.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>Create</a>
+    <a href="shop.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>Shop</a>
+    <a href="profile.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Profile</a>
+  </nav>
+  <div class="sidebar-footer"><div class="sidebar-user" id="sb-user" onclick="location.href='profile.html'" style="display:none"><div class="avatar avatar-sm" id="sb-av"></div><div class="sidebar-user-info"><div class="sidebar-user-name" id="sb-name"></div><div class="sidebar-user-pts"><span id="sb-pts">0</span> pts</div></div></div><button class="sidebar-sign-in" id="sb-signin" onclick="location.href='auth.html'" style="display:none"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>Sign In</button></div>
+</aside>
+<main class="main">
+  <div class="page-wrap">
+    <div style="margin-bottom:36px">
+      <h1 class="page-title">Home</h1>
+      <p class="page-subtitle">Explore ideas from the community.</p>
+    </div>
+    <div id="avr-section" style="display:none;margin-bottom:40px">
+      <div class="section-header"><span class="section-title">AVR Picks</span><span class="avr-badge">Editor's Choice</span></div>
+      <div id="avr-grid" class="post-grid"></div>
+    </div>
+    <div>
+      <div class="section-header">
+        <span class="section-title">Latest</span>
+        <div class="filter-row" id="filter-row" style="margin:0">
+          <button class="filter-chip active" data-cat="">All</button>
+          <button class="filter-chip" data-cat="Creativity">Creativity</button>
+          <button class="filter-chip" data-cat="Tech">Tech</button>
+          <button class="filter-chip" data-cat="Design">Design</button>
+          <button class="filter-chip" data-cat="Business">Business</button>
+        </div>
+      </div>
+      <div id="posts-grid" class="post-grid" style="margin-top:16px"></div>
+      <div id="loading-state" style="text-align:center;padding:64px"><div class="spinner spin"></div></div>
+      <div id="empty-state" class="empty" style="display:none">
+        <p class="empty-title">Nothing here yet</p><p class="empty-sub">Be the first to share your thoughts.</p>
+        <a href="creativecreator.html" class="btn btn-primary">Start Writing</a>
+      </div>
+    </div>
   </div>
+</main>
 </div>
-
-<div class="app-shell">
-  <!-- LEFT SIDEBAR -->
-  <aside class="sidebar-left">
-    <a href="index.html" class="brand">
-      <div class="brand-logo-wrap">
-        <img src="../assets/l.png" alt="logo" class="brand-logo-img"/>
-        <video class="brand-logo-vid" autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video>
-      </div>
-      <div>
-        <div class="brand-name">Presentation Lab</div>
-        <div class="brand-parent">by ARCT — Reflection Captured Thoughts</div>
-      </div>
-    </a>
-    <a href="index.html" class="nav-item active"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
-    <a href="leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
-    <a href="creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
-    <a href="shop.html" class="nav-item"><span class="nav-icon">🛍️</span><span class="nav-label">Shop</span></a>
-    <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
-    <a href="creativecreator.html" class="btn nav-create-btn">✏️ New Post</a>
-    <div class="sidebar-spacer"></div>
-    <a href="auth.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign In</a>
-    <div class="user-chip hidden" id="sb-chip">
-      <div class="user-avatar" id="sb-avatar">?</div>
-      <div class="user-info">
-        <div class="user-name" id="sb-name">—</div>
-        <div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- FEED -->
-  <main class="feed">
-    <div class="feed-header">
-      <h1 class="feed-title">Presentation Lab</h1>
-      <div class="filter-tabs">
-        <button class="filter-tab active" data-filter="latest">Latest</button>
-        <button class="filter-tab" data-filter="featured">✨ Featured</button>
-        <button class="filter-tab" data-filter="avr">👑 AVR Picks</button>
-        <button class="filter-tab" data-filter="trending">🔥 Trending</button>
-      </div>
-    </div>
-    <div id="feed-wrap">
-      <div style="padding:40px;text-align:center;color:var(--stone);">
-        <div class="spinner" style="margin:0 auto 12px;width:28px;height:28px;"></div>
-        <p>Loading posts…</p>
-      </div>
-    </div>
-  </main>
-
-  <!-- RIGHT SIDEBAR -->
-  <aside class="sidebar-right">
-    <!-- Points + profile (logged in) -->
-    <div id="user-widget" class="widget hidden" style="background:linear-gradient(135deg,rgba(201,108,84,0.08),var(--sand-warm));text-align:center;">
-      <div id="uw-avatar" style="width:42px;height:42px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;font-family:'Lora',serif;margin:0 auto 8px;">?</div>
-      <div id="uw-name" style="font-weight:700;font-size:0.9rem;color:var(--espresso);margin-bottom:2px;">—</div>
-      <div style="font-size:0.75rem;color:var(--stone);margin-bottom:10px;" id="uw-email">—</div>
-      <div id="uw-pts" style="font-family:'Lora',serif;font-size:1.5rem;font-weight:700;color:var(--terra);">0</div>
-      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--stone);margin-bottom:12px;">Points</div>
-      <a href="profile.html" class="btn btn-outline btn-sm btn-full">View Profile →</a>
-    </div>
-
-    <!-- Sign in prompt -->
-    <div id="signin-widget" class="widget">
-      <h3 class="widget-title">✍️ Join the Lab</h3>
-      <p style="font-size:0.84rem;color:var(--brown);line-height:1.65;margin-bottom:14px;">Create presentations, earn points, and get crowned by AVR editors.</p>
-      <a href="auth.html" class="btn btn-terra btn-sm btn-full">Sign In / Sign Up</a>
-    </div>
-
-    <!-- Leaderboard widget -->
-    <div class="widget">
-      <h3 class="widget-title">🏆 Top Writers</h3>
-      <div id="lb-widget-rows">
-        <div style="color:var(--stone);font-size:0.84rem;">Loading…</div>
-      </div>
-      <a href="leaderboard.html" style="display:block;text-align:center;font-size:0.8rem;color:var(--terra);font-weight:600;margin-top:10px;">See full leaderboard →</a>
-    </div>
-
-    <!-- ARCT widget -->
-    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.06),var(--sand-warm));">
-      <div style="font-size:0.8rem;color:var(--brown);">
-        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
-        <a href="https://arct.onrender.com" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">ARCT — Reflection Captured Thoughts</a>
-        <div style="margin-top:8px;color:var(--stone);font-size:0.73rem;">Share speeches. Earn recognition. Build your voice.</div>
-        <div style="margin-top:10px;font-size:0.73rem;color:var(--stone);">Invite friends &amp; earn <strong style="color:var(--terra);">+10 pts</strong> each! <a href="profile.html" style="color:var(--terra);">Get your code →</a></div>
-      </div>
-    </div>
-  </aside>
-</div>
-
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, updateDoc, increment, setDoc, where, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import{getFirestore,doc,getDoc,collection,query,orderBy,limit,getDocs,updateDoc,arrayUnion,arrayRemove,increment}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15",measurementId:"G-7NXNZDNDRE"};
+const app=initializeApp(FB);const db=getFirestore(app);const auth=getAuth(app);
+let currentUser=null,currentFilter='',allPosts=[];
+function esc(s=''){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function timeAgo(d){if(!d)return'';const ms=d?.toMillis?d.toMillis():new Date(d).getTime();const diff=(Date.now()-ms)/1000;if(diff<60)return'just now';if(diff<3600)return Math.floor(diff/60)+'m ago';if(diff<86400)return Math.floor(diff/3600)+'h ago';return Math.floor(diff/86400)+'d ago'}
+function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+function toast(msg,type='info'){const w=document.getElementById('toast-wrap');const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},4000)}
 
-const FB = {apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
-const app = initializeApp(FB);
-const db = getFirestore(app);
-const auth = getAuth(app);
+function postCard(p){
+  const liked=currentUser&&(p.likedBy||[]).includes(currentUser.uid);
+  const ph=p.authorPhoto||'';
+  const inits=initials(p.authorName);
+  return`<article class="post-card" onclick="openPost('${p.id}','${p._col}')">
+    <div class="post-card-top">
+      <div class="post-card-meta">
+        <div class="avatar avatar-sm">${ph?`<img src="${esc(ph)}" loading="lazy">`:esc(inits)}</div>
+        <span class="post-card-author">${esc(p.authorName||'Member')}</span>
+        <span class="post-card-time">${timeAgo(p.createdAt)}</span>
+      </div>
+      ${p.isAVRPick?'<span class="avr-badge">AVR Pick</span>':p.tags?.[0]?`<span class="badge badge-surface">${esc(p.tags[0])}</span>`:''}
+    </div>
+    <h2 class="post-card-title">${esc(p.title||'Untitled')}</h2>
+    ${p.content?`<p class="post-card-excerpt">${esc((p.content||'').substring(0,180))}</p>`:''}
+    <div class="post-card-footer">
+      <div class="post-card-likes${liked?' liked':''}">
+        <svg viewBox="0 0 24 24"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+        ${p.likes||0}
+      </div>
+      <span class="post-card-read">Read <svg viewBox="0 0 24 24"><path d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"/></svg></span>
+    </div>
+  </article>`;
+}
+window.openPost=function(id,col){location.href=`presentation.html?id=${id}&col=${col}`};
 
-function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
-function timeAgo(d){if(!d)return"";const diff=(Date.now()-new Date(d).getTime())/1000;if(diff<60)return"just now";if(diff<3600)return Math.floor(diff/60)+"m ago";if(diff<86400)return Math.floor(diff/3600)+"h ago";return Math.floor(diff/86400)+"d ago";}
-function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+function renderPosts(){
+  const filtered=currentFilter?allPosts.filter(p=>p.tags?.includes(currentFilter)):allPosts;
+  const avr=allPosts.filter(p=>p.isAVRPick).slice(0,3);
+  const avrSection=document.getElementById('avr-section');
+  if(avr.length>0){avrSection.style.display='block';document.getElementById('avr-grid').innerHTML=avr.map(postCard).join('');}
+  else avrSection.style.display='none';
+  document.getElementById('loading-state').style.display='none';
+  if(!filtered.length){document.getElementById('empty-state').style.display='block';document.getElementById('posts-grid').innerHTML='';return;}
+  document.getElementById('empty-state').style.display='none';
+  document.getElementById('posts-grid').innerHTML=filtered.map(postCard).join('');
+}
 
-let currentUser = null;
-let currentFilter = "latest";
-let allPosts = [];
+async function loadPosts(){
+  const[presSnap,gitSnap]=await Promise.all([
+    getDocs(query(collection(db,'presentations'),orderBy('createdAt','desc'),limit(50))).catch(()=>({docs:[]})),
+    getDocs(query(collection(db,'gitjit'),orderBy('createdAt','desc'),limit(50))).catch(()=>({docs:[]}))
+  ]);
+  const posts=[];
+  presSnap.docs.forEach(d=>posts.push({id:d.id,...d.data(),_col:'presentations'}));
+  gitSnap.docs.forEach(d=>posts.push({id:d.id,...d.data(),_col:'gitjit'}));
+  posts.sort((a,b)=>{
+    const ta=a.createdAt?.toMillis?a.createdAt.toMillis():new Date(a.createdAt||0).getTime();
+    const tb=b.createdAt?.toMillis?b.createdAt.toMillis():new Date(b.createdAt||0).getTime();
+    return tb-ta;
+  });
+  allPosts=posts;
+  renderPosts();
+}
 
-// AD countdown
-(function adCountdown(){
-  let secs = 5;
-  const overlay = document.getElementById("ad-overlay");
-  const timer = document.getElementById("ad-timer");
-  const iv = setInterval(()=>{
-    secs--;
-    if(secs<=0){clearInterval(iv);overlay.classList.add("hidden");}
-    else timer.textContent = secs;
-  }, 1000);
-  overlay.addEventListener("click", ()=>{clearInterval(iv);overlay.classList.add("hidden");});
-})();
-
-window.doSignout = async () => { await signOut(auth); location.reload(); };
-
-onAuthStateChanged(auth, async user => {
-  currentUser = user;
-  if (user) {
-    document.getElementById("sb-signin").classList.add("hidden");
-    document.getElementById("sb-chip").classList.remove("hidden");
-    document.getElementById("signin-widget").classList.add("hidden");
-    document.getElementById("user-widget").classList.remove("hidden");
-    const av = initials(user.displayName||user.email);
-    document.getElementById("sb-avatar").textContent = av;
-    document.getElementById("sb-name").textContent = user.displayName||user.email.split("@")[0];
-    document.getElementById("uw-avatar").textContent = av;
-    document.getElementById("uw-name").textContent = user.displayName||"User";
-    document.getElementById("uw-email").textContent = user.email;
-    // Load points
-    const bSnap = await getDoc(doc(db,"bloggers",user.uid)).catch(()=>null);
-    if(bSnap?.exists()) document.getElementById("uw-pts").textContent = bSnap.data().points||0;
-  } else {
-    document.getElementById("sb-signin").classList.remove("hidden");
-    document.getElementById("sb-chip").classList.add("hidden");
-  }
-  loadFeed(currentFilter);
-  loadLeaderboard();
-});
-
-// Filter tabs
-document.querySelectorAll(".filter-tab").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll(".filter-tab").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    currentFilter = btn.dataset.filter;
-    renderFeed(currentFilter);
+document.querySelectorAll('.filter-chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter=btn.dataset.cat||'';
+    renderPosts();
   });
 });
 
-async function loadFeed(filter) {
-  const fw = document.getElementById("feed-wrap");
-  fw.innerHTML = `<div style="padding:40px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 12px;width:28px;height:28px;"></div><p>Loading…</p></div>`;
-  try {
-    let q;
-    if (filter === "avr") {
-      q = query(collection(db,"presentations"), orderBy("createdAt","desc"), limit(30));
-    } else if (filter === "featured") {
-      q = query(collection(db,"bloggerblogs"), where("featured","==",true), orderBy("createdAt","desc"), limit(30));
-    } else if (filter === "trending") {
-      q = query(collection(db,"bloggerblogs"), orderBy("likes","desc"), limit(30));
-    } else {
-      q = query(collection(db,"bloggerblogs"), orderBy("createdAt","desc"), limit(30));
-    }
-    const snap = await getDocs(q);
-    allPosts = [];
-    snap.forEach(d => allPosts.push({id:d.id,...d.data(),_coll: filter==="avr"?"presentations":"bloggerblogs"}));
-    renderFeed(filter);
-  } catch(e) {
-    fw.innerHTML = `<div class="feed-empty"><div class="feed-empty-icon">⚠️</div><div class="feed-empty-title">Couldn't load posts</div><p style="font-size:0.84rem;color:var(--stone);">${esc(e.message)}</p></div>`;
-  }
-}
-
-function renderFeed(filter) {
-  const fw = document.getElementById("feed-wrap");
-  const posts = filter === "avr"
-    ? allPosts
-    : allPosts;
-
-  if (!posts.length) {
-    fw.innerHTML = `<div class="feed-empty"><div class="feed-empty-icon">📋</div><div class="feed-empty-title">No posts yet</div><div class="feed-empty-text">Be the first to create a presentation!</div><a href="creativecreator.html" class="btn btn-terra" style="margin-top:16px;">Create Post</a></div>`;
-    return;
-  }
-  fw.innerHTML = posts.map(p => {
-    const isAvr = p._coll === "presentations" || p.avrCrown;
-    const liked = currentUser && (p.likedBy||[]).includes(currentUser.uid);
-    const saved = currentUser && (p.savedBy||[]).includes(currentUser.uid);
-    const tags = Array.isArray(p.tags) ? p.tags : (p.tags||"").split(",").map(t=>t.trim()).filter(Boolean);
-    return `
-    <article class="post-card${isAvr?" avr-post":""}" onclick="openPost('${p.id}','${p._coll}',event)">
-      <div class="post-avatar-col">
-        <div class="post-avatar${isAvr?" avr-avatar":""}">${initials(p.fullName||p.authorName)}</div>
-      </div>
-      <div class="post-body">
-        <div class="post-header">
-          <span class="post-name">${esc(p.fullName||p.authorName||"Anonymous")}</span>
-          ${isAvr?`<span class="post-badge badge-avr">👑 AVR</span>`:`<span class="post-badge badge-writer">Writer</span>`}
-          <span class="post-time">${timeAgo(p.createdAt)}</span>
-        </div>
-        ${p.category?`<div class="post-category">${esc(p.category)}</div>`:""}
-        <h3 class="post-title">${esc(p.title||"Untitled")}</h3>
-        <p class="post-text">${esc(p.content||p.speech||"")}</p>
-        ${tags.length?`<div class="post-tags">${tags.map(t=>`<span class="post-tag">#${esc(t)}</span>`).join("")}</div>`:""}
-        <div class="post-actions">
-          <button class="action-btn${liked?" liked":""}" onclick="likePost(event,'${p.id}','${p._coll}',this)">
-            <span class="action-icon">${liked?"❤️":"🤍"}</span> <span>${p.likes||0}</span>
-          </button>
-          <button class="action-btn${saved?" saved":""}" onclick="savePost(event,'${p.id}','${p._coll}',this)">
-            <span>${saved?"🔖":"📌"}</span> <span>${saved?"Saved":"Save"}</span>
-          </button>
-          <span class="views-chip">👁 ${p.views||0}</span>
-        </div>
-      </div>
-    </article>`;
-  }).join("");
-}
-
-window.openPost = (id, coll, e) => {
-  if(e.target.closest(".action-btn")) return;
-  window.location.href = `presentation.html?id=${id}&coll=${coll}`;
-};
-
-window.likePost = async (e, id, coll, btn) => {
-  e.stopPropagation();
-  if (!currentUser) { toast("Sign in to like posts", "info"); return; }
-  const post = allPosts.find(p=>p.id===id);
-  if (!post) return;
-  const liked = (post.likedBy||[]).includes(currentUser.uid);
-  const ref = doc(db, coll, id);
-  if (liked) {
-    await updateDoc(ref,{likes:increment(-1),likedBy:arrayRemove(currentUser.uid)}).catch(()=>{});
-    post.likes = (post.likes||0)-1;
-    post.likedBy = (post.likedBy||[]).filter(u=>u!==currentUser.uid);
-    // Subtract from author points
-    if (post.uid) await updateDoc(doc(db,"bloggers",post.uid),{points:increment(-1)}).catch(()=>{});
-  } else {
-    await updateDoc(ref,{likes:increment(1),likedBy:arrayUnion(currentUser.uid)}).catch(()=>{});
-    post.likes = (post.likes||0)+1;
-    post.likedBy = [...(post.likedBy||[]),currentUser.uid];
-    // Add to author points
-    if (post.uid) await updateDoc(doc(db,"bloggers",post.uid),{points:increment(1)}).catch(()=>{});
-  }
-  renderFeed(currentFilter);
-};
-
-window.savePost = async (e, id, coll, btn) => {
-  e.stopPropagation();
-  if (!currentUser) { toast("Sign in to save posts","info"); return; }
-  const post = allPosts.find(p=>p.id===id);
-  if (!post) return;
-  const saved = (post.savedBy||[]).includes(currentUser.uid);
-  const ref = doc(db,coll,id);
-  if (saved) {
-    await updateDoc(ref,{savedBy:arrayRemove(currentUser.uid)}).catch(()=>{});
-    post.savedBy = (post.savedBy||[]).filter(u=>u!==currentUser.uid);
-  } else {
-    await updateDoc(ref,{savedBy:arrayUnion(currentUser.uid)}).catch(()=>{});
-    post.savedBy = [...(post.savedBy||[]),currentUser.uid];
-    toast("Post saved!","success");
-  }
-  renderFeed(currentFilter);
-};
-
-async function loadLeaderboard() {
-  try {
-    const snap = await getDocs(query(collection(db,"bloggers"),orderBy("points","desc"),limit(5)));
-    const ranks = ["🥇","🥈","🥉","4.","5."];
-    const rows = [];
-    let i = 0;
-    snap.forEach(d=>{
-      const u = d.data();
-      rows.push(`<div class="leaderboard-row">
-        <span class="lb-rank">${ranks[i]||""}</span>
-        <div class="lb-avatar">${initials(u.fullName||u.email)}</div>
-        <span class="lb-name">${esc(u.fullName||u.email?.split("@")[0]||"User")}</span>
-        <span class="lb-pts">${u.points||0}</span>
-      </div>`);
-      i++;
-    });
-    document.getElementById("lb-widget-rows").innerHTML = rows.join("") || `<div style="color:var(--stone);font-size:0.84rem;">No writers yet.</div>`;
-  } catch { document.getElementById("lb-widget-rows").innerHTML = `<div style="color:var(--stone);font-size:0.84rem;">—</div>`; }
-}
+onAuthStateChanged(auth,async user=>{
+  currentUser=user;
+  if(user){
+    document.getElementById('sb-user').style.display='flex';
+    document.getElementById('sb-signin').style.display='none';
+    const snap=await getDoc(doc(db,'buddies',user.uid)).catch(()=>null);
+    const data=snap?.data()||{};
+    document.getElementById('sb-name').textContent=user.displayName||'Member';
+    document.getElementById('sb-pts').textContent=(data.points||0).toLocaleString();
+    const av=document.getElementById('sb-av');
+    if(user.photoURL)av.innerHTML=`<img src="${user.photoURL}">`;else av.textContent=initials(user.displayName||'M');
+  }else{document.getElementById('sb-user').style.display='none';document.getElementById('sb-signin').style.display='flex';}
+  loadPosts();
+});
 </script>
 </body>
 </html>
