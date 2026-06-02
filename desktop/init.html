@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Setup — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body style="background:var(--sand-warm);min-height:100vh;padding:40px 20px;">
+<div id="toast-container"></div>
+<div style="max-width:580px;margin:0 auto;">
+  <div style="text-align:center;margin-bottom:28px;">
+    <div style="width:52px;height:52px;border-radius:14px;margin:0 auto 12px;overflow:hidden;position:relative;background:var(--sand-deep);box-shadow:var(--shadow-md);">
+      <img src="../assets/l.png" style="width:100%;height:100%;object-fit:cover;"/>
+      <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><source src="../assets/logo.mp4" type="video/mp4"></video>
+    </div>
+    <h1 style="font-family:'Lora',serif;font-size:1.5rem;font-weight:700;color:var(--terra);margin-bottom:4px;">Presentation Lab Setup</h1>
+    <p style="font-size:0.88rem;color:var(--stone);">Initialize roles and verify Firebase connection.</p>
+  </div>
+
+  <div class="panel">
+    <h2 style="font-family:'Lora',serif;font-size:1.1rem;font-weight:700;color:var(--espresso);margin-bottom:6px;">⚙️ Initial Setup</h2>
+    <p style="font-size:0.84rem;color:var(--brown);margin-bottom:22px;">This page creates the necessary Firestore documents for AVR and admin roles. Run this once after deploying.</p>
+
+    <!-- Firebase status -->
+    <div id="fb-status" style="padding:12px 14px;border-radius:var(--radius-md);background:var(--sand-warm);border:1px solid var(--border);margin-bottom:16px;font-size:0.84rem;">
+      Checking Firebase connection…
+    </div>
+
+    <!-- Admin setup -->
+    <div class="form-group">
+      <label class="form-label">Admin / AVR User UID</label>
+      <input type="text" class="form-input" id="uid-input" placeholder="Paste the Firebase UID of the admin user"/>
+      <p class="form-hint">Find this in Firebase Console → Authentication → Users → UID</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Display Name</label>
+      <input type="text" class="form-input" id="name-input" placeholder="e.g. ARCT Editor"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="email-input" placeholder="admin@arct.com"/>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+      <button class="btn btn-terra" onclick="grantAVR()">👑 Grant AVR Role</button>
+      <button class="btn btn-outline" onclick="seedShop()">🛍️ Seed Shop Products</button>
+    </div>
+
+    <div id="setup-log" style="background:var(--espresso);color:#ddd;border-radius:var(--radius-md);padding:16px;font-size:0.8rem;font-family:monospace;min-height:80px;white-space:pre-line;">Ready. Complete the form and click a button above.\n</div>
+
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="index.html" class="btn btn-ghost btn-sm">← Home</a>
+      <a href="admin.html" class="btn btn-ghost btn-sm">Admin Panel</a>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, collection } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB = {apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app = initializeApp(FB);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function log(msg) {
+  const el = document.getElementById("setup-log");
+  el.textContent += msg + "\n";
+}
+
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+
+// Check Firebase
+(async () => {
+  try {
+    await getDoc(doc(db,"_ping","test"));
+    document.getElementById("fb-status").innerHTML=`<span style="color:#16A34A;font-weight:700;">✅ Firebase connected</span> — Project: reflectioncapturedthoughts`;
+    document.getElementById("fb-status").style.borderColor="#86EFAC";
+    log("Firebase connected OK.");
+  } catch(e) {
+    document.getElementById("fb-status").innerHTML=`<span style="color:#EF4444;font-weight:700;">❌ Firebase error:</span> ${e.message}`;
+    document.getElementById("fb-status").style.borderColor="#FCA5A5";
+    log("Firebase error: "+e.message);
+  }
+})();
+
+onAuthStateChanged(auth, user=>{
+  if(user){
+    document.getElementById("uid-input").value = user.uid;
+    document.getElementById("email-input").value = user.email||"";
+    document.getElementById("name-input").value = user.displayName||"";
+    log("Signed in as: "+user.email+" ("+user.uid+")");
+  } else {
+    log("Not signed in. You can still use this form.");
+  }
+});
+
+const SAMPLE_PRODUCTS = [
+  {emoji:"✨",name:"Featured Badge",description:"Display a shiny featured badge on all your posts for 30 days.",pointPrice:50,category:"Profile"},
+  {emoji:"📌",name:"Post Pin",description:"Pin your best post to the top of your profile for 30 days.",pointPrice:100,category:"Content"},
+  {emoji:"🎖️",name:"Custom Title",description:"Set a custom title displayed next to your name.",pointPrice:200,category:"Profile"},
+  {emoji:"🌟",name:"Gold Avatar",description:"Unlock a glowing gold border on your avatar for 30 days.",pointPrice:150,category:"Profile"},
+  {emoji:"🔝",name:"Profile Boost",description:"Appear at the top of leaderboard sidebar for 7 days.",pointPrice:300,category:"Visibility"},
+  {emoji:"🌙",name:"Dark Mode",description:"Early access to Dark Mode theme.",pointPrice:75,category:"Feature"},
+  {emoji:"💌",name:"DM Access",description:"Unlock direct messaging with other writers.",pointPrice:120,category:"Social"},
+  {emoji:"🎤",name:"Speech Coach Badge",description:"Show the Speech Coach badge on your profile.",pointPrice:250,category:"Achievement"},
+];
+
+window.grantAVR = async () => {
+  const uid = document.getElementById("uid-input").value.trim();
+  const name = document.getElementById("name-input").value.trim();
+  const email = document.getElementById("email-input").value.trim();
+  if(!uid){toast("UID is required","error");return;}
+  log("Granting AVR role to "+uid+"…");
+  try {
+    await setDoc(doc(db,"avr",uid),{uid,displayName:name||"AVR Editor",email:email||"",grantedAt:new Date().toISOString()},{merge:true});
+    log("✅ AVR role granted to "+uid);
+    toast("AVR role granted!","success");
+  } catch(e) {
+    log("❌ Error: "+e.message);
+    toast("Error: "+e.message,"error");
+  }
+};
+
+window.seedShop = async () => {
+  log("Seeding shop products…");
+  try {
+    for(const p of SAMPLE_PRODUCTS) {
+      const id=p.name.toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9-]/g,"");
+      await setDoc(doc(db,"shop_products",id),{...p,createdAt:new Date().toISOString()},{merge:true});
+      log("  ✓ "+p.name);
+    }
+    log("✅ Shop seeded with "+SAMPLE_PRODUCTS.length+" products.");
+    toast("Shop seeded!","success");
+  } catch(e) {
+    log("❌ Error: "+e.message);
+    toast("Error: "+e.message,"error");
+  }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Leaderboard — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+<div class="app-shell">
+  <aside class="sidebar-left">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-wrap"><img src="../assets/l.png" alt="logo" class="brand-logo-img"/><video class="brand-logo-vid" autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
+      <div><div class="brand-name">Presentation Lab</div><div class="brand-parent">by ARCT</div></div>
+    </a>
+    <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="leaderboard.html" class="nav-item active"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="shop.html" class="nav-item"><span class="nav-icon">🛍️</span><span class="nav-label">Shop</span></a>
+    <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
+    <div class="sidebar-spacer"></div>
+    <a href="auth.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign In</a>
+    <div class="user-chip hidden" id="sb-chip">
+      <div class="user-avatar" id="sb-avatar">?</div>
+      <div class="user-info"><div class="user-name" id="sb-name">—</div><div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div></div>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <div class="feed-header">
+      <h1 class="feed-title">🏆 Leaderboard</h1>
+      <p style="font-size:0.84rem;color:var(--brown);padding-bottom:14px;">Top writers ranked by points. Earn more by creating and getting likes.</p>
+    </div>
+    <div class="lb-page" style="padding:32px 20px 80px;">
+      <div class="stats-grid" id="stats-row">
+        <div class="stat-card"><div class="stat-value" id="stat-total-writers">—</div><div class="stat-label">Writers</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-total-posts">—</div><div class="stat-label">Total Posts</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-top-pts">—</div><div class="stat-label">Top Score</div></div>
+      </div>
+      <div class="lb-card" id="lb-list">
+        <div style="padding:32px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 12px;width:28px;height:28px;"></div><p>Loading…</p></div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <h3 class="widget-title">💡 How to climb</h3>
+      <div style="font-size:0.84rem;color:var(--brown);line-height:1.85;">
+        <div>❤️ +1 pt per like received</div>
+        <div>🎁 +10 pts per friend referred</div>
+        <div>✏️ Write daily &amp; engage community</div>
+      </div>
+    </div>
+    <div class="widget" id="my-rank-widget" style="display:none;">
+      <h3 class="widget-title">📍 Your Rank</h3>
+      <div id="my-rank-content" style="font-size:0.84rem;color:var(--brown);"></div>
+    </div>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.06),var(--sand-warm));">
+      <div style="font-size:0.8rem;color:var(--brown);">
+        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
+        <a href="https://arct.onrender.com" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">ARCT — Reflection Captured Thoughts</a>
+      </div>
+    </div>
+  </aside>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB = {apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app = initializeApp(FB);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+window.doSignout = async () => { await signOut(auth); window.location.href="index.html"; };
+
+onAuthStateChanged(auth, user => {
+  if(user){
+    document.getElementById("sb-signin").classList.add("hidden");
+    document.getElementById("sb-chip").classList.remove("hidden");
+    document.getElementById("sb-avatar").textContent = initials(user.displayName||user.email);
+    document.getElementById("sb-name").textContent = user.displayName||user.email.split("@")[0];
+  }
+  loadLeaderboard(user);
+});
+
+async function loadLeaderboard(user) {
+  try {
+    const [bSnap, pSnap] = await Promise.all([
+      getDocs(query(collection(db,"bloggers"), orderBy("points","desc"), limit(50))),
+      getDocs(collection(db,"bloggerblogs"))
+    ]);
+    const writers = [];
+    bSnap.forEach(d => writers.push({id:d.id,...d.data()}));
+    document.getElementById("stat-total-writers").textContent = writers.length;
+    document.getElementById("stat-total-posts").textContent = pSnap.size;
+    document.getElementById("stat-top-pts").textContent = writers[0]?.points || 0;
+
+    const medals = ["🥇","🥈","🥉"];
+    const rankClasses = ["gold","silver","bronze"];
+    let myRank = null;
+    const rows = writers.map((w,i) => {
+      if(user && w.uid === user.uid) myRank = {rank:i+1, pts:w.points||0};
+      const isMe = user && w.uid === user.uid;
+      return `<div class="lb-row" style="${isMe?"background:linear-gradient(to right,rgba(201,108,84,0.05),transparent);":""}">
+        <span class="lb-rank-num${i<3?" "+rankClasses[i]:""}">${medals[i]||String(i+1)}</span>
+        <div class="lb-user-avatar">${initials(w.fullName||w.email)}</div>
+        <div class="lb-user-info">
+          <div class="lb-user-name">${esc(w.fullName||w.email?.split("@")[0]||"Anonymous")}${isMe?" <span style='font-size:0.7rem;color:var(--terra);'>(you)</span>":""}</div>
+          <div class="lb-user-meta">Joined ${w.createdAt?new Date(w.createdAt).toLocaleDateString():"-"}</div>
+        </div>
+        <div class="lb-pts-badge"><span class="lb-pts-val">${w.points||0}</span><span class="lb-pts-lbl">pts</span></div>
+      </div>`;
+    });
+    document.getElementById("lb-list").innerHTML = rows.join("") || `<div style="padding:32px;text-align:center;color:var(--stone);">No writers yet — be first!</div>`;
+
+    if(myRank) {
+      document.getElementById("my-rank-widget").style.display="block";
+      document.getElementById("my-rank-content").innerHTML = `<div style="font-size:1.5rem;font-family:'Lora',serif;color:var(--terra);font-weight:700;">#${myRank.rank}</div><div>with <strong>${myRank.pts}</strong> points</div>`;
+    }
+  } catch(e) {
+    document.getElementById("lb-list").innerHTML = `<div style="padding:32px;text-align:center;color:var(--stone);">Failed to load leaderboard.</div>`;
+  }
+}
+</script>
+</body>
+</html>

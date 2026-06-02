@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mmthee — Master your learning journey</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Presentation Lab</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-    body {
-      background: #f5f0eb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
-    .wrap { text-align: center; }
-    video { width: 72px; height: 72px; object-fit: cover; border-radius: 16px; margin-bottom: 16px; }
-    p { color: #7c4a35; font-size: 14px; opacity: 0.7; }
+    body { margin:0; background:#FBF8F5; display:flex; align-items:center; justify-content:center; min-height:100vh; font-family:'DM Sans',system-ui,sans-serif; }
+    .loader { text-align:center; }
+    .spinner { width:32px; height:32px; border:3px solid rgba(201,108,84,0.2); border-top-color:#C96C54; border-radius:50%; animation:spin 0.7s linear infinite; margin:0 auto 12px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    p { color:#B09A93; font-size:0.88rem; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <video autoplay loop muted playsinline src="./desktop/logo.mp4"></video>
-    <p>Loading mmthee…</p>
-  </div>
-  <script>
-    (function () {
-      var ua = navigator.userAgent || '';
-      var isMobile =
-        /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua) ||
-        window.innerWidth < 768;
-      var base = window.location.pathname.replace(/\/$/, '');
-      window.location.replace(isMobile ? base + '/pocket/' : base + '/desktop/');
-    })();
-  </script>
+<div class="loader">
+  <div class="spinner"></div>
+  <p>Loading Presentation Lab…</p>
+</div>
+<script>
+  // Device detection — redirect to optimised version
+  function isMobile() {
+    // Check by user agent first
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua)) return true;
+    // Check by screen width as fallback
+    if (window.innerWidth <= 768) return true;
+    // Check touch as secondary signal (desktops can have touch screens, so weight UA higher)
+    if ('maxTouchPoints' in navigator && navigator.maxTouchPoints > 0 && window.innerWidth <= 1024) return true;
+    return false;
+  }
+
+  // Preserve query string when redirecting
+  const qs = window.location.search;
+  const hash = window.location.hash;
+  if (isMobile()) {
+    window.location.replace('pocket/index.html' + qs + hash);
+  } else {
+    window.location.replace('desktop/index.html' + qs + hash);
+  }
+</script>
 </body>
 </html>

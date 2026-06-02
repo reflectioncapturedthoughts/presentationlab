@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Leaderboard — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+<header class="mobile-topbar">
+  <div class="mobile-brand">
+    <div class="mobile-logo-wrap"><img src="../assets/l.png" alt="logo"/><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
+    <span class="mobile-brand-name">Leaderboard</span>
+  </div>
+  <div class="mobile-topbar-actions">
+    <div id="pts-chip" class="mobile-pts-chip hidden">🏅 <span id="pts-val">0</span></div>
+  </div>
+</header>
+
+<main style="padding:16px 16px 20px;">
+  <div class="lb-hero">
+    <h1 class="lb-hero-title">🏆 Top Writers</h1>
+    <p class="lb-hero-sub">Ranked by points earned from likes &amp; referrals</p>
+  </div>
+  <!-- stats -->
+  <div style="display:flex;gap:10px;margin-bottom:20px;">
+    <div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;">
+      <div id="stat-writers" style="font-family:'Lora',serif;font-size:1.4rem;font-weight:700;color:var(--terra);">—</div>
+      <div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Writers</div>
+    </div>
+    <div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center;">
+      <div id="stat-top" style="font-family:'Lora',serif;font-size:1.4rem;font-weight:700;color:var(--terra);">—</div>
+      <div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Top Score</div>
+    </div>
+  </div>
+  <div class="lb-card" id="lb-list">
+    <div style="padding:32px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 12px;"></div><p style="font-size:0.84rem;">Loading…</p></div>
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn" onclick="location.href='index.html'"><span class="bottom-nav-icon">🏠</span>Home</button>
+  <button class="bottom-nav-btn active"><span class="bottom-nav-icon">🏆</span>Top</button>
+  <button class="bottom-nav-btn" onclick="location.href='creativecreator.html'"><span class="bottom-nav-icon">✏️</span>Create</button>
+  <button class="bottom-nav-btn" onclick="location.href='shop.html'"><span class="bottom-nav-icon">🛍️</span>Shop</button>
+  <button class="bottom-nav-btn" onclick="location.href='profile.html'"><span class="bottom-nav-icon">👤</span>Profile</button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app=initializeApp(FB);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+
+onAuthStateChanged(auth,async user=>{
+  if(user){
+    const bSnap=await getDoc(doc(db,"bloggers",user.uid)).catch(()=>null);
+    if(bSnap?.exists()){
+      document.getElementById("pts-chip").classList.remove("hidden");
+      document.getElementById("pts-val").textContent=bSnap.data().points||0;
+    }
+  }
+  loadLeaderboard(user);
+});
+
+async function loadLeaderboard(user){
+  try{
+    const snap=await getDocs(query(collection(db,"bloggers"),orderBy("points","desc"),limit(50)));
+    const writers=[];
+    snap.forEach(d=>writers.push({id:d.id,...d.data()}));
+    document.getElementById("stat-writers").textContent=writers.length;
+    document.getElementById("stat-top").textContent=writers[0]?.points||0;
+
+    const medals=["🥇","🥈","🥉"];
+    const rc=["gold","silver","bronze"];
+    const rows=writers.map((w,i)=>{
+      const isMe=user&&w.uid===user.uid;
+      return `<div class="lb-row" style="${isMe?"background:linear-gradient(to right,rgba(201,108,84,0.06),transparent);":""}">
+        <span class="lb-rank-num${i<3?" "+rc[i]:""}">${medals[i]||String(i+1)}</span>
+        <div class="lb-user-avatar">${initials(w.fullName||w.email)}</div>
+        <div class="lb-user-info">
+          <div class="lb-user-name">${esc(w.fullName||w.email?.split("@")[0]||"Anonymous")}${isMe?' <span style="font-size:0.68rem;color:var(--terra);">(you)</span>':""}</div>
+          <div class="lb-user-meta">${w.createdAt?new Date(w.createdAt).toLocaleDateString():""}</div>
+        </div>
+        <div class="lb-pts-badge"><span class="lb-pts-val">${w.points||0}</span><span class="lb-pts-lbl">pts</span></div>
+      </div>`;
+    });
+    document.getElementById("lb-list").innerHTML=rows.join("")||`<div style="padding:32px;text-align:center;color:var(--stone);">No writers yet — be first!</div>`;
+  }catch(e){
+    document.getElementById("lb-list").innerHTML=`<div style="padding:24px;text-align:center;color:var(--stone);">Failed to load.</div>`;
+  }
+}
+</script>
+</body>
+</html>

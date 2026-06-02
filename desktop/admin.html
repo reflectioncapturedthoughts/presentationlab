@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+<div class="admin-shell">
+  <div class="admin-topbar">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:32px;height:32px;border-radius:8px;overflow:hidden;position:relative;background:var(--sand-deep);">
+        <img src="../assets/l.png" alt="logo" style="width:100%;height:100%;object-fit:cover;"/>
+        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"><source src="../assets/logo.mp4" type="video/mp4"></video>
+      </div>
+      <span style="font-family:'Lora',serif;font-weight:700;color:var(--terra);">Presentation Lab</span>
+      <span style="background:var(--terra);color:#fff;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:var(--radius-pill);margin-left:4px;">ADMIN</span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span id="admin-email" style="font-size:0.82rem;color:var(--stone);"></span>
+      <button class="btn btn-ghost btn-sm" onclick="doSignout()">Sign Out</button>
+      <a href="index.html" class="btn btn-outline btn-sm">← Home</a>
+    </div>
+  </div>
+  <div class="admin-content">
+    <!-- Auth gate -->
+    <div id="auth-gate" style="text-align:center;padding:80px 0;" class="hidden">
+      <div style="font-size:3rem;margin-bottom:14px;">🔒</div>
+      <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Admin access required</h2>
+      <a href="auth.html?redirect=admin.html" class="btn btn-terra btn-lg" style="margin-top:8px;">Sign In</a>
+    </div>
+    <div id="admin-main" class="hidden">
+      <!-- Stats -->
+      <div class="stats-grid" id="admin-stats">
+        <div class="stat-card"><div class="stat-value" id="s-writers">—</div><div class="stat-label">Writers</div></div>
+        <div class="stat-card"><div class="stat-value" id="s-posts">—</div><div class="stat-label">Blog Posts</div></div>
+        <div class="stat-card"><div class="stat-value" id="s-pres">—</div><div class="stat-label">Presentations</div></div>
+        <div class="stat-card"><div class="stat-value" id="s-pts">—</div><div class="stat-label">Total Points Issued</div></div>
+      </div>
+
+      <!-- Actions row -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
+        <button class="btn btn-terra" onclick="seedShop()">🌱 Seed Shop Products</button>
+        <button class="btn btn-outline" onclick="loadWriters()">🔄 Refresh Writers</button>
+        <a href="avr.html" class="btn btn-ghost">👑 AVR Portal</a>
+        <a href="init.html" class="btn btn-ghost">⚙️ Init Setup</a>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('writers')">Writers</button>
+        <button class="tab-btn" onclick="showTab('posts')">Blog Posts</button>
+        <button class="tab-btn" onclick="showTab('shop')">Shop Products</button>
+      </div>
+
+      <!-- Writers table -->
+      <div id="tab-writers">
+        <div class="table-wrap" id="writers-table">
+          <div style="padding:32px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div>Loading…</div>
+        </div>
+      </div>
+
+      <!-- Posts -->
+      <div id="tab-posts" class="hidden">
+        <div class="table-wrap" id="posts-table">
+          <div style="padding:32px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div>Loading…</div>
+        </div>
+      </div>
+
+      <!-- Shop products -->
+      <div id="tab-shop" class="hidden">
+        <div style="margin-bottom:14px;display:flex;gap:8px;">
+          <button class="btn btn-terra btn-sm" onclick="seedShop()">🌱 Seed Sample Products</button>
+        </div>
+        <div class="table-wrap" id="shop-table">
+          <div style="padding:32px;text-align:center;color:var(--stone);">Click "Seed Shop Products" to populate sample products.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB = {apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app = initializeApp(FB);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+
+const ADMIN_EMAILS = ["admin@arct.com","reflectioncapturedthoughts@gmail.com"];
+const SAMPLE_PRODUCTS = [
+  {emoji:"✨",name:"Featured Badge",description:"Display a shiny featured badge on all your posts for 30 days.",pointPrice:50,category:"Profile"},
+  {emoji:"📌",name:"Post Pin",description:"Pin your best post to the top of your profile for 30 days.",pointPrice:100,category:"Content"},
+  {emoji:"🎖️",name:"Custom Title",description:"Set a custom title displayed next to your name (e.g. 'Top Orator').",pointPrice:200,category:"Profile"},
+  {emoji:"🌟",name:"Gold Avatar",description:"Unlock a glowing gold border on your profile avatar for 30 days.",pointPrice:150,category:"Profile"},
+  {emoji:"🔝",name:"Profile Boost",description:"Appear at the top of the Leaderboard sidebar widget for 7 days.",pointPrice:300,category:"Visibility"},
+  {emoji:"🌙",name:"Dark Mode",description:"Early access to the Dark Mode theme for Presentation Lab.",pointPrice:75,category:"Feature"},
+  {emoji:"💌",name:"DM Access",description:"Unlock direct messaging with other writers on the platform.",pointPrice:120,category:"Social"},
+  {emoji:"🎤",name:"Speech Coach Badge",description:"Show the Speech Coach badge on your profile.",pointPrice:250,category:"Achievement"},
+];
+
+window.doSignout = async () => { await signOut(auth); window.location.href="index.html"; };
+
+window.showTab = (tab) => {
+  ["writers","posts","shop"].forEach(t=>{
+    document.getElementById("tab-"+t).classList.toggle("hidden",t!==tab);
+  });
+  document.querySelectorAll(".tab-btn").forEach((b,i)=>{
+    b.classList.toggle("active",["writers","posts","shop"][i]===tab);
+  });
+  if(tab==="posts") loadPosts();
+  if(tab==="shop") loadShopProducts();
+};
+
+onAuthStateChanged(auth, async user=>{
+  if(!user){document.getElementById("auth-gate").classList.remove("hidden");return;}
+  document.getElementById("admin-main").classList.remove("hidden");
+  document.getElementById("admin-email").textContent=user.email;
+  loadStats();
+  loadWriters();
+});
+
+async function loadStats() {
+  try {
+    const [b,p,pr] = await Promise.all([
+      getDocs(collection(db,"bloggers")),
+      getDocs(collection(db,"bloggerblogs")),
+      getDocs(collection(db,"presentations"))
+    ]);
+    document.getElementById("s-writers").textContent = b.size;
+    document.getElementById("s-posts").textContent = p.size;
+    document.getElementById("s-pres").textContent = pr.size;
+    let total = 0;
+    b.forEach(d=>total+=(d.data().points||0));
+    document.getElementById("s-pts").textContent = total;
+  } catch{}
+}
+
+window.loadWriters = async () => {
+  const t = document.getElementById("writers-table");
+  t.innerHTML=`<div style="padding:24px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div>Loading…</div>`;
+  try {
+    const snap = await getDocs(query(collection(db,"bloggers"),orderBy("points","desc"),limit(100)));
+    if(!snap.size){t.innerHTML=`<div style="padding:24px;text-align:center;color:var(--stone);">No writers yet.</div>`;return;}
+    let rows = "<table><thead><tr><th>Writer</th><th>Email</th><th>Points</th><th>Referral Code</th><th>Joined</th><th>Action</th></tr></thead><tbody>";
+    snap.forEach(d=>{
+      const u = d.data();
+      rows+=`<tr>
+        <td><strong>${esc(u.fullName||"Anonymous")}</strong></td>
+        <td>${esc(u.email||"—")}</td>
+        <td><strong style="color:var(--terra);">${u.points||0}</strong></td>
+        <td><code>${esc(u.referralCode||"—")}</code></td>
+        <td>${u.createdAt?new Date(u.createdAt).toLocaleDateString():"—"}</td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteWriter('${d.id}')">Delete</button></td>
+      </tr>`;
+    });
+    rows+="</tbody></table>";
+    t.innerHTML=rows;
+  } catch(e){t.innerHTML=`<div style="padding:24px;color:var(--stone);">Error: ${esc(e.message)}</div>`;}
+};
+
+async function loadPosts() {
+  const t = document.getElementById("posts-table");
+  t.innerHTML=`<div style="padding:24px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div>Loading…</div>`;
+  try {
+    const snap = await getDocs(query(collection(db,"bloggerblogs"),orderBy("createdAt","desc"),limit(50)));
+    if(!snap.size){t.innerHTML=`<div style="padding:24px;color:var(--stone);">No posts yet.</div>`;return;}
+    let rows = "<table><thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Likes</th><th>Views</th><th>Featured</th><th>Actions</th></tr></thead><tbody>";
+    snap.forEach(d=>{
+      const p = d.data();
+      rows+=`<tr>
+        <td><a href="presentation.html?id=${d.id}" style="color:var(--terra);">${esc((p.title||"Untitled").substring(0,40))}</a></td>
+        <td>${esc(p.fullName||"Anonymous")}</td>
+        <td>${esc(p.category||"—")}</td>
+        <td>${p.likes||0}</td>
+        <td>${p.views||0}</td>
+        <td><button class="btn btn-sm ${p.featured?"btn-terra":"btn-outline"}" onclick="toggleFeatured('${d.id}',${!p.featured})">${p.featured?"★ Featured":"☆ Feature"}</button></td>
+        <td><button class="btn btn-sm btn-danger" onclick="deletePost('${d.id}')">Del</button></td>
+      </tr>`;
+    });
+    rows+="</tbody></table>";
+    t.innerHTML=rows;
+  } catch(e){t.innerHTML=`<div style="padding:24px;color:var(--stone);">Error: ${esc(e.message)}</div>`;}
+}
+
+async function loadShopProducts() {
+  const t = document.getElementById("shop-table");
+  try {
+    const snap = await getDocs(collection(db,"shop_products"));
+    if(!snap.size){t.innerHTML=`<div style="padding:24px;text-align:center;color:var(--stone);">No products yet. Click "Seed Sample Products".</div>`;return;}
+    let rows="<table><thead><tr><th>Emoji</th><th>Name</th><th>Category</th><th>Price</th><th>Description</th><th>Action</th></tr></thead><tbody>";
+    snap.forEach(d=>{
+      const p=d.data();
+      rows+=`<tr><td>${esc(p.emoji)}</td><td><strong>${esc(p.name)}</strong></td><td>${esc(p.category)}</td><td><strong style="color:var(--terra);">${p.pointPrice} pts</strong></td><td style="max-width:240px;">${esc((p.description||"").substring(0,60))}</td><td><button class="btn btn-sm btn-danger" onclick="deleteProd('${d.id}')">Del</button></td></tr>`;
+    });
+    rows+="</tbody></table>";
+    t.innerHTML=rows;
+  } catch(e){t.innerHTML=`<div style="padding:24px;color:var(--stone);">Error: ${esc(e.message)}</div>`;}
+}
+
+window.seedShop = async () => {
+  if(!confirm("Seed shop with 8 sample products? Existing products won't be replaced.")) return;
+  const btn = event.target;
+  btn.disabled=true;btn.textContent="Seeding…";
+  try {
+    for(const p of SAMPLE_PRODUCTS) {
+      const id = p.name.toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9-]/g,"");
+      await setDoc(doc(db,"shop_products",id), {...p, createdAt:new Date().toISOString()}, {merge:true});
+    }
+    toast("Shop seeded with 8 products! ✅","success");
+    loadShopProducts();
+    window.showTab("shop");
+  } catch(e){ toast("Seed failed: "+e.message,"error"); }
+  finally{btn.disabled=false;btn.textContent="🌱 Seed Shop Products";}
+};
+
+window.toggleFeatured = async (id, val) => {
+  await updateDoc(doc(db,"bloggerblogs",id),{featured:val}).catch(()=>{});
+  toast(val?"Post featured!":"Feature removed","info");
+  loadPosts();
+};
+
+window.deleteWriter = async (id) => {
+  if(!confirm("Delete this writer? This only removes their blogger record, not their auth account.")) return;
+  await deleteDoc(doc(db,"bloggers",id)).catch(()=>{});
+  toast("Writer record deleted","success");
+  loadWriters();
+  loadStats();
+};
+
+window.deletePost = async (id) => {
+  if(!confirm("Delete this post?")) return;
+  await deleteDoc(doc(db,"bloggerblogs",id)).catch(()=>{});
+  toast("Post deleted","success");
+  loadPosts();
+  loadStats();
+};
+
+window.deleteProd = async (id) => {
+  if(!confirm("Delete this product?")) return;
+  await deleteDoc(doc(db,"shop_products",id)).catch(()=>{});
+  toast("Product deleted","success");
+  loadShopProducts();
+};
+</script>
+</body>
+</html>

@@ -1,27 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>mmthee</title>
-    <meta name="description" content="mmthee — built on Replit. Update this description to reflect the app." />
-    <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="mmthee" />
-    <meta property="og:description" content="mmthee — built on Replit. Update this description to reflect the app." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="mmthee" />
-    <meta name="twitter:description" content="mmthee — built on Replit. Update this description to reflect the app." />
-    <link rel="icon" type="image/svg+xml" href="/pocket/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/pocket/assets/index-DgGac7TB.js"></script>
-    <link rel="modulepreload" crossorigin href="/pocket/assets/firebase-CX2sEEix.js">
-    <link rel="modulepreload" crossorigin href="/pocket/assets/ui-qtZid1r0.js">
-    <link rel="stylesheet" crossorigin href="/pocket/assets/index-Bb8Nq2Bl.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<!-- AD OVERLAY -->
+<div class="ad-overlay" id="ad-overlay">
+  <div class="ad-modal">
+    <img src="../assets/1.ad5.png" alt="ad" class="ad-image"/>
+    <p style="font-size:0.82rem;color:var(--brown);margin-bottom:6px;">by <a href="https://arct.onrender.com" target="_blank" style="color:var(--terra);font-weight:700;">ARCT</a></p>
+    <p class="ad-countdown">Ad closes in <span id="ad-timer">5</span>s</p>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<header class="mobile-topbar">
+  <div class="mobile-brand">
+    <div class="mobile-logo-wrap">
+      <img src="../assets/l.png" alt="logo"/>
+      <video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video>
+    </div>
+    <span class="mobile-brand-name">Presentation Lab</span>
+  </div>
+  <div class="mobile-topbar-actions">
+    <div id="pts-chip" class="mobile-pts-chip hidden">🏅 <span id="pts-val">0</span></div>
+    <a href="auth.html" id="signin-btn" class="btn btn-terra btn-sm" style="display:none;">Sign In</a>
+    <button class="mobile-icon-btn" id="notif-btn" style="display:none;">🔔</button>
+  </div>
+</header>
+
+<!-- FILTER TABS -->
+<div class="feed-filter-row">
+  <button class="filter-tab active" data-filter="latest">Latest</button>
+  <button class="filter-tab" data-filter="featured">✨ Featured</button>
+  <button class="filter-tab" data-filter="avr">👑 AVR</button>
+  <button class="filter-tab" data-filter="trending">🔥 Trending</button>
+</div>
+
+<!-- FEED -->
+<main class="mobile-feed" id="feed-wrap">
+  <div style="padding:40px 16px;text-align:center;color:var(--stone);">
+    <div class="spinner" style="margin:0 auto 12px;"></div>
+    <p style="font-size:0.84rem;">Loading posts…</p>
+  </div>
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn active" onclick="navTo('index.html')"><span class="bottom-nav-icon">🏠</span>Home</button>
+  <button class="bottom-nav-btn" onclick="navTo('leaderboard.html')"><span class="bottom-nav-icon">🏆</span>Top</button>
+  <button class="bottom-nav-btn" onclick="navTo('creativecreator.html')"><span class="bottom-nav-icon">✏️</span>Create</button>
+  <button class="bottom-nav-btn" onclick="navTo('shop.html')"><span class="bottom-nav-icon">🛍️</span>Shop</button>
+  <button class="bottom-nav-btn" onclick="navTo('profile.html')"><span class="bottom-nav-icon">👤</span>Profile</button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, updateDoc, increment, arrayUnion, arrayRemove, where } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app=initializeApp(FB);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function timeAgo(d){if(!d)return"";const diff=(Date.now()-new Date(d).getTime())/1000;if(diff<60)return"just now";if(diff<3600)return Math.floor(diff/60)+"m ago";if(diff<86400)return Math.floor(diff/3600)+"h ago";return Math.floor(diff/86400)+"d ago";}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+window.navTo=url=>window.location.href=url;
+
+let currentUser=null;
+let currentFilter="latest";
+let allPosts=[];
+
+// AD
+(()=>{
+  let s=5;
+  const ov=document.getElementById("ad-overlay");
+  const ti=document.getElementById("ad-timer");
+  const iv=setInterval(()=>{s--;if(s<=0){clearInterval(iv);ov.classList.add("hidden");}else ti.textContent=s;},1000);
+  ov.addEventListener("click",()=>{clearInterval(iv);ov.classList.add("hidden");});
+})();
+
+onAuthStateChanged(auth,async user=>{
+  currentUser=user;
+  if(user){
+    document.getElementById("signin-btn").style.display="none";
+    document.getElementById("pts-chip").classList.remove("hidden");
+    document.getElementById("notif-btn").style.display="flex";
+    const bSnap=await getDoc(doc(db,"bloggers",user.uid)).catch(()=>null);
+    if(bSnap?.exists()) document.getElementById("pts-val").textContent=bSnap.data().points||0;
+  } else {
+    document.getElementById("signin-btn").style.display="flex";
+    document.getElementById("pts-chip").classList.add("hidden");
+  }
+  loadFeed(currentFilter);
+});
+
+document.querySelectorAll(".filter-tab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".filter-tab").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter=btn.dataset.filter;
+    loadFeed(currentFilter);
+  });
+});
+
+async function loadFeed(filter){
+  const fw=document.getElementById("feed-wrap");
+  fw.innerHTML=`<div style="padding:40px 16px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 12px;"></div><p style="font-size:0.84rem;">Loading…</p></div>`;
+  try{
+    let q;
+    if(filter==="avr") q=query(collection(db,"presentations"),orderBy("createdAt","desc"),limit(30));
+    else if(filter==="featured") q=query(collection(db,"bloggerblogs"),where("featured","==",true),orderBy("createdAt","desc"),limit(30));
+    else if(filter==="trending") q=query(collection(db,"bloggerblogs"),orderBy("likes","desc"),limit(30));
+    else q=query(collection(db,"bloggerblogs"),orderBy("createdAt","desc"),limit(30));
+    const snap=await getDocs(q);
+    allPosts=[];
+    snap.forEach(d=>allPosts.push({id:d.id,...d.data(),_coll:filter==="avr"?"presentations":"bloggerblogs"}));
+    renderFeed();
+  }catch(e){
+    fw.innerHTML=`<div class="feed-empty"><div class="feed-empty-icon">⚠️</div><div class="feed-empty-title">Couldn't load posts</div><div class="feed-empty-text">${esc(e.message)}</div></div>`;
+  }
+}
+
+function renderFeed(){
+  const fw=document.getElementById("feed-wrap");
+  if(!allPosts.length){
+    fw.innerHTML=`<div class="feed-empty"><div class="feed-empty-icon">📋</div><div class="feed-empty-title">No posts yet</div><div class="feed-empty-text">Be the first to create a presentation!</div><a href="creativecreator.html" class="btn btn-terra" style="margin-top:14px;">Create Post</a></div>`;
+    return;
+  }
+  fw.innerHTML=allPosts.map(p=>{
+    const isAvr=p._coll==="presentations"||p.avrCrown;
+    const liked=currentUser&&(p.likedBy||[]).includes(currentUser.uid);
+    const saved=currentUser&&(p.savedBy||[]).includes(currentUser.uid);
+    const tags=Array.isArray(p.tags)?p.tags:(p.tags||"").split(",").map(t=>t.trim()).filter(Boolean);
+    return `<article class="post-card${isAvr?" avr-post":""}" onclick="openPost('${p.id}','${p._coll}',event)">
+      <div class="post-avatar-col"><div class="post-avatar${isAvr?" avr-avatar":""}">${initials(p.fullName||p.authorName)}</div></div>
+      <div class="post-body">
+        <div class="post-header">
+          <span class="post-name">${esc(p.fullName||p.authorName||"Anonymous")}</span>
+          ${isAvr?`<span class="post-badge badge-avr">👑</span>`:`<span class="post-badge badge-writer">Writer</span>`}
+          <span class="post-time">${timeAgo(p.createdAt)}</span>
+        </div>
+        ${p.category?`<div class="post-category">${esc(p.category)}</div>`:""}
+        <h3 class="post-title">${esc(p.title||"Untitled")}</h3>
+        <p class="post-text">${esc(p.content||p.speech||"")}</p>
+        ${tags.length?`<div class="post-tags">${tags.slice(0,3).map(t=>`<span class="post-tag">#${esc(t)}</span>`).join("")}</div>`:""}
+        <div class="post-actions">
+          <button class="action-btn${liked?" liked":""}" onclick="likePost(event,'${p.id}','${p._coll}')">
+            ${liked?"❤️":"🤍"} <span>${p.likes||0}</span>
+          </button>
+          <button class="action-btn${saved?" saved":""}" onclick="savePost(event,'${p.id}','${p._coll}')">
+            ${saved?"🔖":"📌"}
+          </button>
+          <span class="views-chip">👁 ${p.views||0}</span>
+        </div>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+window.openPost=(id,coll,e)=>{
+  if(e.target.closest(".action-btn")) return;
+  window.location.href=`presentation.html?id=${id}&coll=${coll}`;
+};
+
+window.likePost=async(e,id,coll)=>{
+  e.stopPropagation();
+  if(!currentUser){toast("Sign in to like","info");return;}
+  const post=allPosts.find(p=>p.id===id);
+  if(!post) return;
+  const liked=(post.likedBy||[]).includes(currentUser.uid);
+  const ref=doc(db,coll,id);
+  if(liked){
+    await updateDoc(ref,{likes:increment(-1),likedBy:arrayRemove(currentUser.uid)}).catch(()=>{});
+    post.likes=(post.likes||0)-1;
+    post.likedBy=(post.likedBy||[]).filter(u=>u!==currentUser.uid);
+    if(post.uid) await updateDoc(doc(db,"bloggers",post.uid),{points:increment(-1)}).catch(()=>{});
+  }else{
+    await updateDoc(ref,{likes:increment(1),likedBy:arrayUnion(currentUser.uid)}).catch(()=>{});
+    post.likes=(post.likes||0)+1;
+    post.likedBy=[...(post.likedBy||[]),currentUser.uid];
+    if(post.uid) await updateDoc(doc(db,"bloggers",post.uid),{points:increment(1)}).catch(()=>{});
+  }
+  renderFeed();
+};
+
+window.savePost=async(e,id,coll)=>{
+  e.stopPropagation();
+  if(!currentUser){toast("Sign in to save","info");return;}
+  const post=allPosts.find(p=>p.id===id);
+  if(!post) return;
+  const saved=(post.savedBy||[]).includes(currentUser.uid);
+  const ref=doc(db,coll,id);
+  if(saved){
+    await updateDoc(ref,{savedBy:arrayRemove(currentUser.uid)}).catch(()=>{});
+    post.savedBy=(post.savedBy||[]).filter(u=>u!==currentUser.uid);
+  }else{
+    await updateDoc(ref,{savedBy:arrayUnion(currentUser.uid)}).catch(()=>{});
+    post.savedBy=[...(post.savedBy||[]),currentUser.uid];
+    toast("Post saved!","success");
+  }
+  renderFeed();
+};
+</script>
+</body>
 </html>

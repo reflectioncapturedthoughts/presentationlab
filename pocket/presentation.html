@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Presentation — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+<header class="mobile-topbar">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <button onclick="history.back()" style="background:none;border:none;color:var(--brown);font-size:1.1rem;padding:4px 6px;cursor:pointer;">←</button>
+    <span class="mobile-brand-name" id="page-title">Post</span>
+  </div>
+  <div class="mobile-topbar-actions">
+    <button class="mobile-icon-btn" onclick="sharePost()">📤</button>
+  </div>
+</header>
+<main id="post-wrap" style="min-height:60vh;">
+  <div style="padding:48px 16px;text-align:center;color:var(--stone);">
+    <div class="spinner" style="margin:0 auto 12px;"></div>
+    <p style="font-size:0.84rem;">Loading…</p>
+  </div>
+</main>
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn" onclick="location.href='index.html'"><span class="bottom-nav-icon">🏠</span>Home</button>
+  <button class="bottom-nav-btn" onclick="location.href='leaderboard.html'"><span class="bottom-nav-icon">🏆</span>Top</button>
+  <button class="bottom-nav-btn" onclick="location.href='creativecreator.html'"><span class="bottom-nav-icon">✏️</span>Create</button>
+  <button class="bottom-nav-btn" onclick="location.href='shop.html'"><span class="bottom-nav-icon">🛍️</span>Shop</button>
+  <button class="bottom-nav-btn" onclick="location.href='profile.html'"><span class="bottom-nav-icon">👤</span>Profile</button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app=initializeApp(FB);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function timeAgo(d){if(!d)return"";const diff=(Date.now()-new Date(d).getTime())/1000;if(diff<60)return"just now";if(diff<3600)return Math.floor(diff/60)+"m ago";if(diff<86400)return Math.floor(diff/3600)+"h ago";return Math.floor(diff/86400)+"d ago";}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+
+let currentUser=null;
+let postData=null;
+const params=new URLSearchParams(window.location.search);
+const postId=params.get("id");
+const postColl=params.get("coll")||"bloggerblogs";
+
+onAuthStateChanged(auth,user=>{
+  currentUser=user;
+  if(postId) loadPost();
+  else document.getElementById("post-wrap").innerHTML=`<div style="padding:48px;text-align:center;"><a href="index.html" class="btn btn-terra">← Home</a></div>`;
+});
+
+async function loadPost(){
+  try{
+    const snap=await getDoc(doc(db,postColl,postId));
+    if(!snap.exists()){
+      document.getElementById("post-wrap").innerHTML=`<div style="padding:48px;text-align:center;color:var(--stone);">Post not found.<br><a href="index.html" class="btn btn-terra" style="margin-top:14px;">← Home</a></div>`;
+      return;
+    }
+    postData={id:snap.id,...snap.data()};
+    document.getElementById("page-title").textContent=postData.title||"Post";
+    await updateDoc(doc(db,postColl,postId),{views:increment(1)}).catch(()=>{});
+    postData.views=(postData.views||0)+1;
+    renderPost();
+  }catch(e){
+    document.getElementById("post-wrap").innerHTML=`<div style="padding:48px;text-align:center;color:var(--stone);">Error: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderPost(){
+  const p=postData;
+  const isAvr=postColl==="presentations"||p.avrCrown;
+  const liked=currentUser&&(p.likedBy||[]).includes(currentUser.uid);
+  const saved=currentUser&&(p.savedBy||[]).includes(currentUser.uid);
+  const tags=Array.isArray(p.tags)?p.tags:(p.tags||"").split(",").map(t=>t.trim()).filter(Boolean);
+  document.getElementById("post-wrap").innerHTML=`
+    ${isAvr?`<div style="margin:0;padding:10px 16px;background:linear-gradient(135deg,rgba(201,108,84,0.1),rgba(168,80,60,0.06));border-bottom:1px solid rgba(201,108,84,0.3);display:flex;align-items:center;gap:8px;font-size:0.84rem;color:var(--terra);font-weight:600;">👑 Featured by AVR Editorial</div>`:""}
+    <div style="padding:20px 16px 0;">
+      ${p.category?`<div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--terra);margin-bottom:6px;font-weight:600;">${esc(p.category)}</div>`:""}
+      <h1 style="font-family:'Lora',Georgia,serif;font-size:1.4rem;font-weight:700;line-height:1.25;color:var(--espresso);margin-bottom:12px;">${esc(p.title||"Untitled")}</h1>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:0.8rem;color:var(--stone);margin-bottom:14px;">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;">${initials(p.fullName||p.authorName)}</div>
+        <strong style="color:var(--espresso);">${esc(p.fullName||p.authorName||"Anonymous")}</strong>
+        <span>·</span><span>${timeAgo(p.createdAt)}</span>
+      </div>
+    </div>
+    ${tags.length?`<div style="display:flex;flex-wrap:wrap;gap:5px;padding:0 16px;margin-bottom:14px;">${tags.map(t=>`<span style="padding:2px 9px;border-radius:999px;font-size:0.68rem;background:var(--sand-warm);border:1px solid var(--border);color:var(--brown);">#${esc(t)}</span>`).join("")}</div>`:""}
+    <div style="padding:0 16px 24px;font-size:0.95rem;line-height:1.8;color:var(--brown);white-space:pre-wrap;overflow-wrap:anywhere;">${esc(p.content||p.speech||"(No content)")}</div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:rgba(255,255,255,0.96);">
+      <button class="action-btn${liked?" liked":""}" id="like-btn" onclick="likePost()">
+        ${liked?"❤️":"🤍"} <span id="like-count">${p.likes||0}</span>
+      </button>
+      <button class="action-btn${saved?" saved":""}" id="save-btn" onclick="savePost()">
+        ${saved?"🔖 Saved":"📌 Save"}
+      </button>
+      <span style="font-size:0.75rem;color:var(--stone);margin-left:auto;">👁 ${p.views||0}</span>
+    </div>`;
+}
+
+window.likePost=async()=>{
+  if(!currentUser){toast("Sign in to like","info");return;}
+  const liked=(postData.likedBy||[]).includes(currentUser.uid);
+  if(liked){
+    await updateDoc(doc(db,postColl,postId),{likes:increment(-1),likedBy:arrayRemove(currentUser.uid)}).catch(()=>{});
+    postData.likes=(postData.likes||0)-1;
+    postData.likedBy=(postData.likedBy||[]).filter(u=>u!==currentUser.uid);
+    if(postData.uid) await updateDoc(doc(db,"bloggers",postData.uid),{points:increment(-1)}).catch(()=>{});
+  }else{
+    await updateDoc(doc(db,postColl,postId),{likes:increment(1),likedBy:arrayUnion(currentUser.uid)}).catch(()=>{});
+    postData.likes=(postData.likes||0)+1;
+    postData.likedBy=[...(postData.likedBy||[]),currentUser.uid];
+    if(postData.uid) await updateDoc(doc(db,"bloggers",postData.uid),{points:increment(1)}).catch(()=>{});
+    toast("Liked! ❤️","success");
+  }
+  renderPost();
+};
+
+window.savePost=async()=>{
+  if(!currentUser){toast("Sign in to save","info");return;}
+  const saved=(postData.savedBy||[]).includes(currentUser.uid);
+  if(saved){
+    await updateDoc(doc(db,postColl,postId),{savedBy:arrayRemove(currentUser.uid)}).catch(()=>{});
+    postData.savedBy=(postData.savedBy||[]).filter(u=>u!==currentUser.uid);
+  }else{
+    await updateDoc(doc(db,postColl,postId),{savedBy:arrayUnion(currentUser.uid)}).catch(()=>{});
+    postData.savedBy=[...(postData.savedBy||[]),currentUser.uid];
+    toast("Saved!","success");
+  }
+  renderPost();
+};
+
+window.sharePost=async()=>{
+  const url=window.location.href;
+  if(navigator.share){
+    try{await navigator.share({title:postData?.title||"Post",url});return;}catch{}
+  }
+  await navigator.clipboard.writeText(url).catch(()=>{});
+  toast("Link copied!","success");
+};
+</script>
+</body>
+</html>

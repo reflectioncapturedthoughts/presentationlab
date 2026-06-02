@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Presentation — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+<div class="app-shell">
+  <aside class="sidebar-left">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-wrap"><img src="../assets/l.png" alt="logo" class="brand-logo-img"/><video class="brand-logo-vid" autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
+      <div><div class="brand-name">Presentation Lab</div><div class="brand-parent">by ARCT</div></div>
+    </a>
+    <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="shop.html" class="nav-item"><span class="nav-icon">🛍️</span><span class="nav-label">Shop</span></a>
+    <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
+    <div class="sidebar-spacer"></div>
+    <a href="auth.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign In</a>
+    <div class="user-chip hidden" id="sb-chip">
+      <div class="user-avatar" id="sb-avatar">?</div>
+      <div class="user-info"><div class="user-name" id="sb-name">—</div><div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div></div>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <div id="post-wrap">
+      <div style="padding:60px;text-align:center;color:var(--stone);">
+        <div class="spinner" style="margin:0 auto 14px;width:28px;height:28px;"></div>
+        <p>Loading presentation…</p>
+      </div>
+    </div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <h3 class="widget-title">💡 Enjoying this?</h3>
+      <p style="font-size:0.84rem;color:var(--brown);line-height:1.65;margin-bottom:14px;">Give it a like to support the author — they earn +1 point per like!</p>
+      <a href="creativecreator.html" class="btn btn-terra btn-sm btn-full">Write Your Own →</a>
+    </div>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.06),var(--sand-warm));">
+      <div style="font-size:0.8rem;color:var(--brown);">
+        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
+        <a href="https://arct.onrender.com" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">ARCT — Reflection Captured Thoughts</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB = {apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app = initializeApp(FB);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function timeAgo(d){if(!d)return"";const diff=(Date.now()-new Date(d).getTime())/1000;if(diff<60)return"just now";if(diff<3600)return Math.floor(diff/60)+"m ago";if(diff<86400)return Math.floor(diff/3600)+"h ago";return Math.floor(diff/86400)+"d ago";}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+
+let currentUser = null;
+let postData = null;
+let postId = null;
+let postColl = "bloggerblogs";
+
+const params = new URLSearchParams(window.location.search);
+postId = params.get("id");
+postColl = params.get("coll") || "bloggerblogs";
+
+window.doSignout = async () => { await signOut(auth); window.location.href="index.html"; };
+
+onAuthStateChanged(auth, user=>{
+  currentUser = user;
+  if(user){
+    document.getElementById("sb-signin").classList.add("hidden");
+    document.getElementById("sb-chip").classList.remove("hidden");
+    document.getElementById("sb-avatar").textContent=initials(user.displayName||user.email);
+    document.getElementById("sb-name").textContent=user.displayName||user.email.split("@")[0];
+  }
+  loadPost();
+});
+
+async function loadPost() {
+  if(!postId){
+    document.getElementById("post-wrap").innerHTML=`<div style="padding:60px;text-align:center;"><h2>No post ID provided.</h2><a href="index.html" class="btn btn-terra" style="margin-top:16px;">← Home</a></div>`;
+    return;
+  }
+  try {
+    const snap = await getDoc(doc(db, postColl, postId));
+    if(!snap.exists()){
+      document.getElementById("post-wrap").innerHTML=`<div style="padding:60px;text-align:center;"><h2>Post not found.</h2><a href="index.html" class="btn btn-terra" style="margin-top:16px;">← Home</a></div>`;
+      return;
+    }
+    postData = {id:snap.id,...snap.data()};
+    // Increment views
+    await updateDoc(doc(db,postColl,postId),{views:increment(1)}).catch(()=>{});
+    postData.views = (postData.views||0)+1;
+    renderPost();
+  } catch(e){
+    document.getElementById("post-wrap").innerHTML=`<div style="padding:60px;text-align:center;color:var(--stone);">Failed to load: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderPost(){
+  const p = postData;
+  const liked = currentUser && (p.likedBy||[]).includes(currentUser.uid);
+  const saved = currentUser && (p.savedBy||[]).includes(currentUser.uid);
+  const tags = Array.isArray(p.tags)?p.tags:(p.tags||"").split(",").map(t=>t.trim()).filter(Boolean);
+  const isAvr = postColl==="presentations"||p.avrCrown;
+
+  document.getElementById("post-wrap").innerHTML = `
+    <div class="detail-back">
+      <button onclick="history.back()" class="btn btn-ghost btn-sm">← Back</button>
+    </div>
+    ${isAvr?`<div class="avr-crown-bar">👑 <span>Featured by AVR — Reflection Captured Thoughts Editorial</span></div>`:""}
+    <div class="detail-header">
+      ${p.category?`<div class="detail-eyebrow">${esc(p.category)}</div>`:""}
+      <h1 class="detail-title">${esc(p.title||"Untitled")}</h1>
+      <div class="detail-meta">
+        <div class="post-avatar" style="width:32px;height:32px;font-size:0.8rem;">${initials(p.fullName||p.authorName)}</div>
+        <strong style="color:var(--espresso);">${esc(p.fullName||p.authorName||"Anonymous")}</strong>
+        <span>·</span>
+        <span>${timeAgo(p.createdAt)}</span>
+        <span>·</span>
+        <span>👁 ${p.views||0} views</span>
+      </div>
+    </div>
+    ${tags.length?`<div class="detail-tags">${tags.map(t=>`<span class="post-tag">#${esc(t)}</span>`).join("")}</div>`:""}
+    <div class="detail-body">${esc(p.content||p.speech||"(No content)")}</div>
+    <div class="detail-actions">
+      <button class="action-btn${liked?" liked":""}" id="like-btn" onclick="likePost()">
+        <span>${liked?"❤️":"🤍"}</span> <span id="like-count">${p.likes||0}</span> Likes
+      </button>
+      <button class="action-btn${saved?" saved":""}" id="save-btn" onclick="savePost()">
+        <span>${saved?"🔖":"📌"}</span> <span>${saved?"Saved":"Save"}</span>
+      </button>
+      <button class="action-btn" onclick="sharePost()">📤 Share</button>
+      <span class="views-chip" style="margin-left:auto;">👁 ${p.views||0}</span>
+    </div>`;
+}
+
+window.likePost = async () => {
+  if(!currentUser){toast("Sign in to like","info");return;}
+  const liked = (postData.likedBy||[]).includes(currentUser.uid);
+  if(liked){
+    await updateDoc(doc(db,postColl,postId),{likes:increment(-1),likedBy:arrayRemove(currentUser.uid)}).catch(()=>{});
+    postData.likes=(postData.likes||0)-1;
+    postData.likedBy=(postData.likedBy||[]).filter(u=>u!==currentUser.uid);
+    if(postData.uid) await updateDoc(doc(db,"bloggers",postData.uid),{points:increment(-1)}).catch(()=>{});
+  } else {
+    await updateDoc(doc(db,postColl,postId),{likes:increment(1),likedBy:arrayUnion(currentUser.uid)}).catch(()=>{});
+    postData.likes=(postData.likes||0)+1;
+    postData.likedBy=[...(postData.likedBy||[]),currentUser.uid];
+    if(postData.uid) await updateDoc(doc(db,"bloggers",postData.uid),{points:increment(1)}).catch(()=>{});
+    toast("Liked! Author earned +1 point ❤️","success");
+  }
+  renderPost();
+};
+
+window.savePost = async () => {
+  if(!currentUser){toast("Sign in to save","info");return;}
+  const saved = (postData.savedBy||[]).includes(currentUser.uid);
+  if(saved){
+    await updateDoc(doc(db,postColl,postId),{savedBy:arrayRemove(currentUser.uid)}).catch(()=>{});
+    postData.savedBy=(postData.savedBy||[]).filter(u=>u!==currentUser.uid);
+  } else {
+    await updateDoc(doc(db,postColl,postId),{savedBy:arrayUnion(currentUser.uid)}).catch(()=>{});
+    postData.savedBy=[...(postData.savedBy||[]),currentUser.uid];
+    toast("Post saved!","success");
+  }
+  renderPost();
+};
+
+window.sharePost = async () => {
+  const url = window.location.href;
+  if(navigator.share){
+    try{await navigator.share({title:postData.title||"Presentation",text:"Check out this presentation on Presentation Lab!",url});return;}catch{}
+  }
+  await navigator.clipboard.writeText(url).catch(()=>{});
+  toast("Link copied!","success");
+};
+</script>
+</body>
+</html>

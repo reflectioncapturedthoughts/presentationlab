@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+<div class="app-shell">
+  <aside class="sidebar-left">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-wrap"><img src="../assets/l.png" alt="logo" class="brand-logo-img"/><video class="brand-logo-vid" autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
+      <div><div class="brand-name">Presentation Lab</div><div class="brand-parent">by ARCT</div></div>
+    </a>
+    <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="creativecreator.html" class="nav-item active"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="shop.html" class="nav-item"><span class="nav-icon">🛍️</span><span class="nav-label">Shop</span></a>
+    <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
+    <div class="sidebar-spacer"></div>
+    <a href="auth.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign In</a>
+    <div class="user-chip hidden" id="sb-chip">
+      <div class="user-avatar" id="sb-avatar">?</div>
+      <div class="user-info"><div class="user-name" id="sb-name">—</div><div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div></div>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <div class="feed-header">
+      <h1 class="feed-title">✏️ Create Presentation</h1>
+      <p style="font-size:0.84rem;color:var(--brown);padding-bottom:14px;">Write and share your speech, essay, or creative piece with the community.</p>
+    </div>
+
+    <!-- Auth gate -->
+    <div id="auth-gate" style="padding:80px 20px;text-align:center;" class="hidden">
+      <div style="font-size:3rem;margin-bottom:14px;">🔒</div>
+      <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to create</h2>
+      <p style="color:var(--brown);margin-bottom:20px;">You need an account to publish presentations.</p>
+      <a href="auth.html?redirect=creativecreator.html" class="btn btn-terra btn-lg">Sign In / Sign Up</a>
+    </div>
+
+    <!-- Create form -->
+    <div id="create-form" style="padding:24px 20px 80px;" class="hidden">
+      <div class="form-group">
+        <label class="form-label">Title <span style="color:#ef4444;">*</span></label>
+        <input type="text" class="form-input" id="post-title" placeholder="Give your presentation a compelling title…" maxlength="120"/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="post-category">
+            <option value="">Select category…</option>
+            <option>Speech</option>
+            <option>Essay</option>
+            <option>Creative Writing</option>
+            <option>Motivational</option>
+            <option>Academic</option>
+            <option>Debate</option>
+            <option>Poetry</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Language</label>
+          <select class="form-select" id="post-lang">
+            <option value="English">English</option>
+            <option value="Tagalog">Tagalog</option>
+            <option value="Filipino">Filipino</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Content <span style="color:#ef4444;">*</span></label>
+        <textarea class="form-textarea" id="post-content" placeholder="Write your full presentation text here…" style="min-height:280px;"></textarea>
+        <p class="form-hint">Markdown is not supported. Write plain text. Paragraph breaks are preserved.</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags <span style="color:var(--stone);font-weight:400;">(comma-separated)</span></label>
+        <input type="text" class="form-input" id="post-tags" placeholder="e.g. leadership, motivation, community"/>
+      </div>
+      <!-- Preview -->
+      <div id="preview-wrap" style="background:var(--sand-warm);border:1px solid var(--border);border-radius:var(--radius-md);padding:18px;margin-bottom:20px;display:none;">
+        <h3 style="font-size:0.76rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--stone);margin-bottom:10px;">Preview</h3>
+        <div id="preview-title" style="font-family:'Lora',serif;font-size:1.2rem;font-weight:700;color:var(--espresso);margin-bottom:8px;"></div>
+        <div id="preview-body" style="font-size:0.9rem;color:var(--brown);line-height:1.75;white-space:pre-wrap;"></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-ghost" id="preview-btn" onclick="togglePreview()">👁 Preview</button>
+        <button class="btn btn-terra btn-lg" id="submit-btn" onclick="submitPost()">Publish Presentation 🚀</button>
+      </div>
+    </div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <h3 class="widget-title">✍️ Writing Tips</h3>
+      <div style="font-size:0.84rem;color:var(--brown);line-height:1.85;">
+        <div style="margin-bottom:6px;">📝 Hook readers in the first sentence</div>
+        <div style="margin-bottom:6px;">🎯 Stay focused on one clear message</div>
+        <div style="margin-bottom:6px;">❤️ Likes give you +1 point each</div>
+        <div>🏆 Top writers get featured by AVR</div>
+      </div>
+    </div>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.06),var(--sand-warm));">
+      <div style="font-size:0.8rem;color:var(--brown);">
+        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
+        <a href="https://arct.onrender.com" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">ARCT — Reflection Captured Thoughts</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB = {apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app = initializeApp(FB);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+
+let currentUser = null;
+window.doSignout = async () => { await signOut(auth); window.location.href="index.html"; };
+
+window.togglePreview = () => {
+  const pw = document.getElementById("preview-wrap");
+  const title = document.getElementById("post-title").value.trim();
+  const content = document.getElementById("post-content").value.trim();
+  if(!pw.style.display||pw.style.display==="none"){
+    document.getElementById("preview-title").textContent = title || "Untitled";
+    document.getElementById("preview-body").textContent = content || "(No content)";
+    pw.style.display = "block";
+    document.getElementById("preview-btn").textContent = "✏️ Edit";
+  } else {
+    pw.style.display = "none";
+    document.getElementById("preview-btn").innerHTML = "👁 Preview";
+  }
+};
+
+window.submitPost = async () => {
+  const btn = document.getElementById("submit-btn");
+  const title = document.getElementById("post-title").value.trim();
+  const content = document.getElementById("post-content").value.trim();
+  const category = document.getElementById("post-category").value;
+  const lang = document.getElementById("post-lang").value;
+  const rawTags = document.getElementById("post-tags").value;
+  const tags = rawTags.split(",").map(t=>t.trim()).filter(Boolean);
+
+  if(!title){toast("Please add a title","error");return;}
+  if(content.length<30){toast("Content too short (min 30 chars)","error");return;}
+  if(!currentUser){toast("Please sign in","error");return;}
+
+  btn.disabled=true;
+  btn.innerHTML=`<span class="spinner"></span> Publishing…`;
+  try {
+    const postRef = await addDoc(collection(db,"bloggerblogs"),{
+      uid: currentUser.uid,
+      fullName: currentUser.displayName||"",
+      email: currentUser.email||"",
+      title,
+      content,
+      category,
+      language: lang,
+      tags,
+      likes:0,
+      dislikes:0,
+      views:0,
+      likedBy:[],
+      savedBy:[],
+      featured:false,
+      createdAt: new Date().toISOString()
+    });
+    toast("Post published! 🎉","success");
+    setTimeout(()=>window.location.href=`presentation.html?id=${postRef.id}&coll=bloggerblogs`,900);
+  } catch(e) {
+    toast("Failed to publish: "+e.message,"error");
+    btn.disabled=false;
+    btn.innerHTML="Publish Presentation 🚀";
+  }
+};
+
+onAuthStateChanged(auth, user=>{
+  currentUser = user;
+  if(user){
+    document.getElementById("auth-gate").classList.add("hidden");
+    document.getElementById("create-form").classList.remove("hidden");
+    document.getElementById("sb-signin").classList.add("hidden");
+    document.getElementById("sb-chip").classList.remove("hidden");
+    document.getElementById("sb-avatar").textContent=initials(user.displayName||user.email);
+    document.getElementById("sb-name").textContent=user.displayName||user.email.split("@")[0];
+  } else {
+    document.getElementById("auth-gate").classList.remove("hidden");
+    document.getElementById("create-form").classList.add("hidden");
+  }
+});
+</script>
+</body>
+</html>

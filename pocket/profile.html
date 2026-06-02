@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+<header class="mobile-topbar">
+  <div class="mobile-brand">
+    <div class="mobile-logo-wrap"><img src="../assets/l.png" alt="logo"/><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
+    <span class="mobile-brand-name">Profile</span>
+  </div>
+  <div class="mobile-topbar-actions">
+    <button class="mobile-icon-btn" id="signout-btn" style="display:none;" onclick="doSignout()">↩</button>
+  </div>
+</header>
+
+<!-- Auth gate -->
+<div id="auth-gate" style="padding:60px 20px;text-align:center;display:none;">
+  <div style="font-size:3rem;margin-bottom:12px;">🔒</div>
+  <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to view profile</h2>
+  <a href="auth.html?redirect=profile.html" class="btn btn-terra">Sign In / Sign Up</a>
+</div>
+
+<!-- Profile content -->
+<main id="profile-content" style="padding:16px 16px 20px;display:none;">
+  <!-- User card -->
+  <div class="profile-card">
+    <div id="prof-photo" class="profile-avatar-lg">?</div>
+    <div id="prof-name" class="profile-name-lg">—</div>
+    <div id="prof-email" class="profile-email">—</div>
+    <div class="profile-stats">
+      <div class="profile-stat"><div class="profile-stat-val" id="stat-pts">—</div><div class="profile-stat-lbl">Points</div></div>
+      <div class="profile-stat"><div class="profile-stat-val" id="stat-posts">—</div><div class="profile-stat-lbl">Posts</div></div>
+      <div class="profile-stat"><div class="profile-stat-val" id="stat-refs">—</div><div class="profile-stat-lbl">Referrals</div></div>
+    </div>
+  </div>
+
+  <!-- Referral card -->
+  <div class="profile-card">
+    <h3 style="font-family:'Lora',serif;font-size:0.95rem;font-weight:700;color:var(--espresso);margin-bottom:6px;">🎁 Your Referral Code</h3>
+    <p style="font-size:0.8rem;color:var(--brown);margin-bottom:14px;">Share it — you and your friend both earn <strong style="color:var(--terra);">+10 points!</strong></p>
+    <div class="referral-code-box">
+      <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--stone);margin-bottom:6px;">Your Code</div>
+      <div id="ref-code" class="referral-code-val">———</div>
+      <div id="ref-link" class="referral-code-hint" style="word-break:break-all;margin-bottom:12px;"></div>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button class="btn btn-terra btn-sm" onclick="copyInvite()">📋 Copy</button>
+        <button class="btn btn-outline btn-sm" onclick="shareInvite()">📤 Share</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Purchases card -->
+  <div class="profile-card">
+    <h3 style="font-family:'Lora',serif;font-size:0.95rem;font-weight:700;color:var(--espresso);margin-bottom:12px;">🛍️ My Purchases</h3>
+    <div id="purchases-list"><div style="color:var(--stone);font-size:0.84rem;">Loading…</div></div>
+  </div>
+
+  <!-- My posts card -->
+  <div class="profile-card">
+    <h3 style="font-family:'Lora',serif;font-size:0.95rem;font-weight:700;color:var(--espresso);margin-bottom:12px;">📝 My Posts</h3>
+    <div id="my-posts-list"><div style="color:var(--stone);font-size:0.84rem;">Loading…</div></div>
+  </div>
+
+  <div style="text-align:center;margin-top:8px;">
+    <button onclick="doSignout()" class="btn btn-ghost btn-sm">Sign Out</button>
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn" onclick="location.href='index.html'"><span class="bottom-nav-icon">🏠</span>Home</button>
+  <button class="bottom-nav-btn" onclick="location.href='leaderboard.html'"><span class="bottom-nav-icon">🏆</span>Top</button>
+  <button class="bottom-nav-btn" onclick="location.href='creativecreator.html'"><span class="bottom-nav-icon">✏️</span>Create</button>
+  <button class="bottom-nav-btn" onclick="location.href='shop.html'"><span class="bottom-nav-icon">🛍️</span>Shop</button>
+  <button class="bottom-nav-btn active"><span class="bottom-nav-icon">👤</span>Profile</button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, doc, getDoc, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app=initializeApp(FB);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function timeAgo(d){if(!d)return"";const diff=(Date.now()-new Date(d).getTime())/1000;if(diff<60)return"just now";if(diff<3600)return Math.floor(diff/60)+"m ago";if(diff<86400)return Math.floor(diff/3600)+"h ago";return Math.floor(diff/86400)+"d ago";}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+
+let refUrl="";
+window.doSignout=async()=>{await signOut(auth);window.location.href="index.html";};
+window.copyInvite=async()=>{await navigator.clipboard.writeText(refUrl).catch(()=>{});toast("Invite link copied!","success");};
+window.shareInvite=async()=>{
+  if(navigator.share){try{await navigator.share({title:"Join Presentation Lab",text:"Use my referral to get bonus points!",url:refUrl});return;}catch{}}
+  window.copyInvite();
+};
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){
+    document.getElementById("auth-gate").style.display="block";
+    return;
+  }
+  document.getElementById("profile-content").style.display="block";
+  document.getElementById("signout-btn").style.display="flex";
+
+  if(user.photoURL){
+    document.getElementById("prof-photo").innerHTML=`<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;" alt="photo"/>`;
+  }else{
+    document.getElementById("prof-photo").textContent=initials(user.displayName||user.email);
+  }
+  document.getElementById("prof-name").textContent=user.displayName||"Anonymous";
+  document.getElementById("prof-email").textContent=user.email||"";
+
+  const bSnap=await getDoc(doc(db,"bloggers",user.uid)).catch(()=>null);
+  const bData=bSnap?.data()||{};
+  document.getElementById("stat-pts").textContent=bData.points||0;
+
+  const refCode=bData.referralCode||user.uid.substring(0,8).toUpperCase();
+  refUrl=`${window.location.origin}/index.html?ref=${refCode}`;
+  document.getElementById("ref-code").textContent=refCode;
+  document.getElementById("ref-link").textContent=refUrl;
+
+  const [postsSnap,purchSnap,refSnap]=await Promise.all([
+    getDocs(query(collection(db,"bloggerblogs"),where("uid","==",user.uid))).catch(()=>({size:0,docs:[]})),
+    getDocs(query(collection(db,"user_purchases"),where("uid","==",user.uid),orderBy("purchasedAt","desc"))).catch(()=>({size:0,docs:[]})),
+    getDocs(query(collection(db,"bloggers"),where("referredBy","==",user.uid))).catch(()=>({size:0}))
+  ]);
+
+  document.getElementById("stat-posts").textContent=postsSnap.size||0;
+  document.getElementById("stat-refs").textContent=refSnap.size||0;
+
+  // Purchases
+  const pl=document.getElementById("purchases-list");
+  if(!purchSnap.size){
+    pl.innerHTML=`<div style="color:var(--stone);font-size:0.84rem;">No purchases yet. <a href="shop.html" style="color:var(--terra);">Visit shop →</a></div>`;
+  }else{
+    const rows=[];
+    purchSnap.docs.forEach(d=>{
+      const p=d.data();
+      rows.push(`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light);">
+        <span style="font-size:1.2rem;">🎁</span>
+        <div style="flex:1;"><div style="font-weight:600;font-size:0.85rem;color:var(--espresso);">${esc(p.productName||"Item")}</div><div style="font-size:0.72rem;color:var(--stone);">${p.pointPrice} pts</div></div>
+        <span class="shop-bought-badge">✓</span></div>`);
+    });
+    pl.innerHTML=rows.join("");
+  }
+
+  // My posts
+  const postsList=document.getElementById("my-posts-list");
+  if(!postsSnap.size){
+    postsList.innerHTML=`<div style="color:var(--stone);font-size:0.84rem;">No posts yet. <a href="creativecreator.html" style="color:var(--terra);">Create one →</a></div>`;
+  }else{
+    const rows=[];
+    postsSnap.docs.slice(0,8).forEach(d=>{
+      const p=d.data();
+      rows.push(`<div style="padding:9px 0;border-bottom:1px solid var(--border-light);cursor:pointer;" onclick="location.href='presentation.html?id=${d.id}'">
+        <div style="font-family:'Lora',serif;font-size:0.88rem;font-weight:600;color:var(--espresso);margin-bottom:2px;">${esc(p.title||"Untitled")}</div>
+        <div style="font-size:0.72rem;color:var(--stone);">${timeAgo(p.createdAt)} · ❤️ ${p.likes||0}</div></div>`);
+    });
+    postsList.innerHTML=rows.join("");
+  }
+});
+</script>
+</body>
+</html>

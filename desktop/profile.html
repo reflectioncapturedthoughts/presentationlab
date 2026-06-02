@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+<div class="app-shell">
+  <aside class="sidebar-left">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-wrap"><img src="../assets/l.png" alt="logo" class="brand-logo-img"/><video class="brand-logo-vid" autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
+      <div><div class="brand-name">Presentation Lab</div><div class="brand-parent">by ARCT</div></div>
+    </a>
+    <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="shop.html" class="nav-item"><span class="nav-icon">🛍️</span><span class="nav-label">Shop</span></a>
+    <a href="profile.html" class="nav-item active"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
+    <div class="sidebar-spacer"></div>
+    <a href="auth.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign in</a>
+    <div class="user-chip hidden" id="sb-chip">
+      <div class="user-avatar" id="sb-avatar">?</div>
+      <div class="user-info"><div class="user-name" id="sb-name">—</div><div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div></div>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <div class="feed-header">
+      <h1 class="feed-title">👤 My Profile</h1>
+      <p style="font-size:0.84rem;color:var(--brown);padding-bottom:14px;">Your account, points, referral code, and purchases.</p>
+    </div>
+    <div id="auth-gate" style="padding:80px 20px;text-align:center;" class="hidden">
+      <div style="font-size:3rem;margin-bottom:14px;">🔒</div>
+      <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to view your profile</h2>
+      <a href="auth.html?redirect=profile.html" class="btn btn-terra btn-lg" style="margin-top:8px;">Sign In / Sign Up</a>
+    </div>
+    <div id="profile-content" class="hidden" style="padding:24px 20px 60px;">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;text-align:center;margin-bottom:16px;">
+        <div id="prof-photo" style="width:72px;height:72px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.8rem;font-family:'Lora',serif;margin:0 auto 14px;overflow:hidden;">?</div>
+        <div id="prof-name" style="font-family:'Lora',serif;font-size:1.4rem;font-weight:700;color:var(--espresso);margin-bottom:4px;">—</div>
+        <div id="prof-email" style="font-size:0.84rem;color:var(--stone);">—</div>
+        <div style="display:flex;gap:32px;justify-content:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border-light);">
+          <div style="text-align:center;"><div id="stat-pts" style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--terra);">—</div><div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Points</div></div>
+          <div style="text-align:center;"><div id="stat-posts" style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--terra);">—</div><div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Posts</div></div>
+          <div style="text-align:center;"><div id="stat-referrals" style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--terra);">—</div><div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Referrals</div></div>
+          <div style="text-align:center;"><div id="stat-purchases" style="font-family:'Lora',serif;font-size:1.6rem;font-weight:700;color:var(--terra);">—</div><div style="font-size:0.68rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Purchases</div></div>
+        </div>
+      </div>
+      <!-- Referral Card -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
+        <h3 style="font-family:'Lora',serif;font-size:1rem;font-weight:700;color:var(--espresso);margin-bottom:6px;">🎁 Your Referral Code</h3>
+        <p style="font-size:0.84rem;color:var(--brown);margin-bottom:16px;">Share this with friends — both of you earn <strong style="color:var(--terra);">+10 points</strong> when they create an account!</p>
+        <div style="background:var(--sand-warm);border:2px dashed rgba(201,108,84,0.3);border-radius:var(--radius-md);padding:20px;text-align:center;">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--stone);margin-bottom:6px;">Referral Code</div>
+          <div id="ref-code" style="font-family:'Lora',serif;font-size:1.8rem;font-weight:700;color:var(--terra);letter-spacing:0.15em;margin-bottom:10px;">———</div>
+          <div id="ref-link" style="font-size:0.76rem;color:var(--stone);word-break:break-all;margin-bottom:14px;"></div>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+            <button class="btn btn-terra btn-sm" onclick="copyInvite()">📋 Copy Invite Link</button>
+            <button class="btn btn-outline btn-sm" onclick="shareInvite()">📤 Share</button>
+          </div>
+        </div>
+      </div>
+      <!-- Purchases -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
+        <h3 style="font-family:'Lora',serif;font-size:1rem;font-weight:700;color:var(--espresso);margin-bottom:14px;">🛍️ My Purchases</h3>
+        <div id="purchases-list"><div style="color:var(--stone);font-size:0.84rem;">Loading…</div></div>
+      </div>
+      <!-- My Posts -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
+        <h3 style="font-family:'Lora',serif;font-size:1rem;font-weight:700;color:var(--espresso);margin-bottom:14px;">📝 My Posts</h3>
+        <div id="my-posts-list"><div style="color:var(--stone);font-size:0.84rem;">Loading…</div></div>
+      </div>
+      <div style="text-align:center;">
+        <button onclick="doSignout()" class="btn btn-ghost btn-sm">Sign Out</button>
+      </div>
+    </div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <h3 class="widget-title">💡 Earning Tips</h3>
+      <div style="font-size:0.84rem;color:var(--brown);line-height:1.85;">
+        <div>❤️ +1 pt per like on your post</div>
+        <div>🎁 +10 pts per referral</div>
+        <div>✏️ Create quality content daily</div>
+        <div>🔝 Consistent writers earn more</div>
+      </div>
+    </div>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.06),var(--sand-warm));">
+      <div style="font-size:0.8rem;color:var(--brown);">
+        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
+        <a href="https://arct.onrender.com" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">ARCT — Reflection Captured Thoughts</a>
+        <div style="margin-top:8px;color:var(--stone);font-size:0.73rem;">Share speeches. Earn recognition. Build your voice.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, doc, getDoc, collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB = {apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app = initializeApp(FB);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function timeAgo(d){if(!d)return"";const diff=(Date.now()-new Date(d).getTime())/1000;if(diff<60)return"just now";if(diff<3600)return Math.floor(diff/60)+"m ago";if(diff<86400)return Math.floor(diff/3600)+"h ago";return Math.floor(diff/86400)+"d ago";}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+
+let refCode = "";
+let refUrl = "";
+
+window.doSignout = async () => { await signOut(auth); window.location.href = "index.html"; };
+window.copyInvite = async () => { await navigator.clipboard.writeText(refUrl).catch(()=>{}); toast("Invite link copied to clipboard!", "success"); };
+window.shareInvite = async () => {
+  if (navigator.share) {
+    try { await navigator.share({title:"Join Presentation Lab",text:"Use my referral link to earn bonus points on Presentation Lab!",url:refUrl}); return; } catch {}
+  }
+  window.copyInvite();
+};
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    document.getElementById("auth-gate").classList.remove("hidden");
+    document.getElementById("sb-signin").classList.remove("hidden");
+    return;
+  }
+  document.getElementById("profile-content").classList.remove("hidden");
+  document.getElementById("sb-signin").classList.add("hidden");
+  document.getElementById("sb-chip").classList.remove("hidden");
+  document.getElementById("sb-avatar").textContent = initials(user.displayName||user.email);
+  document.getElementById("sb-name").textContent = user.displayName||user.email.split("@")[0];
+
+  // Set photo or initials
+  if (user.photoURL) {
+    document.getElementById("prof-photo").innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover;" alt="photo"/>`;
+  } else {
+    document.getElementById("prof-photo").textContent = initials(user.displayName||user.email);
+  }
+  document.getElementById("prof-name").textContent = user.displayName || "Anonymous";
+  document.getElementById("prof-email").textContent = user.email || "";
+
+  // Load blogger doc
+  const bSnap = await getDoc(doc(db,"bloggers",user.uid)).catch(()=>null);
+  const bData = bSnap?.data() || {};
+
+  document.getElementById("stat-pts").textContent = bData.points || 0;
+  refCode = bData.referralCode || user.uid.substring(0,8).toUpperCase();
+  const origin = window.location.origin;
+  const base = window.location.pathname.includes("pocket") ? "../" : "../";
+  refUrl = origin + (window.location.pathname.split("/desktop")[0] || "") + "/index.html?ref=" + refCode;
+  document.getElementById("ref-code").textContent = refCode;
+  document.getElementById("ref-link").textContent = refUrl;
+
+  // Referrals count (how many users have referredBy = this uid)
+  const refSnap = await getDocs(query(collection(db,"bloggers"),where("referredBy","==",user.uid))).catch(()=>({size:0}));
+  document.getElementById("stat-referrals").textContent = refSnap.size || 0;
+
+  // Posts count
+  const postsSnap = await getDocs(query(collection(db,"bloggerblogs"),where("uid","==",user.uid))).catch(()=>({size:0,docs:[]}));
+  document.getElementById("stat-posts").textContent = postsSnap.size || 0;
+
+  // Purchases
+  const purchSnap = await getDocs(query(collection(db,"user_purchases"),where("uid","==",user.uid),orderBy("purchasedAt","desc"))).catch(()=>({size:0,docs:[]}));
+  document.getElementById("stat-purchases").textContent = purchSnap.size || 0;
+
+  const purchList = document.getElementById("purchases-list");
+  if (!purchSnap.size) {
+    purchList.innerHTML = `<div style="color:var(--stone);font-size:0.84rem;">No purchases yet. <a href="shop.html" style="color:var(--terra);">Visit the shop →</a></div>`;
+  } else {
+    const rows = [];
+    purchSnap.forEach(d => {
+      const p = d.data();
+      rows.push(`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-light);">
+        <span style="font-size:1.2rem;">🎁</span>
+        <div style="flex:1;"><div style="font-weight:600;font-size:0.88rem;color:var(--espresso);">${esc(p.productName||"Item")}</div><div style="font-size:0.75rem;color:var(--stone);">${timeAgo(p.purchasedAt?.toDate?.()?.toISOString?.())} · ${p.pointPrice} pts</div></div>
+        <span class="shop-bought-badge">✓ Owned</span></div>`);
+    });
+    purchList.innerHTML = rows.join("");
+  }
+
+  // My posts
+  const postsList = document.getElementById("my-posts-list");
+  if (!postsSnap.size) {
+    postsList.innerHTML = `<div style="color:var(--stone);font-size:0.84rem;">No posts yet. <a href="creativecreator.html" style="color:var(--terra);">Create one →</a></div>`;
+  } else {
+    const rows = [];
+    postsSnap.docs.slice(0,10).forEach(d => {
+      const p = d.data();
+      rows.push(`<div style="padding:9px 0;border-bottom:1px solid var(--border-light);cursor:pointer;" onclick="window.location='presentation.html?id=${d.id}'">
+        <div style="font-family:'Lora',serif;font-size:0.9rem;font-weight:600;color:var(--espresso);margin-bottom:2px;">${esc(p.title||"Untitled")}</div>
+        <div style="font-size:0.75rem;color:var(--stone);">${timeAgo(p.createdAt)} · ❤️ ${p.likes||0} · 👁 ${p.views||0}</div>
+      </div>`);
+    });
+    postsList.innerHTML = rows.join("");
+  }
+});
+</script>
+</body>
+</html>

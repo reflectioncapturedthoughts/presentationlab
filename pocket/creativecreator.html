@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+<header class="mobile-topbar">
+  <div class="mobile-brand">
+    <div class="mobile-logo-wrap"><img src="../assets/l.png" alt="logo"/><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
+    <span class="mobile-brand-name">Create</span>
+  </div>
+  <div class="mobile-topbar-actions">
+    <a href="auth.html?redirect=creativecreator.html" id="signin-btn" class="btn btn-terra btn-sm" style="display:none;">Sign In</a>
+  </div>
+</header>
+
+<!-- Auth gate -->
+<div id="auth-gate" style="padding:60px 20px;text-align:center;display:none;">
+  <div style="font-size:3rem;margin-bottom:14px;">🔒</div>
+  <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to create</h2>
+  <a href="auth.html?redirect=creativecreator.html" class="btn btn-terra btn-lg">Sign In / Sign Up</a>
+</div>
+
+<!-- Form -->
+<div id="create-form" style="padding:16px 16px 20px;display:none;">
+  <div class="form-group">
+    <label class="form-label">Title <span style="color:#ef4444;">*</span></label>
+    <input type="text" class="form-input" id="post-title" placeholder="Give your presentation a title…" maxlength="120"/>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Category</label>
+    <select class="form-select" id="post-category">
+      <option value="">Select category…</option>
+      <option>Speech</option><option>Essay</option><option>Creative Writing</option>
+      <option>Motivational</option><option>Academic</option><option>Debate</option>
+      <option>Poetry</option><option>Other</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Content <span style="color:#ef4444;">*</span></label>
+    <textarea class="form-textarea" id="post-content" placeholder="Write your presentation here…" style="min-height:220px;"></textarea>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Tags <span style="color:var(--stone);font-weight:400;">(comma-separated)</span></label>
+    <input type="text" class="form-input" id="post-tags" placeholder="e.g. leadership, motivation"/>
+  </div>
+  <button class="btn btn-terra btn-full btn-lg" id="submit-btn" onclick="submitPost()" style="margin-top:4px;">Publish 🚀</button>
+</div>
+
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn" onclick="location.href='index.html'"><span class="bottom-nav-icon">🏠</span>Home</button>
+  <button class="bottom-nav-btn" onclick="location.href='leaderboard.html'"><span class="bottom-nav-icon">🏆</span>Top</button>
+  <button class="bottom-nav-btn active"><span class="bottom-nav-icon">✏️</span>Create</button>
+  <button class="bottom-nav-btn" onclick="location.href='shop.html'"><span class="bottom-nav-icon">🛍️</span>Shop</button>
+  <button class="bottom-nav-btn" onclick="location.href='profile.html'"><span class="bottom-nav-icon">👤</span>Profile</button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app=initializeApp(FB);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+
+let currentUser=null;
+onAuthStateChanged(auth,user=>{
+  currentUser=user;
+  if(user){
+    document.getElementById("auth-gate").style.display="none";
+    document.getElementById("create-form").style.display="block";
+    document.getElementById("signin-btn").style.display="none";
+  }else{
+    document.getElementById("auth-gate").style.display="block";
+    document.getElementById("create-form").style.display="none";
+    document.getElementById("signin-btn").style.display="flex";
+  }
+});
+
+window.submitPost=async()=>{
+  const btn=document.getElementById("submit-btn");
+  const title=document.getElementById("post-title").value.trim();
+  const content=document.getElementById("post-content").value.trim();
+  const category=document.getElementById("post-category").value;
+  const tags=document.getElementById("post-tags").value.split(",").map(t=>t.trim()).filter(Boolean);
+  if(!title){toast("Please add a title","error");return;}
+  if(content.length<30){toast("Content too short (min 30 chars)","error");return;}
+  if(!currentUser){toast("Please sign in","error");return;}
+  btn.disabled=true;btn.innerHTML=`<span class="spinner" style="margin:0 auto;display:block;width:18px;height:18px;border-width:2px;"></span>`;
+  try{
+    const ref=await addDoc(collection(db,"bloggerblogs"),{
+      uid:currentUser.uid,fullName:currentUser.displayName||"",email:currentUser.email||"",
+      title,content,category,tags,likes:0,dislikes:0,views:0,likedBy:[],savedBy:[],
+      featured:false,createdAt:new Date().toISOString()
+    });
+    toast("Published! 🎉","success");
+    setTimeout(()=>window.location.href=`presentation.html?id=${ref.id}&coll=bloggerblogs`,900);
+  }catch(e){
+    toast("Failed: "+e.message,"error");
+    btn.disabled=false;btn.innerHTML="Publish 🚀";
+  }
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+<header class="mobile-topbar">
+  <div class="mobile-brand">
+    <div class="mobile-logo-wrap"><img src="../assets/l.png" alt="logo"/><video autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video></div>
+    <span class="mobile-brand-name">🛍️ Shop</span>
+  </div>
+  <div class="mobile-topbar-actions">
+    <div id="pts-chip" class="mobile-pts-chip hidden">🏅 <span id="pts-val">0</span></div>
+  </div>
+</header>
+
+<!-- Balance bar -->
+<div style="padding:12px 16px;background:linear-gradient(135deg,rgba(201,108,84,0.06),var(--sand-warm));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;" id="balance-bar">
+  <div style="font-size:1.3rem;">🏅</div>
+  <div><div style="font-size:0.72rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.08em;">Balance</div><div id="bal-val" style="font-family:'Lora',serif;font-size:1.2rem;font-weight:700;color:var(--terra);">— pts</div></div>
+  <a href="profile.html" class="btn btn-outline btn-sm" style="margin-left:auto;font-size:0.75rem;">Profile →</a>
+</div>
+
+<!-- Auth gate -->
+<div id="auth-gate" style="padding:60px 20px;text-align:center;display:none;">
+  <div style="font-size:3rem;margin-bottom:12px;">🔒</div>
+  <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to shop</h2>
+  <a href="auth.html?redirect=shop.html" class="btn btn-terra">Sign In / Sign Up</a>
+</div>
+
+<!-- Products -->
+<main id="shop-content">
+  <div style="padding:40px 16px;text-align:center;color:var(--stone);">
+    <div class="spinner" style="margin:0 auto 12px;"></div>
+    <p style="font-size:0.84rem;">Loading shop…</p>
+  </div>
+</main>
+
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn" onclick="location.href='index.html'"><span class="bottom-nav-icon">🏠</span>Home</button>
+  <button class="bottom-nav-btn" onclick="location.href='leaderboard.html'"><span class="bottom-nav-icon">🏆</span>Top</button>
+  <button class="bottom-nav-btn" onclick="location.href='creativecreator.html'"><span class="bottom-nav-icon">✏️</span>Create</button>
+  <button class="bottom-nav-btn active"><span class="bottom-nav-icon">🛍️</span>Shop</button>
+  <button class="bottom-nav-btn" onclick="location.href='profile.html'"><span class="bottom-nav-icon">👤</span>Profile</button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, increment, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB={apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",authDomain:"reflectioncapturedthoughts.firebaseapp.com",projectId:"reflectioncapturedthoughts",storageBucket:"reflectioncapturedthoughts.firebasestorage.app",messagingSenderId:"331335730832",appId:"1:331335730832:web:731df65bd40f9646adfa15"};
+const app=initializeApp(FB);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+
+const SAMPLE=[
+  {id:"featured-badge",emoji:"✨",name:"Featured Badge",description:"Display a featured badge next to your name on all posts for 30 days.",pointPrice:50,category:"Profile"},
+  {id:"post-pin",emoji:"📌",name:"Post Pin",description:"Pin your best post to the top of your profile for 30 days.",pointPrice:100,category:"Content"},
+  {id:"custom-title",emoji:"🎖️",name:"Custom Title",description:"Set a custom title displayed next to your name.",pointPrice:200,category:"Profile"},
+  {id:"gold-avatar",emoji:"🌟",name:"Gold Avatar",description:"Get a glowing gold border on your avatar for 30 days.",pointPrice:150,category:"Profile"},
+  {id:"profile-boost",emoji:"🔝",name:"Profile Boost",description:"Appear at the top of the Leaderboard sidebar for 7 days.",pointPrice:300,category:"Visibility"},
+  {id:"dark-mode",emoji:"🌙",name:"Dark Mode",description:"Early access to Dark Mode theme.",pointPrice:75,category:"Feature"},
+  {id:"dm-access",emoji:"💌",name:"DM Access",description:"Unlock direct messaging with other writers.",pointPrice:120,category:"Social"},
+  {id:"speech-coach",emoji:"🎤",name:"Speech Coach Badge",description:"Show the Speech Coach badge on your profile.",pointPrice:250,category:"Achievement"},
+];
+
+let currentUser=null;
+let userPoints=0;
+let purchasedIds=new Set();
+let products=[];
+
+onAuthStateChanged(auth,async user=>{
+  currentUser=user;
+  if(user){
+    document.getElementById("auth-gate").style.display="none";
+    document.getElementById("pts-chip").classList.remove("hidden");
+    const bSnap=await getDoc(doc(db,"bloggers",user.uid)).catch(()=>null);
+    if(bSnap?.exists()){
+      userPoints=bSnap.data().points||0;
+      document.getElementById("pts-val").textContent=userPoints;
+      document.getElementById("bal-val").textContent=userPoints+" pts";
+    }
+    const pSnap=await getDocs(query(collection(db,"user_purchases"),where("uid","==",user.uid))).catch(()=>({forEach:()=>{}}));
+    pSnap.forEach(d=>purchasedIds.add(d.data().productId));
+  }else{
+    document.getElementById("auth-gate").style.display="block";
+  }
+  loadProducts();
+});
+
+async function loadProducts(){
+  try{
+    const snap=await getDocs(collection(db,"shop_products"));
+    products=[];
+    snap.forEach(d=>products.push({id:d.id,...d.data()}));
+    if(!products.length) products=SAMPLE;
+  }catch{products=SAMPLE;}
+  renderShop();
+}
+
+function renderShop(){
+  const c=document.getElementById("shop-content");
+  if(!products.length){c.innerHTML=`<div style="padding:40px;text-align:center;color:var(--stone);">Shop coming soon!</div>`;return;}
+  c.innerHTML=`<div class="shop-grid">`+products.map(p=>{
+    const bought=purchasedIds.has(p.id);
+    const canAfford=currentUser&&userPoints>=p.pointPrice;
+    return `<div class="shop-card">
+      <div class="shop-card-icon">${esc(p.emoji||"🎁")}</div>
+      <div class="shop-card-body">
+        <div class="shop-card-name">${esc(p.name)}</div>
+        <div class="shop-card-desc">${esc(p.description)}</div>
+      </div>
+      <div class="shop-card-right">
+        <span class="shop-price-badge">🏅 ${p.pointPrice}</span>
+        ${bought
+          ?`<span class="shop-bought-badge">✓ Owned</span>`
+          :currentUser
+            ?`<button class="btn btn-terra btn-sm" ${canAfford?'':'disabled'} onclick="buy('${p.id}',${p.pointPrice},'${esc(p.name)}')">
+                ${canAfford?'Buy':'Need '+p.pointPrice}
+              </button>`
+            :`<a href="auth.html?redirect=shop.html" class="btn btn-outline btn-sm">Sign in</a>`
+        }
+      </div>
+    </div>`;
+  }).join("")+`</div>`;
+}
+
+window.buy=async(productId,price,name)=>{
+  if(!currentUser) return;
+  if(purchasedIds.has(productId)){toast("Already owned!","info");return;}
+  if(userPoints<price){toast("Not enough points!","error");return;}
+  if(!confirm(`Buy "${name}" for ${price} points?`)) return;
+  try{
+    await Promise.all([
+      updateDoc(doc(db,"bloggers",currentUser.uid),{points:increment(-price)}),
+      addDoc(collection(db,"user_purchases"),{uid:currentUser.uid,productId,productName:name,pointPrice:price,purchasedAt:serverTimestamp()})
+    ]);
+    userPoints-=price;
+    purchasedIds.add(productId);
+    document.getElementById("pts-val").textContent=userPoints;
+    document.getElementById("bal-val").textContent=userPoints+" pts";
+    toast(`"${name}" purchased! 🎉`,"success");
+    renderShop();
+  }catch(e){toast("Failed: "+e.message,"error");}
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<div class="app-shell">
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar-left">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-wrap">
+        <img src="../assets/l.png" alt="logo" class="brand-logo-img"/>
+        <video class="brand-logo-vid" autoplay muted loop playsinline><source src="../assets/logo.mp4" type="video/mp4"></video>
+      </div>
+      <div>
+        <div class="brand-name">Presentation Lab</div>
+        <div class="brand-parent">by ARCT</div>
+      </div>
+    </a>
+    <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="shop.html" class="nav-item active"><span class="nav-icon">🛍️</span><span class="nav-label">Shop</span></a>
+    <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></a>
+    <div class="sidebar-spacer"></div>
+    <div id="sb-user-wrap">
+      <a href="auth.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign in</a>
+      <div class="user-chip hidden" id="sb-chip">
+        <div class="user-avatar" id="sb-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-name">—</div>
+          <div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="feed">
+    <div class="feed-header">
+      <h1 class="feed-title">🛍️ Points Shop</h1>
+      <p style="font-size:0.84rem;color:var(--brown);padding-bottom:14px;">Spend your earned points on exclusive perks and rewards.</p>
+    </div>
+
+    <!-- Points balance bar -->
+    <div id="balance-bar" style="padding:14px 20px;background:linear-gradient(135deg,rgba(201,108,84,0.06),var(--sand-warm));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;">
+      <div style="font-size:1.6rem;">🏅</div>
+      <div>
+        <div style="font-family:'Lora',serif;font-size:0.78rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.1em;">Your Balance</div>
+        <div id="pts-val" style="font-family:'Lora',serif;font-size:1.5rem;font-weight:700;color:var(--terra);">— pts</div>
+      </div>
+      <a href="profile.html" class="btn btn-outline btn-sm" style="margin-left:auto;">View Profile →</a>
+    </div>
+
+    <!-- Sign in gate -->
+    <div id="auth-gate" style="padding:80px 20px;text-align:center;" class="hidden">
+      <div style="font-size:3rem;margin-bottom:14px;">🔒</div>
+      <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to shop</h2>
+      <p style="color:var(--brown);margin-bottom:20px;">Earn points by creating and getting likes on presentations.</p>
+      <a href="auth.html?redirect=shop.html" class="btn btn-terra btn-lg">Sign In / Sign Up</a>
+    </div>
+
+    <!-- Products grid -->
+    <div id="shop-content">
+      <div style="padding:40px;text-align:center;color:var(--stone);">
+        <div class="spinner" style="margin:0 auto 12px;"></div>
+        <p>Loading shop…</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar-right">
+    <div class="widget">
+      <h3 class="widget-title">🏅 How to earn points</h3>
+      <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
+        <div style="margin-bottom:6px;">❤️ <strong>+1</strong> per like on your post</div>
+        <div style="margin-bottom:6px;">👎 <strong>−1</strong> per 3 dislikes</div>
+        <div style="margin-bottom:6px;">🎁 <strong>+10</strong> for each friend you refer</div>
+        <div>✏️ Create quality content to climb!</div>
+      </div>
+    </div>
+    <div class="widget">
+      <h3 class="widget-title">🎁 Refer &amp; Earn</h3>
+      <div id="referral-widget" style="font-size:0.84rem;color:var(--brown);line-height:1.7;">
+        <a href="auth.html" style="color:var(--terra);">Sign in to see your referral code →</a>
+      </div>
+    </div>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.08),var(--sand-warm));">
+      <div style="font-size:0.8rem;color:var(--brown);">
+        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
+        <a href="https://arct.onrender.com" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">ARCT — Reflection Captured Thoughts</a>
+        <div style="margin-top:8px;color:var(--stone);font-size:0.73rem;">Share speeches. Earn recognition. Build your voice.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, increment, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const FB = { apiKey:"AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY", authDomain:"reflectioncapturedthoughts.firebaseapp.com", projectId:"reflectioncapturedthoughts", storageBucket:"reflectioncapturedthoughts.firebasestorage.app", messagingSenderId:"331335730832", appId:"1:331335730832:web:731df65bd40f9646adfa15" };
+const app = initializeApp(FB);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},4000);}
+
+let currentUser = null;
+let userPoints = 0;
+let purchasedIds = new Set();
+let products = [];
+
+// SAMPLE PRODUCTS — seeded on first admin seed
+const SAMPLE_PRODUCTS = [
+  { id:"featured-badge", emoji:"✨", name:"Featured Badge", description:"Display a shiny featured badge next to your name on all your posts for 30 days.", pointPrice:50, category:"Profile" },
+  { id:"post-pin", emoji:"📌", name:"Post Pin", description:"Pin your best post to the top of your profile for 30 days so visitors see it first.", pointPrice:100, category:"Content" },
+  { id:"custom-title", emoji:"🎖️", name:"Custom Title", description:"Get a custom title displayed next to your name (e.g. 'Top Orator', 'Rising Star').", pointPrice:200, category:"Profile" },
+  { id:"gold-avatar", emoji:"🌟", name:"Gold Avatar", description:"Unlock a glowing gold border on your profile avatar that stands out on the feed.", pointPrice:150, category:"Profile" },
+  { id:"profile-boost", emoji:"🔝", name:"Profile Boost", description:"Appear at the top of the Leaderboard sidebar widget for 7 days.", pointPrice:300, category:"Visibility" },
+  { id:"dark-mode", emoji:"🌙", name:"Dark Mode Access", description:"Early access to Dark Mode for Presentation Lab — a darker, eye-friendly theme.", pointPrice:75, category:"Feature" },
+  { id:"dm-access", emoji:"💌", name:"DM Access", description:"Unlock direct messaging with other writers on the platform.", pointPrice:120, category:"Social" },
+  { id:"speech-coach", emoji:"🎤", name:"Speech Coach Badge", description:"Show the 'Speech Coach' badge — awarded for posting 10+ quality presentations.", pointPrice:250, category:"Achievement" },
+];
+
+window.doSignout = async () => { await signOut(auth); window.location.href = "index.html"; };
+
+onAuthStateChanged(auth, async user => {
+  currentUser = user;
+  if (user) {
+    document.getElementById("auth-gate").classList.add("hidden");
+    document.getElementById("sb-signin").classList.add("hidden");
+    document.getElementById("sb-chip").classList.remove("hidden");
+    document.getElementById("sb-avatar").textContent = initials(user.displayName || user.email);
+    document.getElementById("sb-name").textContent = user.displayName || user.email.split("@")[0];
+
+    // Load user data
+    const bloggerSnap = await getDoc(doc(db, "bloggers", user.uid)).catch(()=>null);
+    if (bloggerSnap?.exists()) {
+      const data = bloggerSnap.data();
+      userPoints = data.points || 0;
+      document.getElementById("pts-val").textContent = userPoints + " pts";
+
+      // Show referral code
+      const code = data.referralCode || user.uid.substring(0,8).toUpperCase();
+      const refUrl = window.location.origin + "/index.html?ref=" + code;
+      document.getElementById("referral-widget").innerHTML = `
+        <div style="font-size:0.78rem;color:var(--stone);margin-bottom:6px;">Your referral code:</div>
+        <div style="font-family:'Lora',serif;font-size:1.2rem;font-weight:700;color:var(--terra);letter-spacing:0.12em;margin-bottom:8px;">${code}</div>
+        <button onclick="copyRef('${refUrl}')" class="btn btn-outline btn-sm btn-full">📋 Copy Invite Link</button>
+        <div style="margin-top:8px;font-size:0.76rem;color:var(--stone);">Both you and your friend earn +10 points when they sign up!</div>`;
+    }
+
+    // Load purchases
+    const pSnap = await getDocs(query(collection(db,"user_purchases"), where("uid","==",user.uid))).catch(()=>({forEach:()=>{}}));
+    pSnap.forEach(d => purchasedIds.add(d.data().productId));
+  } else {
+    document.getElementById("auth-gate").classList.remove("hidden");
+    document.getElementById("pts-val").textContent = "Sign in to see";
+  }
+  loadProducts();
+});
+
+window.copyRef = async (url) => {
+  if (navigator.share) {
+    try { await navigator.share({ title:"Join Presentation Lab", text:"Use my referral link to get bonus points!", url }); return; } catch {}
+  }
+  await navigator.clipboard.writeText(url).catch(()=>{});
+  toast("Invite link copied!", "success");
+};
+
+async function loadProducts() {
+  try {
+    const snap = await getDocs(collection(db, "shop_products"));
+    products = [];
+    snap.forEach(d => products.push({ id: d.id, ...d.data() }));
+    // If Firestore is empty, use sample products
+    if (!products.length) products = SAMPLE_PRODUCTS;
+  } catch { products = SAMPLE_PRODUCTS; }
+  renderShop();
+}
+
+function renderShop() {
+  const container = document.getElementById("shop-content");
+  if (!products.length) {
+    container.innerHTML = `<div class="feed-empty"><div class="feed-empty-icon">🛒</div><div class="feed-empty-title">Shop coming soon</div></div>`;
+    return;
+  }
+
+  // Group by category
+  const cats = {};
+  products.forEach(p => {
+    const cat = p.category || "General";
+    if (!cats[cat]) cats[cat] = [];
+    cats[cat].push(p);
+  });
+
+  container.innerHTML = Object.entries(cats).map(([cat, items]) => `
+    <div style="padding:20px 20px 0;">
+      <h2 style="font-family:'Lora',serif;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--stone);margin-bottom:14px;">${esc(cat)}</h2>
+    </div>
+    <div class="shop-grid" style="padding:0 20px 4px;">
+      ${items.map(p => {
+        const bought = purchasedIds.has(p.id);
+        const canAfford = currentUser && userPoints >= p.pointPrice;
+        return `
+        <div class="shop-card">
+          <div class="shop-card-icon">${esc(p.emoji||"🎁")}</div>
+          <div style="flex:1;">
+            <div class="shop-card-name">${esc(p.name)}</div>
+            <div class="shop-card-desc">${esc(p.description)}</div>
+          </div>
+          <div class="shop-card-price">
+            <span class="shop-price-badge">🏅 ${p.pointPrice} pts</span>
+            ${bought
+              ? `<span class="shop-bought-badge">✓ Owned</span>`
+              : currentUser
+                ? `<button class="btn btn-terra btn-sm" ${canAfford?'':'disabled'} onclick="buyProduct('${p.id}',${p.pointPrice},'${esc(p.name)}')">
+                    ${canAfford ? 'Buy' : 'Need ' + p.pointPrice + ' pts'}
+                   </button>`
+                : `<a href="auth.html?redirect=shop.html" class="btn btn-outline btn-sm">Sign in</a>`
+            }
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`).join("");
+}
+
+window.buyProduct = async (productId, price, name) => {
+  if (!currentUser) return;
+  if (purchasedIds.has(productId)) { toast("Already owned!", "info"); return; }
+  if (userPoints < price) { toast("Not enough points!", "error"); return; }
+
+  if (!confirm(`Buy "${name}" for ${price} points?`)) return;
+
+  try {
+    await Promise.all([
+      updateDoc(doc(db, "bloggers", currentUser.uid), { points: increment(-price) }),
+      addDoc(collection(db, "user_purchases"), {
+        uid: currentUser.uid,
+        productId,
+        productName: name,
+        pointPrice: price,
+        purchasedAt: serverTimestamp()
+      })
+    ]);
+    userPoints -= price;
+    purchasedIds.add(productId);
+    document.getElementById("pts-val").textContent = userPoints + " pts";
+    toast(`"${name}" purchased! 🎉`, "success");
+    renderShop();
+  } catch(e) {
+    toast("Purchase failed: " + e.message, "error");
+  }
+};
+</script>
+</body>
+</html>
