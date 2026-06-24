@@ -10,8 +10,61 @@
 <body>
 <div id="toast-container"></div>
 
+<!-- Edit modal -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-header">
+      <h2 class="modal-title">Edit Presentation</h2>
+      <button class="modal-close" id="edit-modal-close">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Title</label>
+      <input type="text" class="form-input" id="edit-title" style="font-family:'Lora',serif;font-size:1rem;font-weight:600;" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Content</label>
+      <textarea class="form-textarea" id="edit-content" style="min-height:200px;font-size:0.9rem;"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Short Preview</label>
+      <input type="text" class="form-input" id="edit-preview" />
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="edit-category">
+          <option value="">Category…</option>
+          <option>Academic</option><option>Business</option><option>Motivational</option>
+          <option>Wedding</option><option>Farewell</option><option>Welcome</option>
+          <option>Sports</option><option>Political</option><option>Technology</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Language</label>
+        <select class="form-select" id="edit-language">
+          <option value="">Select language…</option>
+          <option>English</option><option>Hindi</option><option>Sanskrit</option>
+          <option>Spanish</option><option>French</option><option>German</option>
+          <option>Arabic</option><option>Chinese (Mandarin)</option><option>Japanese</option>
+          <option>Korean</option><option>Portuguese</option><option>Russian</option>
+          <option>Italian</option><option>Bengali</option><option>Urdu</option>
+          <option>Tamil</option><option>Telugu</option><option>Marathi</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags</label>
+        <input type="text" class="form-input" id="edit-tags" placeholder="comma-separated" />
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+      <button class="btn btn-ghost" id="edit-modal-cancel">Cancel</button>
+      <button class="btn btn-terra" id="edit-modal-save">Save Changes</button>
+    </div>
+  </div>
+</div>
+
 <div class="app-shell">
-  <!-- Left sidebar -->
   <aside class="sidebar-left">
     <a href="/" class="brand">
       <img src="l.png" alt="logo" class="brand-logo" />
@@ -23,6 +76,10 @@
     <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
     <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
     <a href="/creativecreator.html" class="nav-item active"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="/nirmaan.html" class="nav-item"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
+    <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
+    <a href="/extensions.html" class="nav-item"><span class="nav-icon">🧩</span><span class="nav-label">Extensions</span></a>
+    <a href="/settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
     <div class="sidebar-spacer"></div>
     <div id="sb-user-wrap">
       <a href="/auth.html?redirect=/creativecreator.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign in</a>
@@ -36,9 +93,7 @@
     </div>
   </aside>
 
-  <!-- Center -->
   <main class="feed">
-    <!-- Auth gate -->
     <div id="auth-gate" style="padding:80px 20px;text-align:center;">
       <div style="font-size:3rem;margin-bottom:14px;">✍️</div>
       <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to create</h2>
@@ -46,14 +101,12 @@
       <a href="/auth.html?redirect=/creativecreator.html" class="btn btn-terra btn-lg">Sign In / Sign Up</a>
     </div>
 
-    <!-- Main content (shown when logged in) -->
     <div id="main-content" class="hidden">
       <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
         <h1 style="font-family:'Lora',serif;font-size:1.2rem;font-weight:700;color:var(--espresso);">✍️ New Presentation</h1>
         <span style="font-size:0.8rem;color:var(--stone);" id="pts-display"></span>
       </div>
 
-      <!-- Create form (tweet composer style) -->
       <div style="padding:20px;border-bottom:1px solid var(--border);">
         <div style="display:flex;gap:12px;align-items:flex-start;">
           <div class="user-avatar" id="composer-avatar" style="flex-shrink:0;">?</div>
@@ -68,13 +121,27 @@
               <div class="form-group">
                 <input type="text" class="form-input" id="f-preview" placeholder="Short preview (optional — auto-generated if blank)" />
               </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
                 <div class="form-group">
                   <select class="form-select" id="f-category" required>
                     <option value="">Category…</option>
                     <option>Academic</option><option>Business</option><option>Motivational</option>
                     <option>Wedding</option><option>Farewell</option><option>Welcome</option>
                     <option>Sports</option><option>Political</option><option>Technology</option><option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <select class="form-select" id="f-language">
+                    <option value="">Language…</option>
+                    <option>English</option><option>Hindi</option><option>Sanskrit</option>
+                    <option>Spanish</option><option>French</option><option>German</option>
+                    <option>Arabic</option><option>Chinese (Mandarin)</option><option>Japanese</option>
+                    <option>Korean</option><option>Portuguese</option><option>Russian</option>
+                    <option>Italian</option><option>Bengali</option><option>Urdu</option>
+                    <option>Tamil</option><option>Telugu</option><option>Marathi</option>
+                    <option>Gujarati</option><option>Kannada</option><option>Malayalam</option>
+                    <option>Punjabi</option><option>Turkish</option><option>Vietnamese</option>
+                    <option>Other</option>
                   </select>
                 </div>
                 <div class="form-group">
@@ -103,7 +170,6 @@
     </div>
   </main>
 
-  <!-- Right sidebar -->
   <aside class="sidebar-right">
     <div class="widget">
       <h3 class="widget-title">Tips for great speeches</h3>
@@ -112,6 +178,7 @@
         <div>📌 Use personal stories</div>
         <div>📌 Keep it scannable with clear sections</div>
         <div>📌 End with a memorable call-to-action</div>
+        <div style="margin-top:8px;">🌐 Select a language for global reach</div>
       </div>
     </div>
     <div class="widget">
@@ -120,6 +187,7 @@
         <div>❤️ +1 point per like</div>
         <div>👎 −1 per 3 dislikes</div>
         <div style="margin-top:8px;"><a href="/leaderboard.html" style="color:var(--terra);font-weight:600;">View leaderboard →</a></div>
+        <div style="margin-top:4px;"><a href="/kv.html" style="color:var(--terra);font-weight:600;">Check your K V rank →</a></div>
       </div>
     </div>
   </aside>
@@ -129,13 +197,15 @@
   <button class="bottom-nav-btn" onclick="location.href='/'"><span class="bottom-nav-icon">🏠</span><span>Home</span></button>
   <button class="bottom-nav-btn" onclick="location.href='/leaderboard.html'"><span class="bottom-nav-icon">🏆</span><span>Top</span></button>
   <button class="bottom-nav-btn active" onclick="location.href='/creativecreator.html'"><span class="bottom-nav-icon">✏️</span><span>Create</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/nirmaan.html'"><span class="bottom-nav-icon">🤝</span><span>Nirmaan</span></button>
   <button class="bottom-nav-btn" onclick="location.href='/auth.html'"><span class="bottom-nav-icon">👤</span><span>Sign in</span></button>
 </nav>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, serverTimestamp, getDoc
+  getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc,
+  serverTimestamp, getDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
@@ -157,6 +227,10 @@ function toast(msg,type="info"){const c=document.getElementById("toast-container
 function setLoading(btn,v){if(v){btn.dataset.orig=btn.innerHTML;btn.innerHTML=`<span class="spinner"></span>`;btn.disabled=true;}else{btn.innerHTML=btn.dataset.orig||btn.innerHTML;btn.disabled=false;}}
 
 let currentUser = null;
+let editingPostId = null;
+
+// Check for edit param on load
+const editId = new URLSearchParams(window.location.search).get("edit");
 
 onAuthStateChanged(auth, async user => {
   currentUser = user;
@@ -168,7 +242,6 @@ onAuthStateChanged(auth, async user => {
     document.getElementById("sb-avatar").textContent = initials(user.displayName || user.email);
     document.getElementById("composer-avatar").textContent = initials(user.displayName || user.email);
     document.getElementById("sb-name").textContent = user.displayName || user.email.split("@")[0];
-    // Load user points
     try {
       const bloggerDoc = await getDoc(doc(db, "bloggers", user.uid));
       if (bloggerDoc.exists()) {
@@ -177,6 +250,16 @@ onAuthStateChanged(auth, async user => {
       }
     } catch {}
     loadMyPosts();
+
+    // If edit param, open edit modal
+    if (editId) {
+      try {
+        const snap = await getDoc(doc(db, "bloggerblogs", editId));
+        if (snap.exists() && snap.data().authorUid === user.uid) {
+          openEditModal(editId, snap.data());
+        }
+      } catch {}
+    }
   } else {
     document.getElementById("auth-gate").classList.remove("hidden");
     document.getElementById("main-content").classList.add("hidden");
@@ -187,6 +270,52 @@ onAuthStateChanged(auth, async user => {
 
 window.doSignout = async () => { await signOut(auth); window.location.href = "/"; };
 
+// ===== EDIT MODAL =====
+const editModal = document.getElementById("edit-modal");
+function openEditModal(postId, data) {
+  editingPostId = postId;
+  document.getElementById("edit-title").value = data.title || data.Title || "";
+  document.getElementById("edit-content").value = data.content || data.Content || "";
+  document.getElementById("edit-preview").value = data.preview || data.Preview || "";
+  document.getElementById("edit-category").value = data.category || data.Category || "";
+  document.getElementById("edit-language").value = data.language || data.Language || "";
+  document.getElementById("edit-tags").value = data.tags || data.Tags || "";
+  editModal.classList.add("open");
+}
+document.getElementById("edit-modal-close").addEventListener("click", () => { editModal.classList.remove("open"); editingPostId = null; });
+document.getElementById("edit-modal-cancel").addEventListener("click", () => { editModal.classList.remove("open"); editingPostId = null; });
+editModal.addEventListener("click", e => { if (e.target === editModal) { editModal.classList.remove("open"); editingPostId = null; } });
+
+document.getElementById("edit-modal-save").addEventListener("click", async () => {
+  if (!editingPostId || !currentUser) return;
+  const title = document.getElementById("edit-title").value.trim();
+  const content = document.getElementById("edit-content").value.trim();
+  const preview = document.getElementById("edit-preview").value.trim() || content.substring(0, 160);
+  const category = document.getElementById("edit-category").value;
+  const language = document.getElementById("edit-language").value;
+  const tags = document.getElementById("edit-tags").value.trim();
+  if (!title || !content) { toast("Title and content are required.", "error"); return; }
+  const btn = document.getElementById("edit-modal-save");
+  setLoading(btn, true);
+  try {
+    await updateDoc(doc(db, "bloggerblogs", editingPostId), {
+      title, Title: title,
+      content, Content: content,
+      preview, Preview: preview,
+      category, Category: category,
+      language, Language: language,
+      tags, Tags: tags,
+      editedAt: serverTimestamp()
+    });
+    toast("Presentation updated!", "success");
+    editModal.classList.remove("open");
+    editingPostId = null;
+    loadMyPosts();
+  } catch(e) { toast("Failed: " + e.message, "error"); }
+  finally { setLoading(btn, false); }
+});
+
+// ===== MY POSTS =====
 async function loadMyPosts() {
   if (!currentUser) return;
   const container = document.getElementById("my-posts");
@@ -204,7 +333,9 @@ async function loadMyPosts() {
       return;
     }
 
-    container.innerHTML = posts.map(p => `
+    container.innerHTML = posts.map(p => {
+      const lang = p.language || p.Language || "";
+      return `
       <article class="post-card" style="border-left:none;">
         <div class="post-avatar-col">
           <div class="post-avatar">${initials(currentUser.displayName||currentUser.email)}</div>
@@ -214,8 +345,10 @@ async function loadMyPosts() {
             <span class="post-name">${esc(currentUser.displayName||"You")}</span>
             <span class="post-badge badge-writer">Writer</span>
             <span class="post-category" style="margin-left:4px;">${esc(p.category||p.Category||"General")}</span>
+            ${lang ? `<span class="lang-chip">🌐 ${esc(lang)}</span>` : ""}
             <div style="margin-left:auto;display:flex;gap:6px;">
               <a href="/presentation.html?id=${p.id}&src=bloggerblogs" class="btn btn-outline btn-sm">View</a>
+              <button class="btn btn-ghost btn-sm" data-edit-id="${p.id}">Edit</button>
               <button class="btn btn-danger btn-sm" onclick="deletePost('${p.id}')">Delete</button>
             </div>
           </div>
@@ -228,7 +361,18 @@ async function loadMyPosts() {
             <span class="views-chip">👁 ${p.views||0}</span>
           </div>
         </div>
-      </article>`).join("");
+      </article>`;
+    }).join("");
+
+    // Attach edit button listeners
+    document.querySelectorAll("[data-edit-id]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const postId = btn.dataset.editId;
+        const snap = await getDoc(doc(db, "bloggerblogs", postId));
+        if (snap.exists()) openEditModal(postId, snap.data());
+      });
+    });
+
   } catch(e) {
     container.innerHTML = `<p style="padding:20px;color:var(--stone);font-size:0.85rem;">Failed to load posts.</p>`;
   }
@@ -251,8 +395,8 @@ document.getElementById("create-form").addEventListener("submit", async e => {
   const content = document.getElementById("f-content").value.trim();
   const preview = document.getElementById("f-preview").value.trim() || content.substring(0,160);
   const category = document.getElementById("f-category").value;
+  const language = document.getElementById("f-language").value;
   const tags = document.getElementById("f-tags").value.trim();
-
   if (!category) { toast("Please select a category.", "error"); return; }
   setLoading(btn, true);
   try {
@@ -261,6 +405,7 @@ document.getElementById("create-form").addEventListener("submit", async e => {
       content, Content: content,
       preview, Preview: preview,
       category, Category: category,
+      language, Language: language,
       tags, Tags: tags,
       authorUid: currentUser.uid,
       authorName: currentUser.displayName || currentUser.email,

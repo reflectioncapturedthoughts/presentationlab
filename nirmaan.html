@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nirmaan — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div id="toast-container"></div>
+
+<!-- Edit/Create Modal -->
+<div class="modal-overlay" id="create-modal">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-title-text">Create Collaborative Presentation</h2>
+      <button class="modal-close" id="modal-close-btn">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Title</label>
+      <input type="text" class="form-input" id="m-title" placeholder="Presentation title…" style="font-family:'Lora',serif;font-size:1rem;font-weight:600;" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Content</label>
+      <textarea class="form-textarea" id="m-content" placeholder="Write the presentation content…" style="min-height:200px;font-size:0.9rem;"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="m-category">
+          <option value="">Category…</option>
+          <option>Academic</option><option>Business</option><option>Motivational</option>
+          <option>Wedding</option><option>Farewell</option><option>Welcome</option>
+          <option>Sports</option><option>Political</option><option>Technology</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Language</label>
+        <select class="form-select" id="m-language">
+          <option value="">Select language…</option>
+          <option>English</option><option>Hindi</option><option>Sanskrit</option>
+          <option>Spanish</option><option>French</option><option>German</option>
+          <option>Arabic</option><option>Chinese (Mandarin)</option><option>Japanese</option>
+          <option>Korean</option><option>Portuguese</option><option>Russian</option>
+          <option>Italian</option><option>Bengali</option><option>Urdu</option>
+          <option>Tamil</option><option>Telugu</option><option>Marathi</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tags (comma-separated)</label>
+      <input type="text" class="form-input" id="m-tags" placeholder="e.g. teamwork, community, speech" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Co-Authors (email addresses, one per line)</label>
+      <textarea class="form-textarea" id="m-coauthors" style="min-height:70px;" placeholder="Enter co-author email addresses, one per line…"></textarea>
+      <div class="form-hint">Co-authors will be shown as contributors. They can add/edit content by visiting Nirmaan.</div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+      <button class="btn btn-ghost" id="modal-cancel-btn">Cancel</button>
+      <button class="btn btn-terra" id="modal-save-btn">Publish Presentation</button>
+    </div>
+  </div>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar-left">
+    <a href="/" class="brand">
+      <img src="l.png" alt="logo" class="brand-logo" />
+      <div>
+        <div class="brand-name">Presentation Lab</div>
+        <div class="brand-parent">by Fake International Bank</div>
+      </div>
+    </a>
+    <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="/nirmaan.html" class="nav-item active"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
+    <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
+    <a href="/extensions.html" class="nav-item"><span class="nav-icon">🧩</span><span class="nav-label">Extensions</span></a>
+    <a href="/settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    <button class="nav-create-btn" onclick="location.href='/creativecreator.html'">
+      <span>✏️</span><span>New Presentation</span>
+    </button>
+    <div class="sidebar-spacer"></div>
+    <div id="sb-user-wrap">
+      <a href="/auth.html?redirect=/nirmaan.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign in</a>
+      <div class="user-chip hidden" id="sb-chip">
+        <div class="user-avatar" id="sb-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-name">—</div>
+          <div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <div class="feed-header" style="padding-bottom:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <h1 class="feed-title" style="margin-bottom:0;">🤝 Nirmaan</h1>
+        <button class="btn btn-terra btn-sm" id="create-nirmaan-btn">+ Create Together</button>
+      </div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-tab="all">All Collaborative</button>
+        <button class="filter-tab" data-tab="mine">My Contributions</button>
+      </div>
+    </div>
+
+    <!-- Auth gate -->
+    <div id="auth-gate" style="padding:60px 20px;text-align:center;" class="hidden">
+      <div style="font-size:3rem;margin-bottom:14px;">🤝</div>
+      <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to collaborate</h2>
+      <p style="color:var(--brown);margin-bottom:20px;">Create presentations together with other writers and share them as a whole.</p>
+      <a href="/auth.html?redirect=/nirmaan.html" class="btn btn-terra btn-lg">Sign In / Sign Up</a>
+    </div>
+
+    <!-- Content -->
+    <div id="nirmaan-content">
+      <div style="padding:32px;text-align:center;color:var(--stone);">
+        <div class="spinner" style="margin:0 auto 12px;"></div>
+        <p>Loading collaborative presentations…</p>
+      </div>
+    </div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <h3 class="widget-title">🤝 What is Nirmaan?</h3>
+      <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
+        <div>✍️ <strong>Nirmaan</strong> means "creation" in Sanskrit.</div>
+        <div style="margin-top:8px;">📝 Multiple writers collaborate on a single presentation.</div>
+        <div style="margin-top:8px;">🔗 Share the finished work as a whole to the community.</div>
+        <div style="margin-top:8px;">🌐 Supports all languages — write together across cultures.</div>
+      </div>
+    </div>
+    <div class="widget">
+      <h3 class="widget-title">How to collaborate</h3>
+      <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
+        <div>1️⃣ Click <strong>"+ Create Together"</strong></div>
+        <div style="margin-top:4px;">2️⃣ Add co-authors by email</div>
+        <div style="margin-top:4px;">3️⃣ Write and publish together</div>
+        <div style="margin-top:4px;">4️⃣ Share the presentation with the world</div>
+      </div>
+    </div>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.08),var(--sand-warm));">
+      <div style="font-size:0.8rem;color:var(--brown);">
+        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
+        <a href="https://finbgold.netlify.app" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">Fake International Bank</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn" onclick="location.href='/'"><span class="bottom-nav-icon">🏠</span><span>Home</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/creativecreator.html'"><span class="bottom-nav-icon">✏️</span><span>Create</span></button>
+  <button class="bottom-nav-btn active" onclick="location.href='/nirmaan.html'"><span class="bottom-nav-icon">🤝</span><span>Nirmaan</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/kv.html'"><span class="bottom-nav-icon">🎖️</span><span>K V</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/settings.html'"><span class="bottom-nav-icon">⚙️</span><span>Settings</span></button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
+  query, orderBy, serverTimestamp, where, arrayUnion
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",
+  authDomain: "reflectioncapturedthoughts.firebaseapp.com",
+  projectId: "reflectioncapturedthoughts",
+  storageBucket: "reflectioncapturedthoughts.firebasestorage.app",
+  messagingSenderId: "331335730832",
+  appId: "1:331335730832:web:731df65bd40f9646adfa15"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function timeAgo(seconds){if(!seconds)return"";const d=Math.floor((Date.now()/1000-seconds));if(d<60)return"just now";if(d<3600)return Math.floor(d/60)+"m";if(d<86400)return Math.floor(d/3600)+"h";if(d<604800)return Math.floor(d/86400)+"d";return new Date(seconds*1000).toLocaleDateString();}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},3500);}
+function setLoading(btn,v){if(v){btn.dataset.orig=btn.innerHTML;btn.innerHTML=`<span class="spinner"></span>`;btn.disabled=true;}else{btn.innerHTML=btn.dataset.orig||btn.innerHTML;btn.disabled=false;}}
+
+let currentUser = null;
+let allPosts = [];
+let currentTab = "all";
+
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+  if (user) {
+    document.getElementById("auth-gate").classList.add("hidden");
+    document.getElementById("sb-signin").classList.add("hidden");
+    document.getElementById("sb-chip").classList.remove("hidden");
+    document.getElementById("sb-avatar").textContent = initials(user.displayName || user.email);
+    document.getElementById("sb-name").textContent = user.displayName || user.email.split("@")[0];
+    document.getElementById("create-nirmaan-btn").style.display = "";
+  } else {
+    document.getElementById("auth-gate").classList.remove("hidden");
+    document.getElementById("sb-signin").classList.remove("hidden");
+    document.getElementById("sb-chip").classList.add("hidden");
+    document.getElementById("create-nirmaan-btn").style.display = "none";
+  }
+  loadNirmaan();
+});
+
+window.doSignout = async () => { await signOut(auth); window.location.href = "/"; };
+
+async function loadNirmaan() {
+  const container = document.getElementById("nirmaan-content");
+  try {
+    const snap = await getDocs(query(collection(db, "nirmaan"), orderBy("createdAt", "desc")));
+    allPosts = [];
+    snap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
+    renderNirmaan();
+  } catch(e) {
+    container.innerHTML = `<div style="padding:40px;text-align:center;color:var(--stone);font-size:0.88rem;">Could not load collaborative presentations.</div>`;
+  }
+}
+
+function renderNirmaan() {
+  const container = document.getElementById("nirmaan-content");
+  let posts = [...allPosts];
+  if (currentTab === "mine" && currentUser) {
+    posts = posts.filter(p => p.createdByUid === currentUser.uid || (p.coAuthorEmails||[]).includes(currentUser.email));
+  }
+
+  if (!posts.length) {
+    const msg = currentTab === "mine"
+      ? `<div class="feed-empty"><div class="feed-empty-icon">✍️</div><div class="feed-empty-title">No collaborations yet</div><div class="feed-empty-text">Start a Nirmaan presentation to write together.</div></div>`
+      : `<div class="feed-empty"><div class="feed-empty-icon">🤝</div><div class="feed-empty-title">No collaborative presentations yet</div><div class="feed-empty-text">Be the first to create a Nirmaan presentation!</div></div>`;
+    container.innerHTML = msg;
+    return;
+  }
+
+  container.innerHTML = posts.map(p => {
+    const t = p.createdAt?.seconds || 0;
+    const authors = p.authorNames || [p.createdByName || "Writer"];
+    const lang = p.language || "";
+    const isOwner = currentUser?.uid === p.createdByUid;
+    return `
+      <article class="post-card" style="cursor:default;">
+        <div class="post-avatar-col">
+          <div class="post-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">${initials(p.createdByName||"N")}</div>
+        </div>
+        <div class="post-body">
+          <div class="post-header">
+            <span class="post-name">${esc(authors[0]||"Writer")}</span>
+            <span class="post-badge" style="background:#EDE9FE;color:#6D28D9;">Nirmaan</span>
+            ${t ? `<span class="post-time">· ${timeAgo(t)}</span>` : ""}
+            ${lang ? `<span class="lang-chip">🌐 ${esc(lang)}</span>` : ""}
+          </div>
+          <h3 class="post-title">${esc(p.title||"Untitled Collaboration")}</h3>
+          <p class="post-text">${esc((p.content||"").substring(0,200))}</p>
+          <div class="nirmaan-authors">
+            ${authors.map(a => `<span class="nirmaan-author-chip">✍️ ${esc(a)}</span>`).join("")}
+          </div>
+          <div class="post-actions" style="margin-top:12px;">
+            <button class="action-btn" onclick="shareNirmaan('${p.id}','${esc(p.title||"")}')">🔗 Share</button>
+            <a href="/presentation.html?id=${p.id}&src=nirmaan" class="action-btn" style="text-decoration:none;">📖 Read</a>
+            ${isOwner ? `<button class="action-btn" style="color:#EF4444;" onclick="deleteNirmaan('${p.id}')">🗑️ Delete</button>` : ""}
+          </div>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+window.shareNirmaan = async (id, title) => {
+  const url = `${location.origin}/presentation.html?id=${id}&src=nirmaan`;
+  if (navigator.share) {
+    try { await navigator.share({ title: title || "Nirmaan Presentation", url }); return; } catch {}
+  }
+  await navigator.clipboard.writeText(url).catch(() => prompt("Copy link:", url));
+  toast("Link copied!", "success");
+};
+
+window.deleteNirmaan = async (id) => {
+  if (!confirm("Delete this Nirmaan presentation? This cannot be undone.")) return;
+  try {
+    await deleteDoc(doc(db, "nirmaan", id));
+    toast("Deleted.", "info");
+    loadNirmaan();
+  } catch(e) { toast("Failed: " + e.message, "error"); }
+};
+
+document.querySelectorAll(".filter-tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentTab = btn.dataset.tab;
+    document.querySelectorAll(".filter-tab").forEach(b => b.classList.toggle("active", b === btn));
+    renderNirmaan();
+  });
+});
+
+// Modal
+const modal = document.getElementById("create-modal");
+document.getElementById("create-nirmaan-btn").addEventListener("click", () => {
+  if (!currentUser) { location.href = "/auth.html?redirect=/nirmaan.html"; return; }
+  modal.classList.add("open");
+});
+document.getElementById("modal-close-btn").addEventListener("click", () => modal.classList.remove("open"));
+document.getElementById("modal-cancel-btn").addEventListener("click", () => modal.classList.remove("open"));
+modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
+
+document.getElementById("modal-save-btn").addEventListener("click", async () => {
+  if (!currentUser) return;
+  const title = document.getElementById("m-title").value.trim();
+  const content = document.getElementById("m-content").value.trim();
+  const category = document.getElementById("m-category").value;
+  const language = document.getElementById("m-language").value;
+  const tags = document.getElementById("m-tags").value.trim();
+  const coAuthorEmails = document.getElementById("m-coauthors").value
+    .split("\n").map(e => e.trim()).filter(Boolean);
+
+  if (!title) { toast("Please enter a title.", "error"); return; }
+  if (!content) { toast("Please write some content.", "error"); return; }
+
+  const btn = document.getElementById("modal-save-btn");
+  setLoading(btn, true);
+
+  try {
+    const authorName = currentUser.displayName || currentUser.email;
+    await addDoc(collection(db, "nirmaan"), {
+      title,
+      content,
+      preview: content.substring(0, 200),
+      category: category || "General",
+      language,
+      tags,
+      createdByUid: currentUser.uid,
+      createdByName: authorName,
+      createdByEmail: currentUser.email,
+      coAuthorEmails,
+      authorNames: [authorName, ...coAuthorEmails],
+      views: 0,
+      likeCount: 0,
+      createdAt: serverTimestamp()
+    });
+    toast("Nirmaan presentation published! 🎉", "success");
+    modal.classList.remove("open");
+    document.getElementById("m-title").value = "";
+    document.getElementById("m-content").value = "";
+    document.getElementById("m-category").value = "";
+    document.getElementById("m-language").value = "";
+    document.getElementById("m-tags").value = "";
+    document.getElementById("m-coauthors").value = "";
+    loadNirmaan();
+  } catch(e) {
+    toast("Failed: " + e.message, "error");
+  } finally { setLoading(btn, false); }
+});
+</script>
+</body>
+</html>

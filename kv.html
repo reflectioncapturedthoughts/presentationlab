@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>K V — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div id="toast-container"></div>
+
+<div class="app-shell">
+  <aside class="sidebar-left">
+    <a href="/" class="brand">
+      <img src="l.png" alt="logo" class="brand-logo" />
+      <div>
+        <div class="brand-name">Presentation Lab</div>
+        <div class="brand-parent">by Fake International Bank</div>
+      </div>
+    </a>
+    <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="/nirmaan.html" class="nav-item"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
+    <a href="/kv.html" class="nav-item active"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
+    <a href="/extensions.html" class="nav-item"><span class="nav-icon">🧩</span><span class="nav-label">Extensions</span></a>
+    <a href="/settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    <button class="nav-create-btn" onclick="location.href='/creativecreator.html'">
+      <span>✏️</span><span>New Presentation</span>
+    </button>
+    <div class="sidebar-spacer"></div>
+    <div id="sb-user-wrap">
+      <a href="/auth.html?redirect=/kv.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign in</a>
+      <div class="user-chip hidden" id="sb-chip">
+        <div class="user-avatar" id="sb-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-name">—</div>
+          <div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <div class="feed-header" style="padding-bottom:16px;">
+      <h1 class="feed-title">🎖️ K V — Writer Ranks</h1>
+    </div>
+
+    <div style="padding:20px;">
+      <!-- Current rank banner -->
+      <div id="current-rank-banner" style="margin-bottom:20px;padding:18px;border-radius:var(--radius-lg);background:linear-gradient(135deg,rgba(201,108,84,0.1),var(--sand-warm));border:1.5px solid var(--terra-light);display:none;">
+        <div style="font-size:0.75rem;color:var(--terra);text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:6px;">Your Current Rank</div>
+        <div id="current-rank-display" style="font-family:'Lora',serif;font-size:1.1rem;font-weight:700;color:var(--espresso);"></div>
+        <div id="current-pts-display" style="font-size:0.82rem;color:var(--stone);margin-top:4px;"></div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <div style="font-family:'Lora',serif;font-size:1rem;font-weight:700;color:var(--espresso);margin-bottom:4px;">Choose Your Writer Designation</div>
+        <div style="font-size:0.84rem;color:var(--brown);">Select a rank that reflects your writing journey. Some ranks require a minimum points balance.</div>
+      </div>
+
+      <!-- Daily Writer -->
+      <div class="kv-rank-card" id="rank-daily" data-rank="daily">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+          <div>
+            <div class="kv-rank-icon">📅</div>
+            <div class="kv-rank-name">Daily Writer</div>
+            <div class="kv-rank-desc">You write consistently, every day. This is the foundation rank — available to every member of Presentation Lab.</div>
+            <div class="kv-rank-req">✅ Available to all — no minimum points required</div>
+          </div>
+          <span class="kv-rank-badge kv-badge-daily">Daily Writer</span>
+        </div>
+      </div>
+
+      <!-- Language Writer -->
+      <div class="kv-rank-card" id="rank-language" data-rank="language">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+          <div style="flex:1;">
+            <div class="kv-rank-icon">🗣️</div>
+            <div class="kv-rank-name">[Language] Writer</div>
+            <div class="kv-rank-desc">You write presentations in a specific language and are recognized for your expertise in that language. Select your primary writing language below.</div>
+            <div class="kv-rank-req">📊 Minimum <strong>10 points</strong> required</div>
+            <div id="lang-writer-select" class="hidden" style="margin-top:12px;">
+              <label class="form-label">Your primary writing language</label>
+              <select class="form-select" id="f-kv-language" style="max-width:280px;">
+                <option value="">Select language…</option>
+                <option>Hindi</option><option>English</option><option>Sanskrit</option>
+                <option>Spanish</option><option>French</option><option>German</option>
+                <option>Arabic</option><option>Chinese (Mandarin)</option><option>Japanese</option>
+                <option>Korean</option><option>Portuguese</option><option>Russian</option>
+                <option>Italian</option><option>Bengali</option><option>Urdu</option>
+                <option>Tamil</option><option>Telugu</option><option>Marathi</option>
+                <option>Gujarati</option><option>Kannada</option><option>Malayalam</option>
+                <option>Punjabi</option><option>Turkish</option><option>Vietnamese</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <span class="kv-rank-badge kv-badge-language">Lang Writer</span>
+        </div>
+      </div>
+
+      <!-- Multi-lingual Writer -->
+      <div class="kv-rank-card" id="rank-multilingual" data-rank="multilingual">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+          <div>
+            <div class="kv-rank-icon">🌍</div>
+            <div class="kv-rank-name">Multi-lingual Writer</div>
+            <div class="kv-rank-desc">You write presentations in multiple languages, reaching audiences across the world. A mark of dedication and cultural depth.</div>
+            <div class="kv-rank-req">📊 Minimum <strong>22 points</strong> required</div>
+          </div>
+          <span class="kv-rank-badge kv-badge-multilingual">Multi-lingual</span>
+        </div>
+      </div>
+
+      <!-- Sanskrit Writer -->
+      <div class="kv-rank-card" id="rank-sanskrit" data-rank="sanskrit">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+          <div>
+            <div class="kv-rank-icon">🕉️</div>
+            <div class="kv-rank-name">Sanskrit Writer</div>
+            <div class="kv-rank-desc">A writer who crafts presentations in Sanskrit — one of the world's oldest and most sacred languages. This designation honors the preservation of an ancient tradition through modern expression.</div>
+            <div class="kv-rank-req">📜 For writers who publish presentations in the Sanskrit language</div>
+          </div>
+          <span class="kv-rank-badge kv-badge-sanskrit">Sanskrit</span>
+        </div>
+      </div>
+
+      <!-- The Great Writing Journey -->
+      <div class="kv-rank-card" id="rank-great" data-rank="great">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+          <div>
+            <div class="kv-rank-icon">👑</div>
+            <div class="kv-rank-name" style="letter-spacing:0.08em;">T H E &nbsp; G R E A T &nbsp; W R I T I N G &nbsp; J O U R N E Y</div>
+            <div class="kv-rank-desc">The pinnacle of writing on Presentation Lab. Reserved for the top-ranked writer on the leaderboard — earned through the community's recognition of your work.</div>
+            <div class="kv-rank-req">🏆 Automatically awarded to the <strong>#1 writer</strong> on the leaderboard</div>
+          </div>
+          <span class="kv-rank-badge kv-badge-great">The Greatest</span>
+        </div>
+      </div>
+
+      <!-- Select button -->
+      <div id="select-rank-wrap" class="hidden" style="margin-top:20px;display:flex;gap:10px;align-items:center;">
+        <button class="btn btn-terra" id="select-rank-btn">Claim This Rank</button>
+        <span id="select-rank-label" style="font-size:0.84rem;color:var(--stone);"></span>
+      </div>
+    </div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <h3 class="widget-title">About K V Ranks</h3>
+      <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
+        <div>🎖️ Ranks reflect your writing style and dedication.</div>
+        <div style="margin-top:8px;">📊 Points are earned from community likes on your posts.</div>
+        <div style="margin-top:8px;">🏆 Climb the leaderboard to unlock higher ranks.</div>
+        <a href="/leaderboard.html" style="display:block;margin-top:12px;font-size:0.82rem;color:var(--terra);font-weight:600;">View leaderboard →</a>
+      </div>
+    </div>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.08),var(--sand-warm));">
+      <div style="font-size:0.8rem;color:var(--brown);">
+        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
+        <a href="https://finbgold.netlify.app" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">Fake International Bank</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn" onclick="location.href='/'"><span class="bottom-nav-icon">🏠</span><span>Home</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/creativecreator.html'"><span class="bottom-nav-icon">✏️</span><span>Create</span></button>
+  <button class="bottom-nav-btn active" onclick="location.href='/kv.html'"><span class="bottom-nav-icon">🎖️</span><span>K V</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/extensions.html'"><span class="bottom-nav-icon">🧩</span><span>Extensions</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/settings.html'"><span class="bottom-nav-icon">⚙️</span><span>Settings</span></button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",
+  authDomain: "reflectioncapturedthoughts.firebaseapp.com",
+  projectId: "reflectioncapturedthoughts",
+  storageBucket: "reflectioncapturedthoughts.firebasestorage.app",
+  messagingSenderId: "331335730832",
+  appId: "1:331335730832:web:731df65bd40f9646adfa15"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},3500);}
+function setLoading(btn,v){if(v){btn.dataset.orig=btn.innerHTML;btn.innerHTML=`<span class="spinner"></span>`;btn.disabled=true;}else{btn.innerHTML=btn.dataset.orig||btn.innerHTML;btn.disabled=false;}}
+
+const RANK_REQUIREMENTS = {
+  daily: 0, language: 10, multilingual: 22, sanskrit: 0, great: Infinity
+};
+
+const RANK_NAMES = {
+  daily: "Daily Writer",
+  language: "Language Writer",
+  multilingual: "Multi-lingual Writer",
+  sanskrit: "Sanskrit Writer",
+  great: "T H E  G R E A T  W R I T I N G  J O U R N E Y"
+};
+
+let currentUser = null;
+let userPoints = 0;
+let currentRank = "daily";
+let selectedRank = null;
+let isTopWriter = false;
+
+onAuthStateChanged(auth, async user => {
+  currentUser = user;
+  if (user) {
+    document.getElementById("sb-signin").classList.add("hidden");
+    document.getElementById("sb-chip").classList.remove("hidden");
+    document.getElementById("sb-avatar").textContent = initials(user.displayName || user.email);
+    document.getElementById("sb-name").textContent = user.displayName || user.email.split("@")[0];
+    await loadUserData(user.uid);
+    checkTopWriter();
+  } else {
+    document.getElementById("sb-signin").classList.remove("hidden");
+    document.getElementById("sb-chip").classList.add("hidden");
+    setupCards(0, "daily");
+  }
+});
+
+window.doSignout = async () => { await signOut(auth); window.location.href = "/"; };
+
+async function loadUserData(uid) {
+  try {
+    const bloggerDoc = await getDoc(doc(db, "bloggers", uid));
+    if (bloggerDoc.exists()) {
+      const data = bloggerDoc.data();
+      userPoints = data.points || 0;
+      currentRank = data.kvRank || "daily";
+    }
+  } catch {}
+  setupCards(userPoints, currentRank);
+  const banner = document.getElementById("current-rank-banner");
+  banner.style.display = "block";
+  document.getElementById("current-rank-display").textContent = RANK_NAMES[currentRank] || currentRank;
+  document.getElementById("current-pts-display").textContent = `${userPoints} points · Current rank`;
+}
+
+async function checkTopWriter() {
+  try {
+    const snap = await getDocs(collection(db, "bloggers"));
+    const users = [];
+    snap.forEach(d => users.push({ id: d.id, points: d.data().points || 0 }));
+    users.sort((a,b) => b.points - a.points);
+    if (users.length && users[0].id === currentUser?.uid) {
+      isTopWriter = true;
+      document.getElementById("rank-great").classList.remove("locked");
+    }
+  } catch {}
+}
+
+function setupCards(pts, activeRank) {
+  document.querySelectorAll(".kv-rank-card").forEach(card => {
+    const rank = card.dataset.rank;
+    const req = RANK_REQUIREMENTS[rank];
+    const locked = rank === "great" ? !isTopWriter : pts < req;
+
+    card.classList.toggle("locked", locked);
+    card.classList.toggle("active-rank", rank === activeRank && !locked);
+
+    if (!locked) {
+      card.style.cursor = "pointer";
+      card.addEventListener("click", () => selectRank(rank, card));
+    }
+  });
+}
+
+function selectRank(rank, card) {
+  if (!currentUser) { toast("Sign in to select a rank.", "info"); location.href = "/auth.html"; return; }
+  const req = RANK_REQUIREMENTS[rank];
+  if (rank !== "great" && userPoints < req) {
+    toast(`You need at least ${req} points for this rank. You have ${userPoints}.`, "error"); return;
+  }
+  if (rank === "great" && !isTopWriter) {
+    toast("This rank is only for the #1 writer on the leaderboard.", "error"); return;
+  }
+
+  document.querySelectorAll(".kv-rank-card").forEach(c => c.style.outline = "none");
+  card.style.outline = "2.5px solid var(--terra)";
+  selectedRank = rank;
+
+  const wrap = document.getElementById("select-rank-wrap");
+  wrap.classList.remove("hidden");
+  wrap.style.display = "flex";
+  document.getElementById("select-rank-label").textContent = `Selected: ${RANK_NAMES[rank]}`;
+
+  if (rank === "language") {
+    document.getElementById("lang-writer-select").classList.remove("hidden");
+  } else {
+    document.getElementById("lang-writer-select").classList.add("hidden");
+  }
+}
+
+document.getElementById("select-rank-btn").addEventListener("click", async () => {
+  if (!currentUser || !selectedRank) return;
+  if (selectedRank === "language") {
+    const lang = document.getElementById("f-kv-language").value;
+    if (!lang) { toast("Please select your primary writing language.", "error"); return; }
+  }
+  const btn = document.getElementById("select-rank-btn");
+  setLoading(btn, true);
+  try {
+    const updates = { kvRank: selectedRank };
+    if (selectedRank === "language") {
+      updates.kvLanguage = document.getElementById("f-kv-language").value;
+    }
+    await updateDoc(doc(db, "bloggers", currentUser.uid), updates);
+    currentRank = selectedRank;
+    document.getElementById("current-rank-display").textContent = RANK_NAMES[selectedRank];
+    toast(`Rank set to: ${RANK_NAMES[selectedRank]}!`, "success");
+    document.getElementById("select-rank-wrap").classList.add("hidden");
+    setupCards(userPoints, selectedRank);
+  } catch(e) {
+    toast("Failed to update rank: " + e.message, "error");
+  } finally { setLoading(btn, false); }
+});
+</script>
+</body>
+</html>

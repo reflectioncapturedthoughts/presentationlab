@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Extensions — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+  <script src="https://js.puter.com/v2/"></script>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<!-- ===== DISCLAIMER DIALOG ===== -->
+<div class="disclaimer-overlay" id="disclaimer-overlay">
+  <div class="disclaimer-modal">
+    <div class="disclaimer-title">D I S C L A I M E R</div>
+    <div class="disclaimer-text">
+      Please note that the extensions belong to <strong>third party services</strong>.<br/>
+      The service provider information can be reviewed before integrating.<br/><br/>
+      By continuing, you acknowledge that third-party services may have their own terms of use and privacy policies.
+    </div>
+    <span class="disclaimer-brand">P R E S E N T A T I O N &nbsp; L A B</span>
+    <button class="btn btn-terra btn-full" id="disclaimer-accept-btn">I Understand — Continue</button>
+  </div>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar-left">
+    <a href="/" class="brand">
+      <img src="l.png" alt="logo" class="brand-logo" />
+      <div>
+        <div class="brand-name">Presentation Lab</div>
+        <div class="brand-parent">by Fake International Bank</div>
+      </div>
+    </a>
+    <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="/nirmaan.html" class="nav-item"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
+    <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
+    <a href="/extensions.html" class="nav-item active"><span class="nav-icon">🧩</span><span class="nav-label">Extensions</span></a>
+    <a href="/settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    <button class="nav-create-btn" onclick="location.href='/creativecreator.html'">
+      <span>✏️</span><span>New Presentation</span>
+    </button>
+    <div class="sidebar-spacer"></div>
+    <div id="sb-user-wrap">
+      <a href="/auth.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign in</a>
+      <div class="user-chip hidden" id="sb-chip">
+        <div class="user-avatar" id="sb-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-name">—</div>
+          <div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <div class="feed-header" style="padding-bottom:16px;">
+      <h1 class="feed-title">🧩 Extensions</h1>
+    </div>
+
+    <div style="padding:20px;">
+
+      <!-- TTS Extension -->
+      <div class="ext-card" id="tts-card">
+        <div class="ext-card-header">
+          <span class="ext-card-icon">🔊</span>
+          <div>
+            <div class="ext-card-title">Text-to-Speech</div>
+            <div class="ext-card-provider">Powered by Puter.js · Third Party Service</div>
+          </div>
+        </div>
+        <div class="ext-card-desc">
+          Listen to any presentation being read aloud using Puter.js Text-to-Speech. After connecting your Puter account, a <strong>Listen</strong> button will appear on every presentation page. This extension uses AI-quality voice synthesis directly in your browser.
+        </div>
+        <div id="tts-status">
+          <button class="btn btn-terra" id="tts-connect-btn">Connect Puter — Enable TTS</button>
+        </div>
+      </div>
+
+      <!-- Translation Extension -->
+      <div class="ext-card" id="trans-card">
+        <div class="ext-card-header">
+          <span class="ext-card-icon">🌐</span>
+          <div>
+            <div class="ext-card-title">AI Translation</div>
+            <div class="ext-card-provider">Powered by Puter.js · Third Party Service</div>
+          </div>
+        </div>
+        <div class="ext-card-desc">
+          Translate any presentation into dozens of languages on the fly using Puter.js AI Translation (GPT-5.4-nano). After connecting, a <strong>Translate</strong> button will appear on presentation pages, letting you select a target language and instantly view a translation.
+        </div>
+        <div id="trans-status">
+          <button class="btn btn-terra" id="trans-connect-btn">Connect Puter — Enable Translation</button>
+        </div>
+      </div>
+
+      <!-- Test TTS area (shown when integrated) -->
+      <div id="tts-test-area" class="hidden" style="background:var(--sand-warm);border-radius:var(--radius-lg);padding:20px;margin-top:8px;">
+        <div style="font-family:'Lora',serif;font-weight:700;font-size:0.95rem;color:var(--espresso);margin-bottom:10px;">Try Text-to-Speech</div>
+        <textarea class="form-textarea" id="tts-test-input" style="min-height:80px;" placeholder="Type something to hear it aloud…">Welcome to Presentation Lab. This is a test of the Puter.js text-to-speech extension.</textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn btn-terra btn-sm" id="tts-play-btn">▶ Play</button>
+          <button class="btn btn-ghost btn-sm" id="tts-stop-btn">⏹ Stop</button>
+        </div>
+      </div>
+
+      <!-- Test Translation area (shown when integrated) -->
+      <div id="trans-test-area" class="hidden" style="background:var(--sand-warm);border-radius:var(--radius-lg);padding:20px;margin-top:8px;">
+        <div style="font-family:'Lora',serif;font-weight:700;font-size:0.95rem;color:var(--espresso);margin-bottom:10px;">Try Translation</div>
+        <textarea class="form-textarea" id="trans-input" style="min-height:80px;" placeholder="Enter text to translate…">Hello, how are you? Welcome to Presentation Lab.</textarea>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:10px;align-items:end;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Target Language</label>
+            <select class="form-select" id="trans-lang-select">
+              <option>Hindi</option><option>Spanish</option><option>French</option>
+              <option>German</option><option>Arabic</option><option>Chinese (Mandarin)</option>
+              <option>Japanese</option><option>Korean</option><option>Portuguese</option>
+              <option>Russian</option><option>Italian</option><option>Bengali</option>
+              <option>Urdu</option><option>Tamil</option><option>Sanskrit</option>
+              <option>Turkish</option><option>Vietnamese</option><option>Thai</option>
+            </select>
+          </div>
+          <button class="btn btn-terra btn-sm" id="trans-go-btn" style="height:fit-content;">Translate →</button>
+        </div>
+        <div id="trans-result" style="display:none;margin-top:12px;padding:14px;background:var(--card);border-radius:var(--radius-md);border:1px solid var(--border);font-size:0.9rem;color:var(--espresso);line-height:1.7;"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <h3 class="widget-title">About Extensions</h3>
+      <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
+        <div>🧩 Extensions add extra features powered by third-party AI services.</div>
+        <div style="margin-top:8px;">🔒 Your Puter session is stored locally in your browser only.</div>
+        <div style="margin-top:8px;">📖 <a href="https://puter.com" target="_blank" style="color:var(--terra);">Learn about Puter.js →</a></div>
+      </div>
+    </div>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.08),var(--sand-warm));">
+      <div style="font-size:0.8rem;color:var(--brown);">
+        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
+        <a href="https://finbgold.netlify.app" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">Fake International Bank</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn" onclick="location.href='/'"><span class="bottom-nav-icon">🏠</span><span>Home</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/creativecreator.html'"><span class="bottom-nav-icon">✏️</span><span>Create</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/nirmaan.html'"><span class="bottom-nav-icon">🤝</span><span>Nirmaan</span></button>
+  <button class="bottom-nav-btn active" onclick="location.href='/extensions.html'"><span class="bottom-nav-icon">🧩</span><span>Extensions</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/settings.html'"><span class="bottom-nav-icon">⚙️</span><span>Settings</span></button>
+</nav>
+
+<script type="module">
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",
+  authDomain: "reflectioncapturedthoughts.firebaseapp.com",
+  projectId: "reflectioncapturedthoughts",
+  storageBucket: "reflectioncapturedthoughts.firebasestorage.app",
+  messagingSenderId: "331335730832",
+  appId: "1:331335730832:web:731df65bd40f9646adfa15"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},3500);}
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    document.getElementById("sb-signin").classList.add("hidden");
+    document.getElementById("sb-chip").classList.remove("hidden");
+    document.getElementById("sb-avatar").textContent = initials(user.displayName || user.email);
+    document.getElementById("sb-name").textContent = user.displayName || user.email.split("@")[0];
+  } else {
+    document.getElementById("sb-signin").classList.remove("hidden");
+    document.getElementById("sb-chip").classList.add("hidden");
+  }
+});
+window.doSignout = async () => { await signOut(auth); window.location.href = "/"; };
+
+// ===== DISCLAIMER =====
+const disclaimerKey = "pl_disclaimer_accepted";
+if (!localStorage.getItem(disclaimerKey)) {
+  document.getElementById("disclaimer-overlay").style.display = "flex";
+} else {
+  document.getElementById("disclaimer-overlay").style.display = "none";
+}
+document.getElementById("disclaimer-accept-btn").addEventListener("click", () => {
+  localStorage.setItem(disclaimerKey, "1");
+  document.getElementById("disclaimer-overlay").style.display = "none";
+  toast("Welcome to Extensions!", "success");
+});
+
+// ===== TTS STATE =====
+function updateTTSUI() {
+  const integrated = localStorage.getItem("pl_puter_tts") === "1";
+  const statusDiv = document.getElementById("tts-status");
+  const testArea = document.getElementById("tts-test-area");
+  if (integrated) {
+    statusDiv.innerHTML = `<span class="ext-integrated">✅ Puter.js TEXT-TO-SPEECH integrated — presentations can be listened to</span>`;
+    testArea.classList.remove("hidden");
+  } else {
+    statusDiv.innerHTML = `<button class="btn btn-terra" id="tts-connect-btn">Connect Puter — Enable TTS</button>`;
+    testArea.classList.add("hidden");
+    document.getElementById("tts-connect-btn").addEventListener("click", connectPuterTTS);
+  }
+}
+
+// ===== TRANSLATION STATE =====
+function updateTransUI() {
+  const integrated = localStorage.getItem("pl_puter_trans") === "1";
+  const statusDiv = document.getElementById("trans-status");
+  const testArea = document.getElementById("trans-test-area");
+  if (integrated) {
+    statusDiv.innerHTML = `<span class="ext-integrated">✅ Puter.js TRANSLATION integrated — presentations can be translated</span>`;
+    testArea.classList.remove("hidden");
+  } else {
+    statusDiv.innerHTML = `<button class="btn btn-terra" id="trans-connect-btn">Connect Puter — Enable Translation</button>`;
+    testArea.classList.add("hidden");
+    document.getElementById("trans-connect-btn").addEventListener("click", connectPuterTrans);
+  }
+}
+
+async function connectPuterTTS() {
+  try {
+    toast("Connecting to Puter…", "info");
+    // Trigger Puter sign-in / check session
+    await puter.auth.signIn();
+    localStorage.setItem("pl_puter_tts", "1");
+    toast("Puter.js TEXT-TO-SPEECH integrated — presentations can be listened to!", "success");
+    updateTTSUI();
+    setupTTSControls();
+  } catch(e) {
+    toast("Puter connection failed. Please try again.", "error");
+  }
+}
+
+async function connectPuterTrans() {
+  try {
+    toast("Connecting to Puter…", "info");
+    await puter.auth.signIn();
+    localStorage.setItem("pl_puter_trans", "1");
+    toast("Puter.js TRANSLATION integrated — presentations can be translated!", "success");
+    updateTransUI();
+    setupTransControls();
+  } catch(e) {
+    toast("Puter connection failed. Please try again.", "error");
+  }
+}
+
+let ttsAudio = null;
+
+function setupTTSControls() {
+  const playBtn = document.getElementById("tts-play-btn");
+  const stopBtn = document.getElementById("tts-stop-btn");
+  if (!playBtn) return;
+
+  playBtn.addEventListener("click", async () => {
+    const text = document.getElementById("tts-test-input").value.trim();
+    if (!text) { toast("Please enter some text.", "info"); return; }
+    playBtn.disabled = true;
+    playBtn.textContent = "Loading…";
+    try {
+      if (ttsAudio) { ttsAudio.pause(); ttsAudio = null; }
+      ttsAudio = await puter.ai.txt2speech(text);
+      ttsAudio.play();
+      toast("Playing audio…", "info");
+    } catch(e) {
+      toast("TTS error: " + e.message, "error");
+    } finally {
+      playBtn.disabled = false;
+      playBtn.textContent = "▶ Play";
+    }
+  });
+
+  stopBtn.addEventListener("click", () => {
+    if (ttsAudio) { ttsAudio.pause(); ttsAudio = null; toast("Stopped.", "info"); }
+  });
+}
+
+function setupTransControls() {
+  const goBtn = document.getElementById("trans-go-btn");
+  if (!goBtn) return;
+
+  goBtn.addEventListener("click", async () => {
+    const text = document.getElementById("trans-input").value.trim();
+    const lang = document.getElementById("trans-lang-select").value;
+    if (!text) { toast("Please enter text to translate.", "info"); return; }
+    goBtn.disabled = true;
+    goBtn.textContent = "Translating…";
+    const resultDiv = document.getElementById("trans-result");
+    resultDiv.style.display = "none";
+    try {
+      const prompt = `Translate to ${lang}. Output only the translation, nothing else:\n\n${text}`;
+      const translation = await puter.ai.chat(prompt, { model: "gpt-4o-mini" });
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML = `<div style="font-size:0.75rem;color:var(--stone);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">Translation — ${lang}</div>${translation}`;
+      toast("Translation complete!", "success");
+    } catch(e) {
+      toast("Translation error: " + e.message, "error");
+    } finally {
+      goBtn.disabled = false;
+      goBtn.textContent = "Translate →";
+    }
+  });
+}
+
+// Init
+updateTTSUI();
+updateTransUI();
+if (localStorage.getItem("pl_puter_tts") === "1") setupTTSControls();
+if (localStorage.getItem("pl_puter_trans") === "1") setupTransControls();
+</script>
+</body>
+</html>

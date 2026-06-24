@@ -6,10 +6,12 @@
   <title>Presentation — Presentation Lab</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+  <script src="https://js.puter.com/v2/"></script>
 </head>
 <body>
 <div id="toast-container"></div>
 
+<!-- Ad overlay -->
 <div id="ad-overlay" class="ad-overlay hidden">
   <div class="ad-modal">
     <img src="1.ad5.png" alt="Sponsored" class="ad-image" />
@@ -18,8 +20,85 @@
   </div>
 </div>
 
+<!-- Edit modal -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-header">
+      <h2 class="modal-title">Edit Presentation</h2>
+      <button class="modal-close" id="edit-modal-close">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Title</label>
+      <input type="text" class="form-input" id="edit-title" style="font-family:'Lora',serif;font-size:1rem;font-weight:600;" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Content</label>
+      <textarea class="form-textarea" id="edit-content" style="min-height:220px;font-size:0.9rem;"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Short Preview</label>
+      <input type="text" class="form-input" id="edit-preview" />
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="edit-category">
+          <option value="">Category…</option>
+          <option>Academic</option><option>Business</option><option>Motivational</option>
+          <option>Wedding</option><option>Farewell</option><option>Welcome</option>
+          <option>Sports</option><option>Political</option><option>Technology</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Language</label>
+        <select class="form-select" id="edit-language">
+          <option value="">Select language…</option>
+          <option>English</option><option>Hindi</option><option>Sanskrit</option>
+          <option>Spanish</option><option>French</option><option>German</option>
+          <option>Arabic</option><option>Chinese (Mandarin)</option><option>Japanese</option>
+          <option>Korean</option><option>Portuguese</option><option>Russian</option>
+          <option>Italian</option><option>Bengali</option><option>Urdu</option>
+          <option>Tamil</option><option>Telugu</option><option>Marathi</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags</label>
+        <input type="text" class="form-input" id="edit-tags" placeholder="comma-separated" />
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+      <button class="btn btn-ghost" id="edit-modal-cancel">Cancel</button>
+      <button class="btn btn-terra" id="edit-modal-save">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Translation modal -->
+<div class="modal-overlay" id="trans-modal">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <h2 class="modal-title">🌐 Translate Presentation</h2>
+      <button class="modal-close" id="trans-modal-close">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Translate to</label>
+      <select class="form-select" id="trans-lang">
+        <option>Hindi</option><option>Spanish</option><option>French</option>
+        <option>German</option><option>Arabic</option><option>Chinese (Mandarin)</option>
+        <option>Japanese</option><option>Korean</option><option>Portuguese</option>
+        <option>Russian</option><option>Italian</option><option>Bengali</option>
+        <option>Urdu</option><option>Tamil</option><option>Sanskrit</option>
+        <option>Turkish</option><option>Vietnamese</option><option>Thai</option>
+        <option>English</option>
+      </select>
+    </div>
+    <button class="btn btn-terra btn-full" id="trans-go-btn">Translate</button>
+    <div id="trans-result" style="display:none;margin-top:16px;padding:16px;background:var(--sand-warm);border-radius:var(--radius-md);border:1px solid var(--border);font-size:0.9rem;color:var(--espresso);line-height:1.8;white-space:pre-wrap;max-height:300px;overflow-y:auto;"></div>
+  </div>
+</div>
+
 <div class="app-shell">
-  <!-- Left Sidebar -->
   <aside class="sidebar-left">
     <a href="/" class="brand">
       <img src="l.png" alt="logo" class="brand-logo" />
@@ -31,6 +110,10 @@
     <a href="/" class="nav-item active"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
     <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
     <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="/nirmaan.html" class="nav-item"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
+    <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
+    <a href="/extensions.html" class="nav-item"><span class="nav-icon">🧩</span><span class="nav-label">Extensions</span></a>
+    <a href="/settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
     <div class="sidebar-spacer"></div>
     <div id="sidebar-user-wrap">
       <a href="/auth.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign in</a>
@@ -44,15 +127,11 @@
     </div>
   </aside>
 
-  <!-- Main detail -->
   <main class="feed">
-    <!-- Loading -->
     <div id="state-loading" style="padding:48px 20px;text-align:center;color:var(--stone);">
       <div class="spinner" style="margin:0 auto 14px;"></div>
       <p>Loading presentation…</p>
     </div>
-
-    <!-- Not found -->
     <div id="state-notfound" class="hidden" style="padding:60px 20px;text-align:center;">
       <div style="font-size:3rem;margin-bottom:14px;">🔭</div>
       <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Not found</h2>
@@ -60,16 +139,15 @@
       <a href="/" class="btn btn-terra">Browse all</a>
     </div>
 
-    <!-- Content -->
     <div id="state-content" class="hidden">
-      <!-- AVR crown bar -->
       <div id="avr-bar" class="avr-crown-bar hidden">
         <span style="font-size:1.2rem;">👑</span>
         <div><strong>AVR Pick</strong> — highlighted by the administrator of Presentation Lab</div>
       </div>
 
-      <div class="detail-back">
+      <div class="detail-back" style="display:flex;align-items:center;justify-content:space-between;">
         <a href="/" class="btn btn-ghost btn-sm">← Back</a>
+        <div style="display:flex;gap:6px;" id="owner-actions"></div>
       </div>
 
       <div class="detail-header">
@@ -79,6 +157,14 @@
       </div>
 
       <div class="detail-tags" id="d-tags"></div>
+
+      <!-- Extension action bar (TTS / Translation) -->
+      <div id="ext-bar" style="display:none;padding:10px 20px;background:var(--sand-warm);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <span style="font-size:0.75rem;color:var(--stone);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-right:4px;">Extensions</span>
+        <button id="tts-listen-btn" class="btn btn-ghost btn-sm" style="display:none;">🔊 Listen</button>
+        <button id="tts-stop-btn" class="btn btn-ghost btn-sm" style="display:none;">⏹ Stop</button>
+        <button id="trans-btn" class="btn btn-ghost btn-sm" style="display:none;">🌐 Translate</button>
+      </div>
 
       <div class="detail-body" id="d-body"></div>
 
@@ -92,7 +178,6 @@
     </div>
   </main>
 
-  <!-- Right sidebar -->
   <aside class="sidebar-right">
     <div class="widget" id="related-widget" style="display:none;">
       <h3 class="widget-title">More presentations</h3>
@@ -111,13 +196,14 @@
   <button class="bottom-nav-btn" onclick="location.href='/'"><span class="bottom-nav-icon">🏠</span><span>Home</span></button>
   <button class="bottom-nav-btn" onclick="location.href='/leaderboard.html'"><span class="bottom-nav-icon">🏆</span><span>Top</span></button>
   <button class="bottom-nav-btn" onclick="location.href='/creativecreator.html'"><span class="bottom-nav-icon">✏️</span><span>Create</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/nirmaan.html'"><span class="bottom-nav-icon">🤝</span><span>Nirmaan</span></button>
   <button class="bottom-nav-btn" onclick="location.href='/auth.html'"><span class="bottom-nav-icon">👤</span><span>Sign in</span></button>
 </nav>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import {
-  getFirestore, collection, getDocs, doc, getDoc, updateDoc, increment, deleteField
+  getFirestore, collection, getDocs, doc, getDoc, updateDoc, increment, deleteField, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
@@ -140,13 +226,14 @@ const postSrc = params.get("src") || "presentations";
 let currentUser = null;
 let postData = null;
 let adTimer = null;
+let ttsAudio = null;
 
 function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
 function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},3500);}
 function setState(s){["state-loading","state-notfound","state-content"].forEach(id=>document.getElementById(id).classList.toggle("hidden",id!==s));}
+function setLoading(btn,v){if(v){btn.dataset.orig=btn.innerHTML;btn.innerHTML=`<span class="spinner"></span>`;btn.disabled=true;}else{btn.innerHTML=btn.dataset.orig||btn.innerHTML;btn.disabled=false;}}
 
-// Auth
 onAuthStateChanged(auth, user => {
   currentUser = user;
   const sbSignin = document.getElementById("sb-signin");
@@ -160,10 +247,131 @@ onAuthStateChanged(auth, user => {
     sbSignin.classList.remove("hidden");
     sbChip.classList.add("hidden");
   }
-  if (postData) updateInteractionUI();
+  if (postData) { updateInteractionUI(); showOwnerActions(); }
 });
 
 window.doSignout = () => signOut(auth);
+
+function showOwnerActions() {
+  const container = document.getElementById("owner-actions");
+  if (!container) return;
+  const isOwner = currentUser && postData && postSrc === "bloggerblogs" && currentUser.uid === postData.authorUid;
+  if (isOwner) {
+    container.innerHTML = `<button class="btn btn-outline btn-sm" id="edit-post-btn">✏️ Edit</button>`;
+    document.getElementById("edit-post-btn").addEventListener("click", () => openEditModal());
+  } else {
+    container.innerHTML = "";
+  }
+}
+
+function openEditModal() {
+  if (!postData) return;
+  document.getElementById("edit-title").value = postData.title || postData.Title || "";
+  document.getElementById("edit-content").value = postData.content || postData.Content || "";
+  document.getElementById("edit-preview").value = postData.preview || postData.Preview || "";
+  document.getElementById("edit-category").value = postData.category || postData.Category || "";
+  document.getElementById("edit-language").value = postData.language || postData.Language || "";
+  document.getElementById("edit-tags").value = postData.tags || postData.Tags || "";
+  document.getElementById("edit-modal").classList.add("open");
+}
+
+document.getElementById("edit-modal-close").addEventListener("click", () => document.getElementById("edit-modal").classList.remove("open"));
+document.getElementById("edit-modal-cancel").addEventListener("click", () => document.getElementById("edit-modal").classList.remove("open"));
+document.getElementById("edit-modal").addEventListener("click", e => { if (e.target === document.getElementById("edit-modal")) document.getElementById("edit-modal").classList.remove("open"); });
+
+document.getElementById("edit-modal-save").addEventListener("click", async () => {
+  if (!postId || !currentUser || postSrc !== "bloggerblogs") return;
+  const title = document.getElementById("edit-title").value.trim();
+  const content = document.getElementById("edit-content").value.trim();
+  const preview = document.getElementById("edit-preview").value.trim() || content.substring(0, 160);
+  const category = document.getElementById("edit-category").value;
+  const language = document.getElementById("edit-language").value;
+  const tags = document.getElementById("edit-tags").value.trim();
+  if (!title || !content) { toast("Title and content are required.", "error"); return; }
+  const btn = document.getElementById("edit-modal-save");
+  setLoading(btn, true);
+  try {
+    await updateDoc(doc(db, "bloggerblogs", postId), {
+      title, Title: title,
+      content, Content: content,
+      preview, Preview: preview,
+      category, Category: category,
+      language, Language: language,
+      tags, Tags: tags,
+      editedAt: serverTimestamp()
+    });
+    postData.title = title; postData.Title = title;
+    postData.content = content; postData.Content = content;
+    postData.category = category; postData.Category = category;
+    postData.language = language;
+    document.getElementById("d-title").textContent = title;
+    document.getElementById("d-body").textContent = content;
+    toast("Presentation updated!", "success");
+    document.getElementById("edit-modal").classList.remove("open");
+    load(); // Reload to refresh metadata
+  } catch(e) { toast("Failed: " + e.message, "error"); }
+  finally { setLoading(btn, false); }
+});
+
+// ===== EXTENSIONS BAR =====
+function setupExtBar() {
+  const ttsOn = localStorage.getItem("pl_puter_tts") === "1";
+  const transOn = localStorage.getItem("pl_puter_trans") === "1";
+  const bar = document.getElementById("ext-bar");
+  if (ttsOn || transOn) {
+    bar.style.display = "flex";
+    if (ttsOn) {
+      document.getElementById("tts-listen-btn").style.display = "";
+      document.getElementById("tts-stop-btn").style.display = "";
+    }
+    if (transOn) {
+      document.getElementById("trans-btn").style.display = "";
+    }
+  }
+}
+
+document.getElementById("tts-listen-btn")?.addEventListener("click", async () => {
+  const content = postData?.content || postData?.Content || "";
+  if (!content) { toast("No content to read.", "info"); return; }
+  const btn = document.getElementById("tts-listen-btn");
+  setLoading(btn, true);
+  try {
+    if (ttsAudio) { ttsAudio.pause(); ttsAudio = null; }
+    ttsAudio = await puter.ai.txt2speech(content.substring(0, 3000));
+    ttsAudio.play();
+    toast("Listening…", "info");
+  } catch(e) { toast("TTS error. Make sure Puter is connected in Extensions.", "error"); }
+  finally { setLoading(btn, false); }
+});
+
+document.getElementById("tts-stop-btn")?.addEventListener("click", () => {
+  if (ttsAudio) { ttsAudio.pause(); ttsAudio = null; toast("Stopped.", "info"); }
+});
+
+document.getElementById("trans-btn")?.addEventListener("click", () => {
+  document.getElementById("trans-modal").classList.add("open");
+  document.getElementById("trans-result").style.display = "none";
+});
+document.getElementById("trans-modal-close").addEventListener("click", () => document.getElementById("trans-modal").classList.remove("open"));
+document.getElementById("trans-modal").addEventListener("click", e => { if (e.target === document.getElementById("trans-modal")) document.getElementById("trans-modal").classList.remove("open"); });
+
+document.getElementById("trans-go-btn").addEventListener("click", async () => {
+  const lang = document.getElementById("trans-lang").value;
+  const content = postData?.content || postData?.Content || "";
+  if (!content) { toast("No content to translate.", "info"); return; }
+  const btn = document.getElementById("trans-go-btn");
+  setLoading(btn, true);
+  const resultDiv = document.getElementById("trans-result");
+  resultDiv.style.display = "none";
+  try {
+    const prompt = `Translate to ${lang}. Output only the translation, nothing else:\n\n${content.substring(0, 2000)}`;
+    const translation = await puter.ai.chat(prompt, { model: "gpt-4o-mini" });
+    resultDiv.style.display = "block";
+    resultDiv.textContent = translation;
+    toast("Translation complete!", "success");
+  } catch(e) { toast("Translation error. Make sure Puter is connected in Extensions.", "error"); }
+  finally { setLoading(btn, false); }
+});
 
 function startAdGate(content) {
   const overlay = document.getElementById("ad-overlay");
@@ -180,9 +388,7 @@ function startAdGate(content) {
       clearInterval(adTimer);
       overlay.classList.add("hidden");
       body.textContent = content;
-    } else {
-      countdown.textContent = n;
-    }
+    } else countdown.textContent = n;
   }, 1000);
 }
 
@@ -200,6 +406,7 @@ async function load() {
     const author = isAVR ? "AVR" : (postData.authorName || "Content Writer");
     const role = isAVR ? "Administrator" : "Content Writer";
     const views = (postData.views || 0) + 1;
+    const lang = postData.language || postData.Language || "";
 
     document.title = title + " — Presentation Lab";
     if (isAVR || postData.highlighted) document.getElementById("avr-bar").classList.remove("hidden");
@@ -209,7 +416,9 @@ async function load() {
       <span class="post-badge ${isAVR?"badge-avr":"badge-writer"}">${role}</span>
       <span>by ${esc(author)}</span>
       <span class="post-tag">${esc(category)}</span>
+      ${lang ? `<span class="lang-chip">🌐 ${esc(lang)}</span>` : ""}
       ${postData.Date ? `<span>${postData.Date}</span>` : ""}
+      ${postData.editedAt ? `<span style="font-size:0.73rem;color:var(--stone);font-style:italic;">edited</span>` : ""}
     `;
 
     const tags = (postData.Tags || postData.tags || "").split(",").map(t=>t.trim()).filter(Boolean);
@@ -217,6 +426,8 @@ async function load() {
 
     document.getElementById("cnt-views").textContent = views;
     updateInteractionUI();
+    showOwnerActions();
+    setupExtBar();
     setState("state-content");
 
     if (postData.ad) {
@@ -225,10 +436,7 @@ async function load() {
       document.getElementById("d-body").textContent = content;
     }
 
-    // Increment views in background
     updateDoc(doc(db, postSrc, postId), { views: increment(1) }).catch(() => {});
-
-    // Load related
     loadRelated(isAVR, category);
   } catch(e) {
     console.error(e);
@@ -243,13 +451,9 @@ function updateInteractionUI() {
   const isDisliked = uid && postData.dislikedBy?.[uid];
   const isSaved = uid && postData.savedBy?.[uid];
 
-  const likeBtn = document.getElementById("act-like");
-  const dislikeBtn = document.getElementById("act-dislike");
-  const saveBtn = document.getElementById("act-save");
-
-  likeBtn.className = `action-btn${isLiked?" liked":""}`;
-  dislikeBtn.className = `action-btn${isDisliked?" disliked":""}`;
-  saveBtn.className = `action-btn${isSaved?" saved":""}`;
+  document.getElementById("act-like").className = `action-btn${isLiked?" liked":""}`;
+  document.getElementById("act-dislike").className = `action-btn${isDisliked?" disliked":""}`;
+  document.getElementById("act-save").className = `action-btn${isSaved?" saved":""}`;
   document.getElementById("cnt-like").textContent = postData.likeCount || 0;
   document.getElementById("cnt-dislike").textContent = postData.dislikeCount || 0;
   document.getElementById("act-save-label").textContent = isSaved ? "Saved" : "Save";

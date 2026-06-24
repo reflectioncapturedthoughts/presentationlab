@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div id="toast-container"></div>
+
+<div class="app-shell">
+  <aside class="sidebar-left">
+    <a href="/" class="brand">
+      <img src="l.png" alt="logo" class="brand-logo" />
+      <div>
+        <div class="brand-name">Presentation Lab</div>
+        <div class="brand-parent">by Fake International Bank</div>
+      </div>
+    </a>
+    <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="/nirmaan.html" class="nav-item"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
+    <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
+    <a href="/extensions.html" class="nav-item"><span class="nav-icon">🧩</span><span class="nav-label">Extensions</span></a>
+    <a href="/settings.html" class="nav-item active"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    <button class="nav-create-btn" onclick="location.href='/creativecreator.html'">
+      <span>✏️</span><span>New Presentation</span>
+    </button>
+    <div class="sidebar-spacer"></div>
+    <div id="sb-user-wrap">
+      <a href="/auth.html?redirect=/settings.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign in</a>
+      <div class="user-chip hidden" id="sb-chip">
+        <div class="user-avatar" id="sb-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-name">—</div>
+          <div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <div class="feed-header" style="padding-bottom:16px;">
+      <h1 class="feed-title">⚙️ Settings</h1>
+    </div>
+
+    <!-- Not signed in gate -->
+    <div id="auth-gate" style="padding:80px 20px;text-align:center;">
+      <div style="font-size:3rem;margin-bottom:14px;">🔐</div>
+      <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to manage settings</h2>
+      <p style="color:var(--brown);margin-bottom:20px;">Access your account settings and preferences.</p>
+      <a href="/auth.html?redirect=/settings.html" class="btn btn-terra btn-lg">Sign In / Sign Up</a>
+    </div>
+
+    <!-- Main settings (shown when logged in) -->
+    <div id="main-content" class="hidden">
+
+      <!-- Profile section -->
+      <div class="settings-section">
+        <div class="settings-section-title">Profile</div>
+        <div class="settings-section-sub">Update your display name and public information.</div>
+        <div class="form-group">
+          <label class="form-label">Display Name</label>
+          <input type="text" class="form-input" id="f-displayname" placeholder="Your name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preferred Language</label>
+          <select class="form-select" id="f-lang-pref">
+            <option value="">Select a language…</option>
+            <option>English</option><option>Hindi</option><option>Sanskrit</option>
+            <option>Spanish</option><option>French</option><option>German</option>
+            <option>Arabic</option><option>Chinese (Mandarin)</option><option>Japanese</option>
+            <option>Korean</option><option>Portuguese</option><option>Russian</option>
+            <option>Italian</option><option>Bengali</option><option>Urdu</option>
+            <option>Tamil</option><option>Telugu</option><option>Marathi</option>
+            <option>Gujarati</option><option>Kannada</option><option>Malayalam</option>
+            <option>Punjabi</option><option>Odia</option><option>Assamese</option>
+            <option>Swahili</option><option>Turkish</option><option>Vietnamese</option>
+            <option>Thai</option><option>Persian</option><option>Dutch</option>
+            <option>Polish</option><option>Indonesian</option><option>Malay</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <button class="btn btn-terra" id="save-profile-btn">Save Profile</button>
+      </div>
+
+      <!-- Account info section -->
+      <div class="settings-section">
+        <div class="settings-section-title">Account Information</div>
+        <div class="settings-section-sub">Your account details and ownership information.</div>
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <span class="info-value" id="info-email">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">User ID</span>
+          <span class="info-value" style="font-family:monospace;font-size:0.78rem;" id="info-uid">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Member Since</span>
+          <span class="info-value" id="info-since">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Points</span>
+          <span class="info-value text-terra" id="info-points">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">K V Rank</span>
+          <span class="info-value" id="info-kv">—</span>
+        </div>
+      </div>
+
+      <!-- Ownership section -->
+      <div class="settings-section">
+        <div class="settings-section-title">Ownership</div>
+        <div class="settings-section-sub">Presentations authored by you. You own this content and can edit or delete it.</div>
+        <div id="ownership-list">
+          <div style="text-align:center;padding:24px;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div></div>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="settings-section">
+        <div class="settings-section-title" style="color:#EF4444;">Account Actions</div>
+        <div class="settings-section-sub">Sign out of your account on this device.</div>
+        <button class="btn btn-danger" onclick="doSignout()">Sign Out</button>
+      </div>
+
+    </div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <h3 class="widget-title">⚙️ Settings Guide</h3>
+      <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
+        <div>📝 Update your display name</div>
+        <div>🌐 Set your preferred language</div>
+        <div>📋 View your presentations</div>
+        <div>🎖️ Check your K V rank</div>
+      </div>
+    </div>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.08),var(--sand-warm));">
+      <div style="font-size:0.8rem;color:var(--brown);">
+        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
+        <a href="https://finbgold.netlify.app" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">Fake International Bank</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn" onclick="location.href='/'"><span class="bottom-nav-icon">🏠</span><span>Home</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/creativecreator.html'"><span class="bottom-nav-icon">✏️</span><span>Create</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/nirmaan.html'"><span class="bottom-nav-icon">🤝</span><span>Nirmaan</span></button>
+  <button class="bottom-nav-btn active" onclick="location.href='/settings.html'"><span class="bottom-nav-icon">⚙️</span><span>Settings</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/auth.html'"><span class="bottom-nav-icon">👤</span><span>Sign in</span></button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, getDoc, getDocs, query, where, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",
+  authDomain: "reflectioncapturedthoughts.firebaseapp.com",
+  projectId: "reflectioncapturedthoughts",
+  storageBucket: "reflectioncapturedthoughts.firebasestorage.app",
+  messagingSenderId: "331335730832",
+  appId: "1:331335730832:web:731df65bd40f9646adfa15"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},3500);}
+function setLoading(btn,v){if(v){btn.dataset.orig=btn.innerHTML;btn.innerHTML=`<span class="spinner"></span>`;btn.disabled=true;}else{btn.innerHTML=btn.dataset.orig||btn.innerHTML;btn.disabled=false;}}
+
+const KV_RANKS = {
+  daily: "Daily Writer",
+  language: "Language Writer",
+  multilingual: "Multi-lingual Writer",
+  sanskrit: "Sanskrit Writer",
+  great: "T H E  G R E A T  W R I T I N G  J O U R N E Y"
+};
+
+let currentUser = null;
+let bloggerData = null;
+
+onAuthStateChanged(auth, async user => {
+  currentUser = user;
+  if (user) {
+    document.getElementById("auth-gate").classList.add("hidden");
+    document.getElementById("main-content").classList.remove("hidden");
+    document.getElementById("sb-signin").classList.add("hidden");
+    document.getElementById("sb-chip").classList.remove("hidden");
+    document.getElementById("sb-avatar").textContent = initials(user.displayName || user.email);
+    document.getElementById("sb-name").textContent = user.displayName || user.email.split("@")[0];
+    document.getElementById("f-displayname").value = user.displayName || "";
+    document.getElementById("info-email").textContent = user.email || "—";
+    document.getElementById("info-uid").textContent = user.uid;
+
+    try {
+      const bloggerDoc = await getDoc(doc(db, "bloggers", user.uid));
+      if (bloggerDoc.exists()) {
+        bloggerData = bloggerDoc.data();
+        const pts = bloggerData.points || 0;
+        const since = bloggerData.createdAt ? new Date(bloggerData.createdAt).toLocaleDateString() : "—";
+        document.getElementById("info-points").textContent = pts + " points";
+        document.getElementById("info-since").textContent = since;
+        const kv = bloggerData.kvRank ? KV_RANKS[bloggerData.kvRank] || bloggerData.kvRank : "Daily Writer";
+        document.getElementById("info-kv").textContent = kv;
+        if (bloggerData.langPreference) {
+          document.getElementById("f-lang-pref").value = bloggerData.langPreference;
+        }
+      }
+    } catch {}
+
+    loadOwnership(user.uid, user);
+  } else {
+    document.getElementById("auth-gate").classList.remove("hidden");
+    document.getElementById("main-content").classList.add("hidden");
+    document.getElementById("sb-signin").classList.remove("hidden");
+    document.getElementById("sb-chip").classList.add("hidden");
+  }
+});
+
+window.doSignout = async () => { await signOut(auth); window.location.href = "/"; };
+
+document.getElementById("save-profile-btn").addEventListener("click", async () => {
+  if (!currentUser) return;
+  const btn = document.getElementById("save-profile-btn");
+  const displayName = document.getElementById("f-displayname").value.trim();
+  const langPref = document.getElementById("f-lang-pref").value;
+  if (!displayName) { toast("Display name cannot be empty.", "error"); return; }
+  setLoading(btn, true);
+  try {
+    await updateProfile(currentUser, { displayName });
+    await updateDoc(doc(db, "bloggers", currentUser.uid), {
+      fullName: displayName,
+      langPreference: langPref
+    });
+    document.getElementById("sb-name").textContent = displayName;
+    document.getElementById("sb-avatar").textContent = initials(displayName);
+    toast("Profile saved!", "success");
+  } catch(e) {
+    toast("Failed: " + e.message, "error");
+  } finally { setLoading(btn, false); }
+});
+
+async function loadOwnership(uid, user) {
+  const container = document.getElementById("ownership-list");
+  try {
+    const q = query(collection(db, "bloggerblogs"), where("authorUid", "==", uid));
+    const snap = await getDocs(q);
+    const posts = [];
+    snap.forEach(d => posts.push({ id: d.id, ...d.data() }));
+    posts.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+    if (!posts.length) {
+      container.innerHTML = `<p style="color:var(--stone);font-size:0.88rem;padding:12px 0;">No presentations yet. <a href="/creativecreator.html" style="color:var(--terra);">Create your first one →</a></p>`;
+      return;
+    }
+
+    container.innerHTML = posts.map(p => `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-light);">
+        <div style="flex:1;min-width:0;">
+          <div style="font-family:'Lora',serif;font-size:0.92rem;font-weight:700;color:var(--espresso);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(p.title||p.Title||"Untitled")}</div>
+          <div style="font-size:0.75rem;color:var(--stone);margin-top:2px;">${p.category||"General"} · ❤️ ${p.likeCount||0} · 👁 ${p.views||0}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          <a href="/presentation.html?id=${p.id}&src=bloggerblogs" class="btn btn-ghost btn-sm">View</a>
+          <a href="/creativecreator.html?edit=${p.id}" class="btn btn-outline btn-sm">Edit</a>
+        </div>
+      </div>`).join("");
+  } catch(e) {
+    container.innerHTML = `<p style="color:var(--stone);font-size:0.85rem;">Failed to load presentations.</p>`;
+  }
+}
+</script>
+</body>
+</html>
