@@ -10,11 +10,11 @@
 <body>
 <div id="toast-container"></div>
 
-<!-- Edit/Create Modal -->
+<!-- Create Modal -->
 <div class="modal-overlay" id="create-modal">
-  <div class="modal" style="max-width:640px;">
+  <div class="modal" style="max-width:660px;">
     <div class="modal-header">
-      <h2 class="modal-title" id="modal-title-text">Create Collaborative Presentation</h2>
+      <h2 class="modal-title">🤝 Create Collaborative Presentation</h2>
       <button class="modal-close" id="modal-close-btn">✕</button>
     </div>
     <div class="form-group">
@@ -23,7 +23,7 @@
     </div>
     <div class="form-group">
       <label class="form-label">Content</label>
-      <textarea class="form-textarea" id="m-content" placeholder="Write the presentation content…" style="min-height:200px;font-size:0.9rem;"></textarea>
+      <textarea class="form-textarea" id="m-content" placeholder="Write the presentation content…" style="min-height:180px;font-size:0.9rem;"></textarea>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
       <div class="form-group">
@@ -44,8 +44,7 @@
           <option>Arabic</option><option>Chinese (Mandarin)</option><option>Japanese</option>
           <option>Korean</option><option>Portuguese</option><option>Russian</option>
           <option>Italian</option><option>Bengali</option><option>Urdu</option>
-          <option>Tamil</option><option>Telugu</option><option>Marathi</option>
-          <option>Other</option>
+          <option>Tamil</option><option>Telugu</option><option>Marathi</option><option>Other</option>
         </select>
       </div>
     </div>
@@ -54,13 +53,18 @@
       <input type="text" class="form-input" id="m-tags" placeholder="e.g. teamwork, community, speech" />
     </div>
     <div class="form-group">
-      <label class="form-label">Co-Authors (email addresses, one per line)</label>
-      <textarea class="form-textarea" id="m-coauthors" style="min-height:70px;" placeholder="Enter co-author email addresses, one per line…"></textarea>
-      <div class="form-hint">Co-authors will be shown as contributors. They can add/edit content by visiting Nirmaan.</div>
+      <label class="form-label">Co-Authors — Registered User Emails (one per line)</label>
+      <textarea class="form-textarea" id="m-coauthors" style="min-height:70px;" placeholder="user@example.com&#10;another@example.com&#10;Only registered Presentation Lab accounts can be co-authors."></textarea>
+      <div class="form-hint">⚠️ Only signed-in Presentation Lab accounts can be co-authors. They must verify membership before the presentation goes live.</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Additional Credits (optional)</label>
+      <input type="text" class="form-input" id="m-credits" placeholder="e.g. Credit: T-series, Music: ABC" />
+      <div class="form-hint">Credits for non-user contributors (music labels, organisations, etc.).</div>
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
       <button class="btn btn-ghost" id="modal-cancel-btn">Cancel</button>
-      <button class="btn btn-terra" id="modal-save-btn">Publish Presentation</button>
+      <button class="btn btn-terra" id="modal-save-btn">Submit for Verification →</button>
     </div>
   </div>
 </div>
@@ -76,6 +80,7 @@
     </a>
     <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
     <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="/writers.html" class="nav-item"><span class="nav-icon">✍️</span><span class="nav-label">Writers</span></a>
     <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
     <a href="/nirmaan.html" class="nav-item active"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
     <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
@@ -101,27 +106,28 @@
     <div class="feed-header" style="padding-bottom:0;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
         <h1 class="feed-title" style="margin-bottom:0;">🤝 Nirmaan</h1>
-        <button class="btn btn-terra btn-sm" id="create-nirmaan-btn">+ Create Together</button>
+        <button class="btn btn-terra btn-sm" id="create-nirmaan-btn" style="display:none;">+ Create Together</button>
       </div>
       <div class="filter-tabs">
-        <button class="filter-tab active" data-tab="all">All Collaborative</button>
-        <button class="filter-tab" data-tab="mine">My Contributions</button>
+        <button class="filter-tab active" data-tab="invitations">My Invitations</button>
+        <button class="filter-tab" data-tab="mine">My Nirmaan</button>
+        <button class="filter-tab" data-tab="all">All Live</button>
       </div>
     </div>
 
     <!-- Auth gate -->
-    <div id="auth-gate" style="padding:60px 20px;text-align:center;" class="hidden">
+    <div id="auth-gate" style="padding:60px 20px;text-align:center;">
       <div style="font-size:3rem;margin-bottom:14px;">🤝</div>
-      <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to collaborate</h2>
-      <p style="color:var(--brown);margin-bottom:20px;">Create presentations together with other writers and share them as a whole.</p>
+      <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to use Nirmaan</h2>
+      <p style="color:var(--brown);margin-bottom:20px;">Create presentations together with other verified writers.</p>
       <a href="/auth.html?redirect=/nirmaan.html" class="btn btn-terra btn-lg">Sign In / Sign Up</a>
     </div>
 
     <!-- Content -->
-    <div id="nirmaan-content">
+    <div id="nirmaan-content" class="hidden">
       <div style="padding:32px;text-align:center;color:var(--stone);">
         <div class="spinner" style="margin:0 auto 12px;"></div>
-        <p>Loading collaborative presentations…</p>
+        <p>Loading…</p>
       </div>
     </div>
   </main>
@@ -130,19 +136,19 @@
     <div class="widget">
       <h3 class="widget-title">🤝 What is Nirmaan?</h3>
       <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
-        <div>✍️ <strong>Nirmaan</strong> means "creation" in Sanskrit.</div>
-        <div style="margin-top:8px;">📝 Multiple writers collaborate on a single presentation.</div>
-        <div style="margin-top:8px;">🔗 Share the finished work as a whole to the community.</div>
-        <div style="margin-top:8px;">🌐 Supports all languages — write together across cultures.</div>
+        <div>✍️ <strong>Nirmaan</strong> = "creation" in Sanskrit.</div>
+        <div style="margin-top:8px;">📝 Multiple writers collaborate on one presentation.</div>
+        <div style="margin-top:8px;">✅ Co-authors must verify membership before it goes live.</div>
+        <div style="margin-top:8px;">🌐 Live presentations appear in the main feed.</div>
       </div>
     </div>
     <div class="widget">
-      <h3 class="widget-title">How to collaborate</h3>
+      <h3 class="widget-title">How it works</h3>
       <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
-        <div>1️⃣ Click <strong>"+ Create Together"</strong></div>
-        <div style="margin-top:4px;">2️⃣ Add co-authors by email</div>
-        <div style="margin-top:4px;">3️⃣ Write and publish together</div>
-        <div style="margin-top:4px;">4️⃣ Share the presentation with the world</div>
+        <div>1️⃣ Create with co-author emails</div>
+        <div style="margin-top:4px;">2️⃣ Co-authors verify on this page</div>
+        <div style="margin-top:4px;">3️⃣ Once all verify → goes <strong>Live</strong> 🟢</div>
+        <div style="margin-top:4px;">4️⃣ All collaborators can edit the presentation</div>
       </div>
     </div>
     <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.08),var(--sand-warm));">
@@ -166,7 +172,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import {
   getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
-  query, orderBy, serverTimestamp, where, arrayUnion
+  query, orderBy, serverTimestamp, where, arrayUnion, arrayRemove, getDoc
 } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
@@ -190,86 +196,190 @@ function setLoading(btn,v){if(v){btn.dataset.orig=btn.innerHTML;btn.innerHTML=`<
 
 let currentUser = null;
 let allPosts = [];
-let currentTab = "all";
+let currentTab = "invitations";
 
 onAuthStateChanged(auth, user => {
   currentUser = user;
   if (user) {
     document.getElementById("auth-gate").classList.add("hidden");
+    document.getElementById("nirmaan-content").classList.remove("hidden");
     document.getElementById("sb-signin").classList.add("hidden");
     document.getElementById("sb-chip").classList.remove("hidden");
     document.getElementById("sb-avatar").textContent = initials(user.displayName || user.email);
     document.getElementById("sb-name").textContent = user.displayName || user.email.split("@")[0];
     document.getElementById("create-nirmaan-btn").style.display = "";
+    loadNirmaan();
   } else {
     document.getElementById("auth-gate").classList.remove("hidden");
+    document.getElementById("nirmaan-content").classList.add("hidden");
     document.getElementById("sb-signin").classList.remove("hidden");
     document.getElementById("sb-chip").classList.add("hidden");
     document.getElementById("create-nirmaan-btn").style.display = "none";
   }
-  loadNirmaan();
 });
 
 window.doSignout = async () => { await signOut(auth); window.location.href = "/"; };
 
 async function loadNirmaan() {
   const container = document.getElementById("nirmaan-content");
+  container.innerHTML = `<div style="padding:32px;text-align:center;color:var(--stone);"><div class="spinner" style="margin:0 auto 12px;"></div><p>Loading…</p></div>`;
   try {
     const snap = await getDocs(query(collection(db, "nirmaan"), orderBy("createdAt", "desc")));
     allPosts = [];
     snap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
     renderNirmaan();
   } catch(e) {
-    container.innerHTML = `<div style="padding:40px;text-align:center;color:var(--stone);font-size:0.88rem;">Could not load collaborative presentations.</div>`;
+    container.innerHTML = `<div style="padding:40px;text-align:center;color:var(--stone);font-size:0.88rem;">Could not load. Check your connection.</div>`;
   }
 }
 
 function renderNirmaan() {
   const container = document.getElementById("nirmaan-content");
-  let posts = [...allPosts];
-  if (currentTab === "mine" && currentUser) {
-    posts = posts.filter(p => p.createdByUid === currentUser.uid || (p.coAuthorEmails||[]).includes(currentUser.email));
-  }
+  const uid = currentUser?.uid;
+  const email = currentUser?.email;
+  let posts = [];
 
-  if (!posts.length) {
-    const msg = currentTab === "mine"
-      ? `<div class="feed-empty"><div class="feed-empty-icon">✍️</div><div class="feed-empty-title">No collaborations yet</div><div class="feed-empty-text">Start a Nirmaan presentation to write together.</div></div>`
-      : `<div class="feed-empty"><div class="feed-empty-icon">🤝</div><div class="feed-empty-title">No collaborative presentations yet</div><div class="feed-empty-text">Be the first to create a Nirmaan presentation!</div></div>`;
-    container.innerHTML = msg;
+  if (currentTab === "invitations") {
+    // Show pending invitations where user's email is in pendingEmails
+    posts = allPosts.filter(p => (p.pendingEmails || []).includes(email));
+    if (!posts.length) {
+      container.innerHTML = `<div class="feed-empty"><div class="feed-empty-icon">📬</div><div class="feed-empty-title">No pending invitations</div><div class="feed-empty-text">When someone adds your email as a co-author, their invitation will appear here for you to verify.</div></div>`;
+      return;
+    }
+    container.innerHTML = `<div style="padding:16px 20px 8px;font-size:0.82rem;color:var(--stone);">Presentations awaiting your verification. Accept to make them live.</div>` +
+      posts.map(p => renderInvitationCard(p)).join("");
     return;
   }
 
-  container.innerHTML = posts.map(p => {
-    const t = p.createdAt?.seconds || 0;
-    const authors = p.authorNames || [p.createdByName || "Writer"];
-    const lang = p.language || "";
-    const isOwner = currentUser?.uid === p.createdByUid;
-    return `
-      <article class="post-card" style="cursor:default;">
-        <div class="post-avatar-col">
-          <div class="post-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">${initials(p.createdByName||"N")}</div>
-        </div>
-        <div class="post-body">
-          <div class="post-header">
-            <span class="post-name">${esc(authors[0]||"Writer")}</span>
-            <span class="post-badge" style="background:#EDE9FE;color:#6D28D9;">Nirmaan</span>
-            ${t ? `<span class="post-time">· ${timeAgo(t)}</span>` : ""}
-            ${lang ? `<span class="lang-chip">🌐 ${esc(lang)}</span>` : ""}
-          </div>
-          <h3 class="post-title">${esc(p.title||"Untitled Collaboration")}</h3>
-          <p class="post-text">${esc((p.content||"").substring(0,200))}</p>
-          <div class="nirmaan-authors">
-            ${authors.map(a => `<span class="nirmaan-author-chip">✍️ ${esc(a)}</span>`).join("")}
-          </div>
-          <div class="post-actions" style="margin-top:12px;">
-            <button class="action-btn" onclick="shareNirmaan('${p.id}','${esc(p.title||"")}')">🔗 Share</button>
-            <a href="/presentation.html?id=${p.id}&src=nirmaan" class="action-btn" style="text-decoration:none;">📖 Read</a>
-            ${isOwner ? `<button class="action-btn" style="color:#EF4444;" onclick="deleteNirmaan('${p.id}')">🗑️ Delete</button>` : ""}
-          </div>
-        </div>
-      </article>`;
-  }).join("");
+  if (currentTab === "mine") {
+    posts = allPosts.filter(p =>
+      p.createdByUid === uid ||
+      (p.acceptedEmails || []).includes(email)
+    );
+    if (!posts.length) {
+      container.innerHTML = `<div class="feed-empty"><div class="feed-empty-icon">✍️</div><div class="feed-empty-title">No collaborations yet</div><div class="feed-empty-text">Create a Nirmaan presentation to collaborate with other writers.</div></div>`;
+      return;
+    }
+    container.innerHTML = posts.map(p => renderNirmaanCard(p)).join("");
+    return;
+  }
+
+  // All live
+  posts = allPosts.filter(p => p.status === "live");
+  if (!posts.length) {
+    container.innerHTML = `<div class="feed-empty"><div class="feed-empty-icon">🤝</div><div class="feed-empty-title">No live collaborations yet</div><div class="feed-empty-text">Collaborative presentations appear here once all co-authors verify.</div></div>`;
+    return;
+  }
+  container.innerHTML = posts.map(p => renderNirmaanCard(p)).join("");
 }
+
+function renderInvitationCard(p) {
+  const authors = (p.authorNames || [p.createdByName || "Writer"]).join(", ");
+  return `
+    <div class="invitation-card">
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:'Lora',serif;font-weight:700;font-size:0.95rem;color:var(--espresso);margin-bottom:4px;">${esc(p.title||"Untitled Collaboration")}</div>
+        <div style="font-size:0.78rem;color:var(--stone);margin-bottom:6px;">Created by ${esc(p.createdByName||"Writer")} · ${(p.pendingEmails||[]).length} pending verification(s)</div>
+        <div class="nirmaan-authors">${(p.authorNames||[p.createdByName||"Writer"]).map(a=>`<span class="nirmaan-author-chip">✍️ ${esc(a)}</span>`).join("")}</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;">
+        <button class="btn btn-success btn-sm" onclick="verifyMembership('${p.id}')">✅ Verify & Join</button>
+        <button class="btn btn-ghost btn-sm" onclick="declineInvitation('${p.id}')">Decline</button>
+      </div>
+    </div>`;
+}
+
+function renderNirmaanCard(p) {
+  const uid = currentUser?.uid;
+  const email = currentUser?.email;
+  const t = p.createdAt?.seconds || 0;
+  const authors = p.authorNames || [p.createdByName || "Writer"];
+  const lang = p.language || "";
+  const isOwner = uid === p.createdByUid;
+  const isCollaborator = (p.acceptedEmails || []).includes(email) || isOwner;
+  const statusBadge = p.status === "live"
+    ? `<span class="nirmaan-live-badge">🟢 Live</span>`
+    : `<span class="nirmaan-pending-badge">⏳ Pending ${(p.pendingEmails||[]).length} verification(s)</span>`;
+
+  return `
+    <article class="post-card" style="cursor:default;">
+      <div class="post-avatar-col">
+        <div class="post-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">${initials(p.createdByName||"N")}</div>
+      </div>
+      <div class="post-body">
+        <div class="post-header">
+          <span class="post-name">${esc(p.createdByName||"Writer")}</span>
+          <span class="post-badge" style="background:#EDE9FE;color:#6D28D9;">Nirmaan</span>
+          ${t ? `<span class="post-time">· ${timeAgo(t)}</span>` : ""}
+          ${lang ? `<span class="lang-chip">🌐 ${esc(lang)}</span>` : ""}
+          ${statusBadge}
+        </div>
+        <h3 class="post-title">${esc(p.title||"Untitled Collaboration")}</h3>
+        <p class="post-text">${esc((p.content||"").substring(0,200))}</p>
+        ${p.creditText ? `<div style="font-size:0.75rem;color:var(--stone);margin-bottom:6px;">📌 ${esc(p.creditText)}</div>` : ""}
+        <div class="nirmaan-authors">
+          ${authors.map(a => `<span class="nirmaan-author-chip">✍️ ${esc(a)}</span>`).join("")}
+          ${(p.pendingEmails||[]).length > 0 ? `<span class="nirmaan-author-chip" style="background:#FEF3C7;color:#92400E;">⏳ ${p.pendingEmails.length} pending</span>` : ""}
+        </div>
+        <div class="post-actions" style="margin-top:12px;">
+          ${p.status === "live" ? `<a href="/presentation.html?id=${p.id}&src=nirmaan" class="action-btn" style="text-decoration:none;">📖 Read</a>` : ""}
+          ${p.status === "live" ? `<button class="action-btn" onclick="shareNirmaan('${p.id}','${esc(p.title||"")}')">🔗 Share</button>` : ""}
+          ${isCollaborator && p.status === "live" ? `<a href="/nirmaan.html?edit=${p.id}" class="action-btn" style="text-decoration:none;">✏️ Edit</a>` : ""}
+          ${isOwner ? `<button class="action-btn" style="color:#EF4444;" onclick="deleteNirmaan('${p.id}')">🗑️ Delete</button>` : ""}
+        </div>
+      </div>
+    </article>`;
+}
+
+window.verifyMembership = async (id) => {
+  if (!currentUser) return;
+  const btn = event.target;
+  setLoading(btn, true);
+  try {
+    const ref = doc(db, "nirmaan", id);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) { toast("Presentation not found.", "error"); return; }
+    const data = snap.data();
+    const email = currentUser.email;
+    const name = currentUser.displayName || email.split("@")[0];
+
+    const newPending = (data.pendingEmails || []).filter(e => e !== email);
+    const newAccepted = [...(data.acceptedEmails || []), email];
+    const newNames = [...(data.authorNames || [data.createdByName || "Writer"])];
+    if (!newNames.includes(name)) newNames.push(name);
+
+    const updates = {
+      pendingEmails: newPending,
+      acceptedEmails: newAccepted,
+      authorNames: newNames,
+    };
+    // If no more pending, go live
+    if (newPending.length === 0) {
+      updates.status = "live";
+    }
+    await updateDoc(ref, updates);
+    toast(newPending.length === 0 ? "✅ Verified! The presentation is now Live 🟢" : "✅ Verified! Waiting for other co-authors.", "success");
+    loadNirmaan();
+  } catch(e) { toast("Failed: " + e.message, "error"); }
+  finally { setLoading(btn, false); }
+};
+
+window.declineInvitation = async (id) => {
+  if (!confirm("Decline this invitation? Your email will be removed from the co-author list.")) return;
+  try {
+    const ref = doc(db, "nirmaan", id);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return;
+    const data = snap.data();
+    const email = currentUser.email;
+    await updateDoc(ref, {
+      pendingEmails: (data.pendingEmails||[]).filter(e => e !== email),
+      coAuthorEmails: (data.coAuthorEmails||[]).filter(e => e !== email),
+    });
+    toast("Invitation declined.", "info");
+    loadNirmaan();
+  } catch(e) { toast("Failed: " + e.message, "error"); }
+};
 
 window.shareNirmaan = async (id, title) => {
   const url = `${location.origin}/presentation.html?id=${id}&src=nirmaan`;
@@ -314,8 +424,9 @@ document.getElementById("modal-save-btn").addEventListener("click", async () => 
   const category = document.getElementById("m-category").value;
   const language = document.getElementById("m-language").value;
   const tags = document.getElementById("m-tags").value.trim();
-  const coAuthorEmails = document.getElementById("m-coauthors").value
-    .split("\n").map(e => e.trim()).filter(Boolean);
+  const creditText = document.getElementById("m-credits").value.trim();
+  const rawEmails = document.getElementById("m-coauthors").value
+    .split("\n").map(e => e.trim().toLowerCase()).filter(Boolean);
 
   if (!title) { toast("Please enter a title.", "error"); return; }
   if (!content) { toast("Please write some content.", "error"); return; }
@@ -324,7 +435,24 @@ document.getElementById("modal-save-btn").addEventListener("click", async () => 
   setLoading(btn, true);
 
   try {
-    const authorName = currentUser.displayName || currentUser.email;
+    // Validate email format only — don't require users to be in bloggers collection
+    // (they may have signed in directly via Google without their doc being created yet)
+    let validEmails = [];
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (rawEmails.length > 0) {
+      const badFormat = rawEmails.filter(e => e !== currentUser.email.toLowerCase() && !emailRegex.test(e));
+      if (badFormat.length > 0) {
+        toast(`Invalid email format: ${badFormat.join(", ")}`, "error");
+        setLoading(btn, false);
+        return;
+      }
+      validEmails = rawEmails.filter(e => e !== currentUser.email.toLowerCase());
+    }
+
+    const authorName = currentUser.displayName || currentUser.email.split("@")[0];
+    // status: "live" if no co-authors, else "pending"
+    const status = validEmails.length === 0 ? "live" : "pending";
+
     await addDoc(collection(db, "nirmaan"), {
       title,
       content,
@@ -332,22 +460,24 @@ document.getElementById("modal-save-btn").addEventListener("click", async () => 
       category: category || "General",
       language,
       tags,
+      creditText,
       createdByUid: currentUser.uid,
-      createdByName: authorName,
       createdByEmail: currentUser.email,
-      coAuthorEmails,
-      authorNames: [authorName, ...coAuthorEmails],
+      createdByName: authorName,
+      coAuthorEmails: validEmails,
+      pendingEmails: validEmails,
+      acceptedEmails: [currentUser.email],
+      authorNames: [authorName],
+      status,
       views: 0,
       likeCount: 0,
       createdAt: serverTimestamp()
     });
-    toast("Nirmaan presentation published! 🎉", "success");
+    toast(status === "live" ? "Nirmaan presentation published! 🎉" : "Sent for co-author verification! They'll see it under 'My Invitations'.", "success");
     modal.classList.remove("open");
-    document.getElementById("m-title").value = "";
-    document.getElementById("m-content").value = "";
+    ["m-title","m-content","m-tags","m-credits"].forEach(id => document.getElementById(id).value = "");
     document.getElementById("m-category").value = "";
     document.getElementById("m-language").value = "";
-    document.getElementById("m-tags").value = "";
     document.getElementById("m-coauthors").value = "";
     loadNirmaan();
   } catch(e) {

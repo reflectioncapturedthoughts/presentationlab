@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writers — Presentation Lab</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div id="toast-container"></div>
+
+<!-- Writer Profile Modal -->
+<div class="modal-overlay" id="profile-modal">
+  <div class="modal writer-profile-modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="pm-heading">Writer Profile</h2>
+      <button class="modal-close" id="pm-close">✕</button>
+    </div>
+    <div class="writer-profile-header">
+      <div class="writer-profile-avatar" id="pm-avatar">?</div>
+      <div class="writer-profile-name" id="pm-name">—</div>
+      <div style="margin-top:6px;" id="pm-rank-badge"></div>
+      <div class="writer-profile-stats">
+        <div class="writer-profile-stat">
+          <div class="writer-profile-stat-val" id="pm-pts">0</div>
+          <div class="writer-profile-stat-lbl">Points</div>
+        </div>
+        <div class="writer-profile-stat">
+          <div class="writer-profile-stat-val" id="pm-posts">0</div>
+          <div class="writer-profile-stat-lbl">Presentations</div>
+        </div>
+        <div class="writer-profile-stat">
+          <div class="writer-profile-stat-val" id="pm-likes">0</div>
+          <div class="writer-profile-stat-lbl">Total Likes</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-family:'Lora',serif;font-size:0.85rem;font-weight:700;color:var(--espresso);margin-bottom:10px;border-top:1px solid var(--border);padding-top:14px;">Presentations by this writer</div>
+    <div class="writer-posts-list" id="pm-posts-list">
+      <div style="text-align:center;padding:20px;color:var(--stone);"><div class="spinner" style="margin:0 auto 8px;"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="app-shell">
+  <aside class="sidebar-left">
+    <a href="/" class="brand">
+      <img src="l.png" alt="logo" class="brand-logo" />
+      <div>
+        <div class="brand-name">Presentation Lab</div>
+        <div class="brand-parent">by Fake International Bank</div>
+      </div>
+    </a>
+    <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="/writers.html" class="nav-item active"><span class="nav-icon">✍️</span><span class="nav-label">Writers</span></a>
+    <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
+    <a href="/nirmaan.html" class="nav-item"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
+    <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
+    <a href="/extensions.html" class="nav-item"><span class="nav-icon">🧩</span><span class="nav-label">Extensions</span></a>
+    <a href="/settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    <button class="nav-create-btn" onclick="location.href='/creativecreator.html'">
+      <span>✏️</span><span>New Presentation</span>
+    </button>
+    <div class="sidebar-spacer"></div>
+    <div id="sb-user-wrap">
+      <a href="/auth.html" class="btn btn-outline btn-full btn-sm" id="sb-signin">Sign in</a>
+      <div class="user-chip hidden" id="sb-chip">
+        <div class="user-avatar" id="sb-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-name">—</div>
+          <div class="user-handle"><button onclick="doSignout()" style="background:none;border:none;color:var(--stone);font-size:0.72rem;cursor:pointer;padding:0;font-family:inherit;">Sign out</button></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <div class="feed-header" style="padding-bottom:12px;">
+      <h1 class="feed-title">✍️ Writers</h1>
+      <div style="padding-bottom:8px;">
+        <input type="text" class="form-input" id="search-input" placeholder="Search writers by name…" style="max-width:340px;padding:8px 14px;font-size:0.88rem;" />
+      </div>
+    </div>
+    <div id="writers-list">
+      <div style="padding:40px;text-align:center;color:var(--stone);">
+        <div class="spinner" style="margin:0 auto 12px;"></div>
+        <p>Loading writers…</p>
+      </div>
+    </div>
+  </main>
+
+  <aside class="sidebar-right">
+    <div class="widget">
+      <h3 class="widget-title">✍️ About Writers</h3>
+      <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
+        <div>👤 Browse all writers on Presentation Lab.</div>
+        <div style="margin-top:8px;">📖 Click any writer to see their profile and all presentations.</div>
+        <div style="margin-top:8px;">🏆 Rankings are based on community likes.</div>
+        <div style="margin-top:8px;">🎖️ K V ranks are earned through writing.</div>
+      </div>
+    </div>
+    <div class="widget" id="top-writer-widget">
+      <h3 class="widget-title">🥇 Top Writer</h3>
+      <div id="top-writer-content"><div class="skeleton" style="height:14px;margin-bottom:8px;"></div><div class="skeleton" style="height:14px;width:70%;"></div></div>
+    </div>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(201,108,84,0.08),var(--sand-warm));">
+      <div style="font-size:0.8rem;color:var(--brown);">
+        <strong style="color:var(--espresso);display:block;margin-bottom:4px;">Powered by</strong>
+        <a href="https://finbgold.netlify.app" target="_blank" style="color:var(--terra);font-weight:700;text-decoration:underline;">Fake International Bank</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn" onclick="location.href='/'"><span class="bottom-nav-icon">🏠</span><span>Home</span></button>
+  <button class="bottom-nav-btn active" onclick="location.href='/writers.html'"><span class="bottom-nav-icon">✍️</span><span>Writers</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/creativecreator.html'"><span class="bottom-nav-icon">✏️</span><span>Create</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/leaderboard.html'"><span class="bottom-nav-icon">🏆</span><span>Top</span></button>
+  <button class="bottom-nav-btn" onclick="location.href='/settings.html'"><span class="bottom-nav-icon">⚙️</span><span>Settings</span></button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import {
+  getFirestore, collection, getDocs, query, where, orderBy
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",
+  authDomain: "reflectioncapturedthoughts.firebaseapp.com",
+  projectId: "reflectioncapturedthoughts",
+  storageBucket: "reflectioncapturedthoughts.firebasestorage.app",
+  messagingSenderId: "331335730832",
+  appId: "1:331335730832:web:731df65bd40f9646adfa15"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const KV_RANKS = {
+  daily: { label: "Daily Writer", cls: "kv-badge-daily" },
+  language: { label: "Language Writer", cls: "kv-badge-language" },
+  multilingual: { label: "Multi-lingual Writer", cls: "kv-badge-multilingual" },
+  sanskrit: { label: "Sanskrit Writer", cls: "kv-badge-sanskrit" },
+  great: { label: "T H E  G R E A T  W R I T I N G  J O U R N E Y", cls: "kv-badge-great" }
+};
+
+function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
+function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},3500);}
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    document.getElementById("sb-signin").classList.add("hidden");
+    document.getElementById("sb-chip").classList.remove("hidden");
+    document.getElementById("sb-avatar").textContent = initials(user.displayName || user.email);
+    document.getElementById("sb-name").textContent = user.displayName || user.email.split("@")[0];
+  } else {
+    document.getElementById("sb-signin").classList.remove("hidden");
+    document.getElementById("sb-chip").classList.add("hidden");
+  }
+});
+window.doSignout = async () => { await signOut(auth); window.location.href = "/"; };
+
+let allWriters = [];
+let allPosts = [];
+
+async function loadData() {
+  const [bloggerSnap, postsSnap] = await Promise.all([
+    getDocs(collection(db, "bloggers")),
+    getDocs(collection(db, "bloggerblogs"))
+  ]);
+
+  allPosts = [];
+  postsSnap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
+
+  // Build post counts and like totals per author
+  const postsByAuthor = {};
+  const likesByAuthor = {};
+  const viewsByAuthor = {};
+  const nameByAuthor = {};
+  allPosts.forEach(p => {
+    const uid = p.authorUid;
+    if (!uid) return;
+    postsByAuthor[uid] = (postsByAuthor[uid] || 0) + 1;
+    likesByAuthor[uid] = (likesByAuthor[uid] || 0) + (p.likeCount || 0);
+    viewsByAuthor[uid] = (viewsByAuthor[uid] || 0) + (p.views || 0);
+    if (p.authorName && !nameByAuthor[uid]) nameByAuthor[uid] = p.authorName;
+  });
+
+  // Build writers map from bloggers collection
+  const writersMap = {};
+  bloggerSnap.forEach(d => {
+    const data = d.data();
+    const name = data.fullName || data.displayName || nameByAuthor[d.id] || "";
+    writersMap[d.id] = {
+      id: d.id,
+      fullName: name || "Writer",
+      points: data.points || 0,
+      kvRank: data.kvRank || "daily",
+      postCount: postsByAuthor[d.id] || 0,
+      totalLikes: likesByAuthor[d.id] || 0,
+      totalViews: viewsByAuthor[d.id] || 0
+    };
+  });
+
+  // Add authors from bloggerblogs not yet in bloggers collection
+  Object.entries(postsByAuthor).forEach(([uid, count]) => {
+    if (!writersMap[uid]) {
+      writersMap[uid] = {
+        id: uid,
+        fullName: nameByAuthor[uid] || "Writer",
+        points: 0,
+        kvRank: "daily",
+        postCount: count,
+        totalLikes: likesByAuthor[uid] || 0,
+        totalViews: viewsByAuthor[uid] || 0
+      };
+    }
+  });
+
+  allWriters = Object.values(writersMap).filter(w => w.postCount > 0 || w.points > 0);
+  allWriters.sort((a, b) => (b.points || 0) - (a.points || 0));
+
+  renderWriters(allWriters);
+  renderTopWriter(allWriters[0]);
+}
+
+function renderWriters(writers) {
+  const container = document.getElementById("writers-list");
+  if (!writers.length) {
+    container.innerHTML = `<div class="feed-empty"><div class="feed-empty-icon">✍️</div><div class="feed-empty-title">No writers yet</div><div class="feed-empty-text">Be the first to create a presentation!</div></div>`;
+    return;
+  }
+  const medals = ["🥇","🥈","🥉"];
+  container.innerHTML = writers.map((w, i) => {
+    const kv = w.kvRank ? KV_RANKS[w.kvRank] : KV_RANKS.daily;
+    return `
+    <div class="writer-card" onclick="openWriterProfile('${w.id}')">
+      <div class="writer-card-avatar" style="${i < 3 ? 'box-shadow:0 3px 10px var(--terra-glow);' : ''}">${initials(w.fullName || w.displayName)}</div>
+      <div class="writer-card-info">
+        <div class="writer-card-name">${i < 3 ? medals[i] + " " : ""}${esc(w.fullName || w.displayName || "Writer")}</div>
+        <div class="writer-card-meta">
+          <span class="kv-rank-badge ${kv.cls}" style="font-size:0.65rem;padding:1px 8px;">${kv.label}</span>
+          <span>📝 ${w.postCount} post${w.postCount!==1?"s":""}</span>
+          <span>❤️ ${w.totalLikes} like${w.totalLikes!==1?"s":""}</span>
+        </div>
+      </div>
+      <div class="writer-card-pts">${w.points || 0}pts</div>
+    </div>`;
+  }).join("");
+}
+
+function renderTopWriter(w) {
+  if (!w) return;
+  const kv = w.kvRank ? KV_RANKS[w.kvRank] : KV_RANKS.daily;
+  document.getElementById("top-writer-content").innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="openWriterProfile('${w.id}')">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Lora',serif;flex-shrink:0;">${initials(w.fullName||w.displayName)}</div>
+      <div>
+        <div style="font-weight:700;color:var(--espresso);font-size:0.9rem;">${esc(w.fullName||w.displayName||"Writer")}</div>
+        <div style="font-size:0.72rem;color:var(--stone);">${w.points||0} points · ${w.postCount} presentations</div>
+        <span class="kv-rank-badge ${kv.cls}" style="font-size:0.6rem;padding:1px 7px;margin-top:4px;display:inline-flex;">${kv.label}</span>
+      </div>
+    </div>`;
+}
+
+window.openWriterProfile = async (uid) => {
+  const writer = allWriters.find(w => w.id === uid);
+  if (!writer) return;
+  const name = writer.fullName || writer.displayName || "Writer";
+  const kv = writer.kvRank ? KV_RANKS[writer.kvRank] : KV_RANKS.daily;
+
+  document.getElementById("pm-avatar").textContent = initials(name);
+  document.getElementById("pm-name").textContent = name;
+  document.getElementById("pm-rank-badge").innerHTML = `<span class="kv-rank-badge ${kv.cls}">${kv.label}</span>`;
+  document.getElementById("pm-pts").textContent = writer.points || 0;
+  document.getElementById("pm-heading").textContent = name;
+
+  const posts = allPosts.filter(p => p.authorUid === uid);
+  const totalLikes = posts.reduce((s, p) => s + (p.likeCount || 0), 0);
+  document.getElementById("pm-posts").textContent = posts.length;
+  document.getElementById("pm-likes").textContent = totalLikes;
+
+  posts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+  const list = document.getElementById("pm-posts-list");
+  list.innerHTML = posts.length
+    ? posts.map(p => `
+      <div class="writer-post-item" onclick="location.href='/presentation.html?id=${p.id}&src=bloggerblogs'">
+        <div class="writer-post-title">${esc(p.title || p.Title || "Untitled")}</div>
+        <div class="writer-post-meta">❤️ ${p.likeCount||0} · 👁 ${p.views||0} · ${p.category||"General"}</div>
+      </div>`).join("")
+    : `<div style="padding:20px;text-align:center;color:var(--stone);font-size:0.88rem;">No presentations yet.</div>`;
+
+  document.getElementById("profile-modal").classList.add("open");
+};
+
+document.getElementById("pm-close").addEventListener("click", () => document.getElementById("profile-modal").classList.remove("open"));
+document.getElementById("profile-modal").addEventListener("click", e => { if (e.target === document.getElementById("profile-modal")) document.getElementById("profile-modal").classList.remove("open"); });
+
+document.getElementById("search-input").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase().trim();
+  const filtered = q ? allWriters.filter(w => (w.fullName||w.displayName||"").toLowerCase().includes(q)) : allWriters;
+  renderWriters(filtered);
+});
+
+loadData();
+</script>
+</body>
+</html>

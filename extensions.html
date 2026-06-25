@@ -11,14 +11,14 @@
 <body>
 <div id="toast-container"></div>
 
-<!-- ===== DISCLAIMER DIALOG ===== -->
+<!-- DISCLAIMER DIALOG -->
 <div class="disclaimer-overlay" id="disclaimer-overlay">
   <div class="disclaimer-modal">
     <div class="disclaimer-title">D I S C L A I M E R</div>
     <div class="disclaimer-text">
-      Please note that the extensions belong to <strong>third party services</strong>.<br/>
-      The service provider information can be reviewed before integrating.<br/><br/>
-      By continuing, you acknowledge that third-party services may have their own terms of use and privacy policies.
+      Extensions use <strong>third-party services</strong>.<br/>
+      Review service providers before enabling them.<br/><br/>
+      By continuing you acknowledge that third-party services may have their own terms of use and privacy policies.
     </div>
     <span class="disclaimer-brand">P R E S E N T A T I O N &nbsp; L A B</span>
     <button class="btn btn-terra btn-full" id="disclaimer-accept-btn">I Understand — Continue</button>
@@ -36,6 +36,7 @@
     </a>
     <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
     <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="/writers.html" class="nav-item"><span class="nav-icon">✍️</span><span class="nav-label">Writers</span></a>
     <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
     <a href="/nirmaan.html" class="nav-item"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
     <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
@@ -73,11 +74,17 @@
             <div class="ext-card-provider">Powered by Puter.js · Third Party Service</div>
           </div>
         </div>
-        <div class="ext-card-desc">
-          Listen to any presentation being read aloud using Puter.js Text-to-Speech. After connecting your Puter account, a <strong>Listen</strong> button will appear on every presentation page. This extension uses AI-quality voice synthesis directly in your browser.
-        </div>
-        <div id="tts-status">
-          <button class="btn btn-terra" id="tts-connect-btn">Connect Puter — Enable TTS</button>
+        <div class="ext-card-desc">Listen to any presentation aloud using Puter.js AI-quality voice synthesis. A <strong>Listen</strong> button appears on every presentation page once enabled.</div>
+        <div id="tts-status"></div>
+      </div>
+
+      <!-- TTS Test Area -->
+      <div id="tts-test-area" class="hidden" style="background:var(--sand-warm);border-radius:var(--radius-lg);padding:20px;margin-top:-8px;margin-bottom:16px;">
+        <div style="font-family:'Lora',serif;font-weight:700;font-size:0.95rem;color:var(--espresso);margin-bottom:10px;">Try Text-to-Speech</div>
+        <textarea class="form-textarea" id="tts-test-input" style="min-height:80px;" placeholder="Type something to hear it aloud…">Welcome to Presentation Lab. This is a test of the Puter.js text-to-speech extension.</textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="btn btn-terra btn-sm" id="tts-play-btn">▶ Play</button>
+          <button class="btn btn-ghost btn-sm" id="tts-stop-btn">⏹ Stop</button>
         </div>
       </div>
 
@@ -90,26 +97,12 @@
             <div class="ext-card-provider">Powered by Puter.js · Third Party Service</div>
           </div>
         </div>
-        <div class="ext-card-desc">
-          Translate any presentation into dozens of languages on the fly using Puter.js AI Translation (GPT-5.4-nano). After connecting, a <strong>Translate</strong> button will appear on presentation pages, letting you select a target language and instantly view a translation.
-        </div>
-        <div id="trans-status">
-          <button class="btn btn-terra" id="trans-connect-btn">Connect Puter — Enable Translation</button>
-        </div>
+        <div class="ext-card-desc">Translate any presentation on the fly using Puter.js AI. A <strong>Translate</strong> button appears on presentation pages once enabled.</div>
+        <div id="trans-status"></div>
       </div>
 
-      <!-- Test TTS area (shown when integrated) -->
-      <div id="tts-test-area" class="hidden" style="background:var(--sand-warm);border-radius:var(--radius-lg);padding:20px;margin-top:8px;">
-        <div style="font-family:'Lora',serif;font-weight:700;font-size:0.95rem;color:var(--espresso);margin-bottom:10px;">Try Text-to-Speech</div>
-        <textarea class="form-textarea" id="tts-test-input" style="min-height:80px;" placeholder="Type something to hear it aloud…">Welcome to Presentation Lab. This is a test of the Puter.js text-to-speech extension.</textarea>
-        <div style="display:flex;gap:8px;margin-top:10px;">
-          <button class="btn btn-terra btn-sm" id="tts-play-btn">▶ Play</button>
-          <button class="btn btn-ghost btn-sm" id="tts-stop-btn">⏹ Stop</button>
-        </div>
-      </div>
-
-      <!-- Test Translation area (shown when integrated) -->
-      <div id="trans-test-area" class="hidden" style="background:var(--sand-warm);border-radius:var(--radius-lg);padding:20px;margin-top:8px;">
+      <!-- Translation Test Area -->
+      <div id="trans-test-area" class="hidden" style="background:var(--sand-warm);border-radius:var(--radius-lg);padding:20px;margin-top:-8px;margin-bottom:16px;">
         <div style="font-family:'Lora',serif;font-weight:700;font-size:0.95rem;color:var(--espresso);margin-bottom:10px;">Try Translation</div>
         <textarea class="form-textarea" id="trans-input" style="min-height:80px;" placeholder="Enter text to translate…">Hello, how are you? Welcome to Presentation Lab.</textarea>
         <div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:10px;align-items:end;">
@@ -129,6 +122,100 @@
         <div id="trans-result" style="display:none;margin-top:12px;padding:14px;background:var(--card);border-radius:var(--radius-md);border:1px solid var(--border);font-size:0.9rem;color:var(--espresso);line-height:1.7;"></div>
       </div>
 
+      <!-- AI Check Extension -->
+      <div class="ext-card" id="aicheck-card">
+        <div class="ext-card-header">
+          <span class="ext-card-icon">🤖</span>
+          <div>
+            <div class="ext-card-title">AI does the AI Check</div>
+            <div class="ext-card-provider">Powered by Puter.js · Model: gpt-5.4-nano · For Readers &amp; Writers</div>
+          </div>
+        </div>
+        <div class="ext-card-desc">
+          Find out if a presentation was likely written by AI. Paste any content below and our AI will rate the probability of AI generation — <strong>0% = fully human, 100% = fully AI.</strong> Available to all users.
+        </div>
+        <div id="aicheck-status"></div>
+      </div>
+
+      <!-- AI Check Panel -->
+      <div id="aicheck-panel" class="hidden" style="background:var(--sand-warm);border-radius:var(--radius-lg);padding:20px;margin-top:-8px;margin-bottom:16px;">
+        <div style="font-family:'Lora',serif;font-weight:700;font-size:0.95rem;color:var(--espresso);margin-bottom:4px;">Paste Presentation Content</div>
+        <div style="font-size:0.78rem;color:var(--stone);margin-bottom:12px;">Paste the text of any presentation you want to check. The AI will analyze it for signs of AI generation.</div>
+        <textarea class="form-textarea" id="aicheck-input" style="min-height:140px;font-size:0.88rem;" placeholder="Paste the presentation content here…"></textarea>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;">
+          <button class="btn btn-terra btn-sm" id="aicheck-run-btn">🔍 Check for AI</button>
+          <button class="btn btn-ghost btn-sm" id="aicheck-clear-btn">Clear</button>
+        </div>
+
+        <!-- Result -->
+        <div id="aicheck-result" style="display:none;margin-top:16px;">
+          <!-- Disclaimer — always shown -->
+          <div style="background:#FEF3C7;border:1.5px solid #F59E0B;border-radius:var(--radius-md);padding:12px 14px;margin-bottom:14px;">
+            <div style="font-size:0.7rem;font-weight:800;letter-spacing:0.18em;color:#92400E;margin-bottom:4px;">D I S C L A I M E R</div>
+            <div style="font-size:0.76rem;color:#78350F;line-height:1.65;">
+              The review is given by AI powered by <strong>gpt-5.4-nano</strong>, offered by Puter.js.
+              This doesn't justify the actual quality of the content.
+              The efforts of all matters and hence the judgement is based on the unconfirmed and unverified <strong>POSSIBILITIES</strong> of being AI generated.
+            </div>
+          </div>
+          <!-- Score bar -->
+          <div style="margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-family:'Lora',serif;font-weight:700;font-size:0.88rem;color:var(--espresso);">AI Probability Score</span>
+              <span id="aicheck-score-label" style="font-weight:800;font-size:1.1rem;"></span>
+            </div>
+            <div style="height:10px;border-radius:99px;background:#E5E7EB;overflow:hidden;">
+              <div id="aicheck-score-bar" style="height:100%;border-radius:99px;transition:width 0.6s ease;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--stone);margin-top:3px;">
+              <span>0% Human written</span><span>100% AI written</span>
+            </div>
+          </div>
+          <!-- Judgment -->
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;">
+            <div style="font-size:0.72rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">AI Judgment</div>
+            <div id="aicheck-judgment" style="font-size:0.88rem;color:var(--espresso);line-height:1.75;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR Code Extension -->
+      <div class="ext-card" id="qr-card">
+        <div class="ext-card-header">
+          <span class="ext-card-icon">📱</span>
+          <div>
+            <div class="ext-card-title">QR Code Generator</div>
+            <div class="ext-card-provider">Powered by goqr.me · Third Party Service · Free API</div>
+          </div>
+        </div>
+        <div class="ext-card-desc">
+          Generate a QR code linking directly to any of your presentations. Share it anywhere — print it, embed it in slides, or post it online. <strong>Writers only.</strong> QR codes redirect to the presentation URL on Presentation Lab.
+        </div>
+
+        <div id="qr-gate" style="display:none;">
+          <div style="font-size:0.84rem;color:var(--stone);padding:10px 14px;background:var(--sand-warm);border-radius:var(--radius-md);margin-bottom:14px;">🔐 Sign in to generate QR codes for your presentations.</div>
+          <a href="/auth.html?redirect=/extensions.html" class="btn btn-outline btn-sm">Sign In</a>
+        </div>
+
+        <div id="qr-content" style="display:none;">
+          <div class="form-group">
+            <label class="form-label">Select Your Presentation</label>
+            <select class="form-select" id="qr-post-select">
+              <option value="">Loading your presentations…</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <button class="btn btn-terra btn-sm" id="qr-generate-btn">📱 Generate QR Code</button>
+            <a id="qr-download-link" class="btn btn-ghost btn-sm hidden" download="qr-code.png">⬇ Download PNG</a>
+          </div>
+          <div class="qr-output" id="qr-output">
+            <img id="qr-img" src="" alt="QR Code" width="200" height="200" style="display:block;" />
+            <div class="qr-output-url" id="qr-url-display"></div>
+            <div style="font-size:0.8rem;color:var(--stone);">Scan to open this presentation on any device.</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -136,8 +223,12 @@
     <div class="widget">
       <h3 class="widget-title">About Extensions</h3>
       <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
-        <div>🧩 Extensions add extra features powered by third-party AI services.</div>
-        <div style="margin-top:8px;">🔒 Your Puter session is stored locally in your browser only.</div>
+        <div>🧩 Extensions add extra features via third-party services.</div>
+        <div style="margin-top:8px;">🔊 <strong>TTS</strong> — listen to any presentation aloud</div>
+        <div style="margin-top:8px;">🌐 <strong>Translation</strong> — translate to any language</div>
+        <div style="margin-top:8px;">🤖 <strong>AI Check</strong> — detect AI-generated content (Readers &amp; Writers)</div>
+        <div style="margin-top:8px;">📱 <strong>QR Code</strong> — share any presentation as QR</div>
+        <div style="margin-top:8px;">🔒 Puter sessions are stored locally in your browser only.</div>
         <div style="margin-top:8px;">📖 <a href="https://puter.com" target="_blank" style="color:var(--terra);">Learn about Puter.js →</a></div>
       </div>
     </div>
@@ -159,8 +250,11 @@
 </nav>
 
 <script type="module">
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import {
+  getFirestore, collection, getDocs, query, where
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDwUYRjUe7wKHp64d1vfYV-UDvnXaUuQVY",
@@ -171,20 +265,30 @@ const firebaseConfig = {
   appId: "1:331335730832:web:731df65bd40f9646adfa15"
 };
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const auth = getAuth(app);
 
 function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
 function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},3500);}
 
+let currentUser = null;
+
 onAuthStateChanged(auth, user => {
+  currentUser = user;
   if (user) {
     document.getElementById("sb-signin").classList.add("hidden");
     document.getElementById("sb-chip").classList.remove("hidden");
     document.getElementById("sb-avatar").textContent = initials(user.displayName || user.email);
     document.getElementById("sb-name").textContent = user.displayName || user.email.split("@")[0];
+    // QR: show content
+    document.getElementById("qr-gate").style.display = "none";
+    document.getElementById("qr-content").style.display = "block";
+    loadUserPresentations(user.uid);
   } else {
     document.getElementById("sb-signin").classList.remove("hidden");
     document.getElementById("sb-chip").classList.add("hidden");
+    document.getElementById("qr-gate").style.display = "block";
+    document.getElementById("qr-content").style.display = "none";
   }
 });
 window.doSignout = async () => { await signOut(auth); window.location.href = "/"; };
@@ -202,14 +306,18 @@ document.getElementById("disclaimer-accept-btn").addEventListener("click", () =>
   toast("Welcome to Extensions!", "success");
 });
 
-// ===== TTS STATE =====
+// ===== TTS =====
 function updateTTSUI() {
   const integrated = localStorage.getItem("pl_puter_tts") === "1";
   const statusDiv = document.getElementById("tts-status");
   const testArea = document.getElementById("tts-test-area");
   if (integrated) {
-    statusDiv.innerHTML = `<span class="ext-integrated">✅ Puter.js TEXT-TO-SPEECH integrated — presentations can be listened to</span>`;
+    statusDiv.innerHTML = `<span class="ext-integrated">✅ Puter.js TEXT-TO-SPEECH integrated</span>
+      <button class="btn btn-ghost btn-sm" id="tts-disconnect-btn" style="margin-left:10px;">Disconnect</button>`;
     testArea.classList.remove("hidden");
+    document.getElementById("tts-disconnect-btn")?.addEventListener("click", () => {
+      localStorage.removeItem("pl_puter_tts"); updateTTSUI(); toast("TTS disconnected.", "info");
+    });
   } else {
     statusDiv.innerHTML = `<button class="btn btn-terra" id="tts-connect-btn">Connect Puter — Enable TTS</button>`;
     testArea.classList.add("hidden");
@@ -217,14 +325,18 @@ function updateTTSUI() {
   }
 }
 
-// ===== TRANSLATION STATE =====
+// ===== TRANSLATION =====
 function updateTransUI() {
   const integrated = localStorage.getItem("pl_puter_trans") === "1";
   const statusDiv = document.getElementById("trans-status");
   const testArea = document.getElementById("trans-test-area");
   if (integrated) {
-    statusDiv.innerHTML = `<span class="ext-integrated">✅ Puter.js TRANSLATION integrated — presentations can be translated</span>`;
+    statusDiv.innerHTML = `<span class="ext-integrated">✅ Puter.js TRANSLATION integrated</span>
+      <button class="btn btn-ghost btn-sm" id="trans-disconnect-btn" style="margin-left:10px;">Disconnect</button>`;
     testArea.classList.remove("hidden");
+    document.getElementById("trans-disconnect-btn")?.addEventListener("click", () => {
+      localStorage.removeItem("pl_puter_trans"); updateTransUI(); toast("Translation disconnected.", "info");
+    });
   } else {
     statusDiv.innerHTML = `<button class="btn btn-terra" id="trans-connect-btn">Connect Puter — Enable Translation</button>`;
     testArea.classList.add("hidden");
@@ -235,15 +347,11 @@ function updateTransUI() {
 async function connectPuterTTS() {
   try {
     toast("Connecting to Puter…", "info");
-    // Trigger Puter sign-in / check session
     await puter.auth.signIn();
     localStorage.setItem("pl_puter_tts", "1");
-    toast("Puter.js TEXT-TO-SPEECH integrated — presentations can be listened to!", "success");
-    updateTTSUI();
-    setupTTSControls();
-  } catch(e) {
-    toast("Puter connection failed. Please try again.", "error");
-  }
+    toast("Text-to-Speech integrated!", "success");
+    updateTTSUI(); setupTTSControls();
+  } catch { toast("Puter connection failed. Please try again.", "error"); }
 }
 
 async function connectPuterTrans() {
@@ -251,12 +359,9 @@ async function connectPuterTrans() {
     toast("Connecting to Puter…", "info");
     await puter.auth.signIn();
     localStorage.setItem("pl_puter_trans", "1");
-    toast("Puter.js TRANSLATION integrated — presentations can be translated!", "success");
-    updateTransUI();
-    setupTransControls();
-  } catch(e) {
-    toast("Puter connection failed. Please try again.", "error");
-  }
+    toast("Translation integrated!", "success");
+    updateTransUI(); setupTransControls();
+  } catch { toast("Puter connection failed. Please try again.", "error"); }
 }
 
 let ttsAudio = null;
@@ -265,25 +370,17 @@ function setupTTSControls() {
   const playBtn = document.getElementById("tts-play-btn");
   const stopBtn = document.getElementById("tts-stop-btn");
   if (!playBtn) return;
-
   playBtn.addEventListener("click", async () => {
     const text = document.getElementById("tts-test-input").value.trim();
     if (!text) { toast("Please enter some text.", "info"); return; }
-    playBtn.disabled = true;
-    playBtn.textContent = "Loading…";
+    playBtn.disabled = true; playBtn.textContent = "Loading…";
     try {
       if (ttsAudio) { ttsAudio.pause(); ttsAudio = null; }
       ttsAudio = await puter.ai.txt2speech(text);
-      ttsAudio.play();
-      toast("Playing audio…", "info");
-    } catch(e) {
-      toast("TTS error: " + e.message, "error");
-    } finally {
-      playBtn.disabled = false;
-      playBtn.textContent = "▶ Play";
-    }
+      ttsAudio.play(); toast("Playing audio…", "info");
+    } catch(e) { toast("TTS error: " + e.message, "error"); }
+    finally { playBtn.disabled = false; playBtn.textContent = "▶ Play"; }
   });
-
   stopBtn.addEventListener("click", () => {
     if (ttsAudio) { ttsAudio.pause(); ttsAudio = null; toast("Stopped.", "info"); }
   });
@@ -292,13 +389,11 @@ function setupTTSControls() {
 function setupTransControls() {
   const goBtn = document.getElementById("trans-go-btn");
   if (!goBtn) return;
-
   goBtn.addEventListener("click", async () => {
     const text = document.getElementById("trans-input").value.trim();
     const lang = document.getElementById("trans-lang-select").value;
     if (!text) { toast("Please enter text to translate.", "info"); return; }
-    goBtn.disabled = true;
-    goBtn.textContent = "Translating…";
+    goBtn.disabled = true; goBtn.textContent = "Translating…";
     const resultDiv = document.getElementById("trans-result");
     resultDiv.style.display = "none";
     try {
@@ -307,11 +402,152 @@ function setupTransControls() {
       resultDiv.style.display = "block";
       resultDiv.innerHTML = `<div style="font-size:0.75rem;color:var(--stone);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">Translation — ${lang}</div>${translation}`;
       toast("Translation complete!", "success");
+    } catch(e) { toast("Translation error: " + e.message, "error"); }
+    finally { goBtn.disabled = false; goBtn.textContent = "Translate →"; }
+  });
+}
+
+// ===== QR CODE =====
+async function loadUserPresentations(uid) {
+  const select = document.getElementById("qr-post-select");
+  select.innerHTML = `<option value="">Loading your presentations…</option>`;
+  try {
+    const snap = await getDocs(query(collection(db, "bloggerblogs"), where("authorUid", "==", uid)));
+    const posts = [];
+    snap.forEach(d => posts.push({ id: d.id, ...d.data() }));
+    posts.sort((a,b) => (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+
+    if (!posts.length) {
+      select.innerHTML = `<option value="">No presentations yet — create one first</option>`;
+      return;
+    }
+    select.innerHTML = `<option value="">Select a presentation…</option>` +
+      posts.map(p => `<option value="${p.id}">${(p.title||p.Title||"Untitled").substring(0,60)}</option>`).join("");
+  } catch {
+    select.innerHTML = `<option value="">Failed to load presentations</option>`;
+  }
+}
+
+document.getElementById("qr-generate-btn").addEventListener("click", () => {
+  const postId = document.getElementById("qr-post-select").value;
+  if (!postId) { toast("Please select a presentation first.", "info"); return; }
+
+  const url = `${location.origin}/presentation.html?id=${postId}&src=bloggerblogs`;
+  const encodedUrl = encodeURIComponent(url);
+  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedUrl}`;
+
+  const img = document.getElementById("qr-img");
+  const output = document.getElementById("qr-output");
+  const urlDisplay = document.getElementById("qr-url-display");
+  const dlLink = document.getElementById("qr-download-link");
+
+  img.src = qrApiUrl;
+  img.onload = () => {
+    output.style.display = "block";
+    urlDisplay.textContent = url;
+    dlLink.href = qrApiUrl;
+    dlLink.classList.remove("hidden");
+    toast("QR Code generated!", "success");
+  };
+  img.onerror = () => toast("Failed to generate QR code. Check your connection.", "error");
+});
+
+// ===== AI CHECK =====
+const AI_CHECK_MODEL = "gpt-5.4-nano";
+
+function updateAICheckUI() {
+  const connected = localStorage.getItem("pl_puter_aicheck") === "1";
+  const statusDiv = document.getElementById("aicheck-status");
+  const panel = document.getElementById("aicheck-panel");
+  if (connected) {
+    statusDiv.innerHTML = `<span class="ext-integrated">✅ AI Check active · Powered by ${AI_CHECK_MODEL}</span>
+      <button class="btn btn-ghost btn-sm" id="aicheck-disconnect-btn" style="margin-left:10px;">Disconnect</button>`;
+    panel.classList.remove("hidden");
+    document.getElementById("aicheck-disconnect-btn")?.addEventListener("click", () => {
+      localStorage.removeItem("pl_puter_aicheck");
+      updateAICheckUI();
+      toast("AI Check disconnected.", "info");
+    });
+  } else {
+    statusDiv.innerHTML = `<button class="btn btn-terra" id="aicheck-connect-btn">Connect Puter — Enable AI Check</button>`;
+    panel.classList.add("hidden");
+    document.getElementById("aicheck-connect-btn").addEventListener("click", async () => {
+      try {
+        toast("Connecting to Puter…", "info");
+        await puter.auth.signIn();
+        localStorage.setItem("pl_puter_aicheck", "1");
+        toast("AI Check enabled!", "success");
+        updateAICheckUI();
+        setupAICheckControls();
+      } catch { toast("Puter connection failed. Please try again.", "error"); }
+    });
+  }
+}
+
+function setupAICheckControls() {
+  const runBtn = document.getElementById("aicheck-run-btn");
+  const clearBtn = document.getElementById("aicheck-clear-btn");
+  if (!runBtn || runBtn.dataset.bound) return;
+  runBtn.dataset.bound = "1";
+
+  clearBtn.addEventListener("click", () => {
+    document.getElementById("aicheck-input").value = "";
+    document.getElementById("aicheck-result").style.display = "none";
+  });
+
+  runBtn.addEventListener("click", async () => {
+    const content = document.getElementById("aicheck-input").value.trim();
+    if (!content) { toast("Please paste some content to check.", "info"); return; }
+    if (content.length < 50) { toast("Content is too short for a meaningful analysis. Please paste at least a few sentences.", "info"); return; }
+
+    runBtn.disabled = true;
+    runBtn.innerHTML = `<span class="spinner" style="width:14px;height:14px;border-width:2px;margin-right:6px;"></span> Analysing…`;
+    document.getElementById("aicheck-result").style.display = "none";
+
+    const prompt = `You are an AI writing detection expert. Analyze the following text for signs of AI generation.
+
+Respond ONLY with a raw JSON object — no markdown, no explanation outside the JSON:
+{
+  "score": <integer 0-100, where 0 = definitely human written, 100 = definitely AI written>,
+  "judgment": "<2-4 sentences explaining specific signs you observed — mention sentence structure, vocabulary, repetition, phrasing patterns, emotional depth, etc.>"
+}
+
+Text to analyze:
+"""
+${content.substring(0, 3000)}
+"""`;
+
+    try {
+      const raw = await puter.ai.chat(prompt, { model: AI_CHECK_MODEL });
+      const text = typeof raw === "string" ? raw : (raw?.message?.content || raw?.content || String(raw));
+      // Extract JSON from response
+      const match = text.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error("Could not parse AI response.");
+      const result = JSON.parse(match[0]);
+      const score = Math.max(0, Math.min(100, Number(result.score) || 0));
+      const judgment = result.judgment || "No judgment provided.";
+
+      // Display score
+      const scoreLabel = document.getElementById("aicheck-score-label");
+      const scoreBar = document.getElementById("aicheck-score-bar");
+      const judgmentDiv = document.getElementById("aicheck-judgment");
+      const resultDiv = document.getElementById("aicheck-result");
+
+      scoreLabel.textContent = score + "%";
+      scoreLabel.style.color = score >= 70 ? "#DC2626" : score >= 40 ? "#D97706" : "#16A34A";
+
+      const barColor = score >= 70 ? "#DC2626" : score >= 40 ? "#F59E0B" : "#22C55E";
+      scoreBar.style.width = score + "%";
+      scoreBar.style.background = barColor;
+
+      judgmentDiv.textContent = judgment;
+      resultDiv.style.display = "block";
+      toast("Analysis complete!", "success");
     } catch(e) {
-      toast("Translation error: " + e.message, "error");
+      toast("AI Check error: " + (e.message || "Unknown error"), "error");
     } finally {
-      goBtn.disabled = false;
-      goBtn.textContent = "Translate →";
+      runBtn.disabled = false;
+      runBtn.innerHTML = "🔍 Check for AI";
     }
   });
 }
@@ -319,8 +555,10 @@ function setupTransControls() {
 // Init
 updateTTSUI();
 updateTransUI();
+updateAICheckUI();
 if (localStorage.getItem("pl_puter_tts") === "1") setupTTSControls();
 if (localStorage.getItem("pl_puter_trans") === "1") setupTransControls();
+if (localStorage.getItem("pl_puter_aicheck") === "1") setupAICheckControls();
 </script>
 </body>
 </html>

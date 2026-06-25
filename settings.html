@@ -21,6 +21,7 @@
     </a>
     <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
     <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="/writers.html" class="nav-item"><span class="nav-icon">✍️</span><span class="nav-label">Writers</span></a>
     <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
     <a href="/nirmaan.html" class="nav-item"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
     <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
@@ -47,7 +48,6 @@
       <h1 class="feed-title">⚙️ Settings</h1>
     </div>
 
-    <!-- Not signed in gate -->
     <div id="auth-gate" style="padding:80px 20px;text-align:center;">
       <div style="font-size:3rem;margin-bottom:14px;">🔐</div>
       <h2 style="font-family:'Lora',serif;color:var(--espresso);margin-bottom:8px;">Sign in to manage settings</h2>
@@ -55,7 +55,6 @@
       <a href="/auth.html?redirect=/settings.html" class="btn btn-terra btn-lg">Sign In / Sign Up</a>
     </div>
 
-    <!-- Main settings (shown when logged in) -->
     <div id="main-content" class="hidden">
 
       <!-- Profile section -->
@@ -77,46 +76,77 @@
             <option>Italian</option><option>Bengali</option><option>Urdu</option>
             <option>Tamil</option><option>Telugu</option><option>Marathi</option>
             <option>Gujarati</option><option>Kannada</option><option>Malayalam</option>
-            <option>Punjabi</option><option>Odia</option><option>Assamese</option>
-            <option>Swahili</option><option>Turkish</option><option>Vietnamese</option>
-            <option>Thai</option><option>Persian</option><option>Dutch</option>
-            <option>Polish</option><option>Indonesian</option><option>Malay</option>
-            <option>Other</option>
+            <option>Punjabi</option><option>Other</option>
           </select>
         </div>
         <button class="btn btn-terra" id="save-profile-btn">Save Profile</button>
       </div>
 
-      <!-- Account info section -->
+      <!-- Account info -->
       <div class="settings-section">
         <div class="settings-section-title">Account Information</div>
-        <div class="settings-section-sub">Your account details and ownership information.</div>
-        <div class="info-row">
-          <span class="info-label">Email</span>
-          <span class="info-value" id="info-email">—</span>
+        <div class="settings-section-sub">Your account details and rank.</div>
+        <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="info-email">—</span></div>
+        <div class="info-row"><span class="info-label">User ID</span><span class="info-value" style="font-family:monospace;font-size:0.78rem;" id="info-uid">—</span></div>
+        <div class="info-row"><span class="info-label">Member Since</span><span class="info-value" id="info-since">—</span></div>
+        <div class="info-row"><span class="info-label">Points</span><span class="info-value text-terra" id="info-points">—</span></div>
+        <div class="info-row"><span class="info-label">K V Rank</span><span class="info-value" id="info-kv">—</span></div>
+      </div>
+
+      <!-- Limit Interactions -->
+      <div class="settings-section">
+        <div class="settings-section-title">Limit Interactions</div>
+        <div class="settings-section-sub">Restrict what other users can do on your presentations. Changes take effect immediately.</div>
+
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Disable Likes</div>
+            <div class="toggle-sub">Others cannot like your presentations.</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="limit-likes" />
+            <span class="toggle-slider"></span>
+          </label>
         </div>
-        <div class="info-row">
-          <span class="info-label">User ID</span>
-          <span class="info-value" style="font-family:monospace;font-size:0.78rem;" id="info-uid">—</span>
+
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Disable Shares</div>
+            <div class="toggle-sub">Others cannot share your presentations.</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="limit-shares" />
+            <span class="toggle-slider"></span>
+          </label>
         </div>
-        <div class="info-row">
-          <span class="info-label">Member Since</span>
-          <span class="info-value" id="info-since">—</span>
+
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Disable Collaborations</div>
+            <div class="toggle-sub">Others cannot add you as a Nirmaan co-author.</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="limit-collabs" />
+            <span class="toggle-slider"></span>
+          </label>
         </div>
-        <div class="info-row">
-          <span class="info-label">Points</span>
-          <span class="info-value text-terra" id="info-points">—</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">K V Rank</span>
-          <span class="info-value" id="info-kv">—</span>
+
+        <button class="btn btn-terra" id="save-limits-btn" style="margin-top:14px;">Save Interaction Settings</button>
+      </div>
+
+      <!-- Saved Presentations -->
+      <div class="settings-section">
+        <div class="settings-section-title">🔖 Saved Presentations</div>
+        <div class="settings-section-sub">Presentations you've bookmarked. Click any to read.</div>
+        <div id="saved-list">
+          <div style="text-align:center;padding:24px;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div></div>
         </div>
       </div>
 
-      <!-- Ownership section -->
+      <!-- My Presentations -->
       <div class="settings-section">
         <div class="settings-section-title">Ownership</div>
-        <div class="settings-section-sub">Presentations authored by you. You own this content and can edit or delete it.</div>
+        <div class="settings-section-sub">Presentations authored by you. You can edit or delete them.</div>
         <div id="ownership-list">
           <div style="text-align:center;padding:24px;color:var(--stone);"><div class="spinner" style="margin:0 auto 10px;"></div></div>
         </div>
@@ -138,7 +168,9 @@
       <div style="font-size:0.84rem;color:var(--brown);line-height:1.8;">
         <div>📝 Update your display name</div>
         <div>🌐 Set your preferred language</div>
-        <div>📋 View your presentations</div>
+        <div>🔒 Limit interactions on your content</div>
+        <div>🔖 View your saved presentations</div>
+        <div>📋 Manage your own presentations</div>
         <div>🎖️ Check your K V rank</div>
       </div>
     </div>
@@ -162,7 +194,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import {
-  getFirestore, collection, doc, getDoc, getDocs, query, where, updateDoc
+  getFirestore, collection, doc, getDoc, getDocs, query, where, updateDoc, setDoc, increment
 } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
@@ -178,21 +210,18 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+const KV_RANKS = {
+  daily: "Daily Writer", language: "Language Writer",
+  multilingual: "Multi-lingual Writer", sanskrit: "Sanskrit Writer",
+  great: "T H E  G R E A T  W R I T I N G  J O U R N E Y"
+};
+
 function esc(s=""){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function initials(n){return(n||"?").split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);}
 function toast(msg,type="info"){const c=document.getElementById("toast-container");const t=document.createElement("div");t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity 0.3s";setTimeout(()=>t.remove(),300);},3500);}
 function setLoading(btn,v){if(v){btn.dataset.orig=btn.innerHTML;btn.innerHTML=`<span class="spinner"></span>`;btn.disabled=true;}else{btn.innerHTML=btn.dataset.orig||btn.innerHTML;btn.disabled=false;}}
 
-const KV_RANKS = {
-  daily: "Daily Writer",
-  language: "Language Writer",
-  multilingual: "Multi-lingual Writer",
-  sanskrit: "Sanskrit Writer",
-  great: "T H E  G R E A T  W R I T I N G  J O U R N E Y"
-};
-
 let currentUser = null;
-let bloggerData = null;
 
 onAuthStateChanged(auth, async user => {
   currentUser = user;
@@ -210,20 +239,22 @@ onAuthStateChanged(auth, async user => {
     try {
       const bloggerDoc = await getDoc(doc(db, "bloggers", user.uid));
       if (bloggerDoc.exists()) {
-        bloggerData = bloggerDoc.data();
-        const pts = bloggerData.points || 0;
-        const since = bloggerData.createdAt ? new Date(bloggerData.createdAt).toLocaleDateString() : "—";
-        document.getElementById("info-points").textContent = pts + " points";
-        document.getElementById("info-since").textContent = since;
-        const kv = bloggerData.kvRank ? KV_RANKS[bloggerData.kvRank] || bloggerData.kvRank : "Daily Writer";
-        document.getElementById("info-kv").textContent = kv;
-        if (bloggerData.langPreference) {
-          document.getElementById("f-lang-pref").value = bloggerData.langPreference;
-        }
+        const bd = bloggerDoc.data();
+        document.getElementById("info-points").textContent = (bd.points || 0) + " points";
+        document.getElementById("info-since").textContent = bd.createdAt ? new Date(bd.createdAt).toLocaleDateString() : "—";
+        document.getElementById("info-kv").textContent = KV_RANKS[bd.kvRank] || "Daily Writer";
+        if (bd.langPreference) document.getElementById("f-lang-pref").value = bd.langPreference;
+
+        // Load limit interaction toggles
+        const lim = bd.limitInteractions || {};
+        document.getElementById("limit-likes").checked = !!lim.likes;
+        document.getElementById("limit-shares").checked = !!lim.shares;
+        document.getElementById("limit-collabs").checked = !!lim.collaborations;
       }
     } catch {}
 
-    loadOwnership(user.uid, user);
+    loadOwnership(user.uid);
+    loadSaved(user.uid);
   } else {
     document.getElementById("auth-gate").classList.remove("hidden");
     document.getElementById("main-content").classList.add("hidden");
@@ -243,19 +274,35 @@ document.getElementById("save-profile-btn").addEventListener("click", async () =
   setLoading(btn, true);
   try {
     await updateProfile(currentUser, { displayName });
-    await updateDoc(doc(db, "bloggers", currentUser.uid), {
+    await setDoc(doc(db, "bloggers", currentUser.uid), {
       fullName: displayName,
+      email: currentUser.email,
       langPreference: langPref
-    });
+    }, { merge: true });
     document.getElementById("sb-name").textContent = displayName;
     document.getElementById("sb-avatar").textContent = initials(displayName);
     toast("Profile saved!", "success");
-  } catch(e) {
-    toast("Failed: " + e.message, "error");
-  } finally { setLoading(btn, false); }
+  } catch(e) { toast("Failed: " + e.message, "error"); }
+  finally { setLoading(btn, false); }
 });
 
-async function loadOwnership(uid, user) {
+document.getElementById("save-limits-btn").addEventListener("click", async () => {
+  if (!currentUser) return;
+  const btn = document.getElementById("save-limits-btn");
+  setLoading(btn, true);
+  try {
+    const limitInteractions = {
+      likes: document.getElementById("limit-likes").checked,
+      shares: document.getElementById("limit-shares").checked,
+      collaborations: document.getElementById("limit-collabs").checked,
+    };
+    await setDoc(doc(db, "bloggers", currentUser.uid), { limitInteractions }, { merge: true });
+    toast("Interaction settings saved!", "success");
+  } catch(e) { toast("Failed: " + e.message, "error"); }
+  finally { setLoading(btn, false); }
+});
+
+async function loadOwnership(uid) {
   const container = document.getElementById("ownership-list");
   try {
     const q = query(collection(db, "bloggerblogs"), where("authorUid", "==", uid));
@@ -268,21 +315,47 @@ async function loadOwnership(uid, user) {
       container.innerHTML = `<p style="color:var(--stone);font-size:0.88rem;padding:12px 0;">No presentations yet. <a href="/creativecreator.html" style="color:var(--terra);">Create your first one →</a></p>`;
       return;
     }
-
     container.innerHTML = posts.map(p => `
-      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-light);">
+      <div class="saved-post-item">
         <div style="flex:1;min-width:0;">
-          <div style="font-family:'Lora',serif;font-size:0.92rem;font-weight:700;color:var(--espresso);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(p.title||p.Title||"Untitled")}</div>
-          <div style="font-size:0.75rem;color:var(--stone);margin-top:2px;">${p.category||"General"} · ❤️ ${p.likeCount||0} · 👁 ${p.views||0}</div>
+          <div class="saved-post-title">${esc(p.title||p.Title||"Untitled")}</div>
+          <div class="saved-post-meta">${p.category||"General"} · ❤️ ${p.likeCount||0} · 👁 ${p.views||0}</div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0;">
           <a href="/presentation.html?id=${p.id}&src=bloggerblogs" class="btn btn-ghost btn-sm">View</a>
           <a href="/creativecreator.html?edit=${p.id}" class="btn btn-outline btn-sm">Edit</a>
         </div>
       </div>`).join("");
-  } catch(e) {
-    container.innerHTML = `<p style="color:var(--stone);font-size:0.85rem;">Failed to load presentations.</p>`;
-  }
+  } catch { container.innerHTML = `<p style="color:var(--stone);font-size:0.85rem;">Failed to load.</p>`; }
+}
+
+async function loadSaved(uid) {
+  const container = document.getElementById("saved-list");
+  try {
+    // Query both collections for posts saved by this user
+    const [snap1, snap2] = await Promise.all([
+      getDocs(collection(db, "presentations")),
+      getDocs(collection(db, "bloggerblogs"))
+    ]);
+    const saved = [];
+    snap1.forEach(d => { if (d.data().savedBy?.[uid]) saved.push({ id: d.id, col: "presentations", ...d.data() }); });
+    snap2.forEach(d => { if (d.data().savedBy?.[uid]) saved.push({ id: d.id, col: "bloggerblogs", ...d.data() }); });
+    saved.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+    if (!saved.length) {
+      container.innerHTML = `<p style="color:var(--stone);font-size:0.88rem;padding:12px 0;">Nothing saved yet. Hit 🔖 on any presentation to save it here.</p>`;
+      return;
+    }
+    container.innerHTML = saved.map(p => `
+      <div class="saved-post-item" onclick="location.href='/presentation.html?id=${p.id}&src=${p.col}'">
+        <div style="font-size:1.2rem;">🔖</div>
+        <div style="flex:1;min-width:0;">
+          <div class="saved-post-title">${esc(p.Title||p.title||"Untitled")}</div>
+          <div class="saved-post-meta">${p.Category||p.category||"General"} · ❤️ ${p.likeCount||0}</div>
+        </div>
+        <span style="font-size:0.75rem;color:var(--terra);font-weight:600;">Read →</span>
+      </div>`).join("");
+  } catch { container.innerHTML = `<p style="color:var(--stone);font-size:0.85rem;">Failed to load saved presentations.</p>`; }
 }
 </script>
 </body>

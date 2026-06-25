@@ -52,14 +52,13 @@
       <div class="form-group">
         <label class="form-label">Language</label>
         <select class="form-select" id="edit-language">
-          <option value="">Select language…</option>
+          <option value="">Language…</option>
           <option>English</option><option>Hindi</option><option>Sanskrit</option>
           <option>Spanish</option><option>French</option><option>German</option>
           <option>Arabic</option><option>Chinese (Mandarin)</option><option>Japanese</option>
           <option>Korean</option><option>Portuguese</option><option>Russian</option>
           <option>Italian</option><option>Bengali</option><option>Urdu</option>
-          <option>Tamil</option><option>Telugu</option><option>Marathi</option>
-          <option>Other</option>
+          <option>Tamil</option><option>Telugu</option><option>Marathi</option><option>Other</option>
         </select>
       </div>
       <div class="form-group">
@@ -107,8 +106,9 @@
         <div class="brand-parent">by Fake International Bank</div>
       </div>
     </a>
-    <a href="/" class="nav-item active"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
     <a href="/leaderboard.html" class="nav-item"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="/writers.html" class="nav-item"><span class="nav-icon">✍️</span><span class="nav-label">Writers</span></a>
     <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
     <a href="/nirmaan.html" class="nav-item"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
     <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
@@ -147,7 +147,10 @@
 
       <div class="detail-back" style="display:flex;align-items:center;justify-content:space-between;">
         <a href="/" class="btn btn-ghost btn-sm">← Back</a>
-        <div style="display:flex;gap:6px;" id="owner-actions"></div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span class="content-protected-notice" title="Content is protected">🔒 Protected</span>
+          <div id="owner-actions"></div>
+        </div>
       </div>
 
       <div class="detail-header">
@@ -157,6 +160,24 @@
       </div>
 
       <div class="detail-tags" id="d-tags"></div>
+
+      <!-- Writer Signature -->
+      <div id="writer-signature" class="hidden writer-signature" style="margin:0 20px 20px;">
+        <div class="writer-sig-avatar" id="sig-avatar">?</div>
+        <div class="writer-sig-info">
+          <div class="writer-sig-label">✍️ Written by</div>
+          <div class="writer-sig-name" id="sig-name">—</div>
+          <div class="writer-sig-sub" id="sig-sub">Presentation Lab Writer</div>
+          <a href="/writers.html" class="writer-sig-link" style="margin-top:4px;display:inline-block;">View all writers →</a>
+        </div>
+      </div>
+
+      <!-- Nirmaan co-authors signature -->
+      <div id="nirmaan-signature" class="hidden" style="margin:0 20px 20px;padding:14px 18px;background:linear-gradient(135deg,rgba(139,92,246,0.07),var(--card));border:1px solid rgba(139,92,246,0.2);border-radius:var(--radius-lg);">
+        <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:#6D28D9;font-weight:700;margin-bottom:8px;">🤝 Nirmaan Collaboration</div>
+        <div id="nirmaan-authors-list" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+        <div id="nirmaan-credits" style="margin-top:8px;font-size:0.76rem;color:var(--stone);"></div>
+      </div>
 
       <!-- Extension action bar (TTS / Translation) -->
       <div id="ext-bar" style="display:none;padding:10px 20px;background:var(--sand-warm);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -203,7 +224,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import {
-  getFirestore, collection, getDocs, doc, getDoc, updateDoc, increment, deleteField, serverTimestamp
+  getFirestore, collection, getDocs, doc, getDoc, updateDoc, setDoc, increment, deleteField, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
@@ -225,6 +246,7 @@ const postSrc = params.get("src") || "presentations";
 
 let currentUser = null;
 let postData = null;
+let authorLimits = {};
 let adTimer = null;
 let ttsAudio = null;
 
@@ -234,18 +256,37 @@ function toast(msg,type="info"){const c=document.getElementById("toast-container
 function setState(s){["state-loading","state-notfound","state-content"].forEach(id=>document.getElementById(id).classList.toggle("hidden",id!==s));}
 function setLoading(btn,v){if(v){btn.dataset.orig=btn.innerHTML;btn.innerHTML=`<span class="spinner"></span>`;btn.disabled=true;}else{btn.innerHTML=btn.dataset.orig||btn.innerHTML;btn.disabled=false;}}
 
+// ===== CONTENT PROTECTION =====
+document.addEventListener("contextmenu", e => {
+  if (e.target.closest("#d-body, #state-content")) {
+    e.preventDefault();
+    toast("Content is protected — copying is not permitted.", "info");
+  }
+});
+document.addEventListener("copy", e => {
+  if (e.target.closest("#d-body")) {
+    e.preventDefault();
+    toast("Content is protected — copying is not permitted.", "info");
+  }
+});
+document.addEventListener("keydown", e => {
+  const inContent = e.target.closest("#d-body, #state-content");
+  if (inContent && (e.ctrlKey || e.metaKey) && ["c","a","u","s"].includes(e.key.toLowerCase())) {
+    e.preventDefault();
+    toast("Content is protected.", "info");
+  }
+});
+
 onAuthStateChanged(auth, user => {
   currentUser = user;
-  const sbSignin = document.getElementById("sb-signin");
-  const sbChip = document.getElementById("sb-chip");
   if (user) {
-    sbSignin.classList.add("hidden");
-    sbChip.classList.remove("hidden");
+    document.getElementById("sb-signin").classList.add("hidden");
+    document.getElementById("sb-chip").classList.remove("hidden");
     document.getElementById("sb-avatar").textContent = initials(user.displayName || user.email);
     document.getElementById("sb-name").textContent = user.displayName || user.email.split("@")[0];
   } else {
-    sbSignin.classList.remove("hidden");
-    sbChip.classList.add("hidden");
+    document.getElementById("sb-signin").classList.remove("hidden");
+    document.getElementById("sb-chip").classList.add("hidden");
   }
   if (postData) { updateInteractionUI(); showOwnerActions(); }
 });
@@ -255,10 +296,15 @@ window.doSignout = () => signOut(auth);
 function showOwnerActions() {
   const container = document.getElementById("owner-actions");
   if (!container) return;
-  const isOwner = currentUser && postData && postSrc === "bloggerblogs" && currentUser.uid === postData.authorUid;
+  const isOwner = currentUser && postData && (
+    (postSrc === "bloggerblogs" && currentUser.uid === postData.authorUid) ||
+    (postSrc === "nirmaan" && (currentUser.uid === postData.createdByUid || (postData.acceptedEmails||[]).includes(currentUser.email)))
+  );
   if (isOwner) {
-    container.innerHTML = `<button class="btn btn-outline btn-sm" id="edit-post-btn">✏️ Edit</button>`;
-    document.getElementById("edit-post-btn").addEventListener("click", () => openEditModal());
+    const editUrl = postSrc === "nirmaan"
+      ? `/nirmaan.html?edit=${postId}`
+      : `/creativecreator.html?edit=${postId}`;
+    container.innerHTML = `<a href="${editUrl}" class="btn btn-outline btn-sm">✏️ Edit</a>`;
   } else {
     container.innerHTML = "";
   }
@@ -292,23 +338,16 @@ document.getElementById("edit-modal-save").addEventListener("click", async () =>
   setLoading(btn, true);
   try {
     await updateDoc(doc(db, "bloggerblogs", postId), {
-      title, Title: title,
-      content, Content: content,
-      preview, Preview: preview,
-      category, Category: category,
-      language, Language: language,
-      tags, Tags: tags,
+      title, Title: title, content, Content: content,
+      preview, Preview: preview, category, Category: category,
+      language, Language: language, tags, Tags: tags,
       editedAt: serverTimestamp()
     });
-    postData.title = title; postData.Title = title;
-    postData.content = content; postData.Content = content;
-    postData.category = category; postData.Category = category;
-    postData.language = language;
+    postData.title = title; postData.content = content; postData.category = category; postData.language = language;
     document.getElementById("d-title").textContent = title;
     document.getElementById("d-body").textContent = content;
     toast("Presentation updated!", "success");
     document.getElementById("edit-modal").classList.remove("open");
-    load(); // Reload to refresh metadata
   } catch(e) { toast("Failed: " + e.message, "error"); }
   finally { setLoading(btn, false); }
 });
@@ -324,9 +363,7 @@ function setupExtBar() {
       document.getElementById("tts-listen-btn").style.display = "";
       document.getElementById("tts-stop-btn").style.display = "";
     }
-    if (transOn) {
-      document.getElementById("trans-btn").style.display = "";
-    }
+    if (transOn) document.getElementById("trans-btn").style.display = "";
   }
 }
 
@@ -361,13 +398,12 @@ document.getElementById("trans-go-btn").addEventListener("click", async () => {
   if (!content) { toast("No content to translate.", "info"); return; }
   const btn = document.getElementById("trans-go-btn");
   setLoading(btn, true);
-  const resultDiv = document.getElementById("trans-result");
-  resultDiv.style.display = "none";
+  document.getElementById("trans-result").style.display = "none";
   try {
     const prompt = `Translate to ${lang}. Output only the translation, nothing else:\n\n${content.substring(0, 2000)}`;
     const translation = await puter.ai.chat(prompt, { model: "gpt-4o-mini" });
-    resultDiv.style.display = "block";
-    resultDiv.textContent = translation;
+    const r = document.getElementById("trans-result");
+    r.style.display = "block"; r.textContent = translation;
     toast("Translation complete!", "success");
   } catch(e) { toast("Translation error. Make sure Puter is connected in Extensions.", "error"); }
   finally { setLoading(btn, false); }
@@ -379,16 +415,12 @@ function startAdGate(content) {
   const body = document.getElementById("d-body");
   body.textContent = "";
   overlay.classList.remove("hidden");
-  let n = 5;
-  countdown.textContent = n;
+  let n = 5; countdown.textContent = n;
   if (adTimer) clearInterval(adTimer);
   adTimer = setInterval(() => {
     n--;
-    if (n <= 0) {
-      clearInterval(adTimer);
-      overlay.classList.add("hidden");
-      body.textContent = content;
-    } else countdown.textContent = n;
+    if (n <= 0) { clearInterval(adTimer); overlay.classList.add("hidden"); body.textContent = content; }
+    else countdown.textContent = n;
   }, 1000);
 }
 
@@ -400,35 +432,72 @@ async function load() {
     postData = { id: snap.id, ...snap.data() };
 
     const isAVR = postSrc === "presentations";
+    const isNirmaan = postSrc === "nirmaan";
     const title = postData.Title || postData.title || "Untitled";
     const category = postData.Category || postData.category || "General";
     const content = postData.Content || postData.content || "Content unavailable.";
-    const author = isAVR ? "AVR" : (postData.authorName || "Content Writer");
-    const role = isAVR ? "Administrator" : "Content Writer";
-    const views = (postData.views || 0) + 1;
     const lang = postData.language || postData.Language || "";
+    const views = (postData.views || 0) + 1;
+
+    // Determine author name(s) and role
+    let author, role;
+    if (isAVR) { author = "AVR"; role = "Administrator"; }
+    else if (isNirmaan) { author = (postData.authorNames||[postData.createdByName||"Writer"]).join(" & "); role = "Nirmaan"; }
+    else { author = postData.authorName || "Content Writer"; role = "Content Writer"; }
 
     document.title = title + " — Presentation Lab";
     if (isAVR || postData.highlighted) document.getElementById("avr-bar").classList.remove("hidden");
-    document.getElementById("d-eyebrow").textContent = isAVR ? "AVR Presentation" : "Community Presentation";
+    document.getElementById("d-eyebrow").textContent = isAVR ? "AVR Presentation" : isNirmaan ? "Collaborative Presentation" : "Community Presentation";
     document.getElementById("d-title").textContent = title;
     document.getElementById("d-meta").innerHTML = `
-      <span class="post-badge ${isAVR?"badge-avr":"badge-writer"}">${role}</span>
-      <span>by ${esc(author)}</span>
+      <span class="post-badge ${isAVR?"badge-avr":isNirmaan?"":""badge-writer"}" style="${isNirmaan?"background:#EDE9FE;color:#6D28D9;":""}">${isAVR?"Administrator":isNirmaan?"Nirmaan":"Content Writer"}</span>
+      <span>by <strong>${esc(author)}</strong></span>
       <span class="post-tag">${esc(category)}</span>
       ${lang ? `<span class="lang-chip">🌐 ${esc(lang)}</span>` : ""}
-      ${postData.Date ? `<span>${postData.Date}</span>` : ""}
       ${postData.editedAt ? `<span style="font-size:0.73rem;color:var(--stone);font-style:italic;">edited</span>` : ""}
     `;
 
     const tags = (postData.Tags || postData.tags || "").split(",").map(t=>t.trim()).filter(Boolean);
     document.getElementById("d-tags").innerHTML = tags.map(t=>`<span class="post-tag">${esc(t)}</span>`).join("");
 
+    // Writer signature
+    if (!isAVR && !isNirmaan && postData.authorName) {
+      const sigEl = document.getElementById("writer-signature");
+      sigEl.classList.remove("hidden");
+      document.getElementById("sig-avatar").textContent = initials(postData.authorName);
+      document.getElementById("sig-name").textContent = postData.authorName;
+      document.getElementById("sig-sub").textContent = category + " Writer";
+    }
+
+    // Nirmaan signature
+    if (isNirmaan) {
+      const nirEl = document.getElementById("nirmaan-signature");
+      nirEl.classList.remove("hidden");
+      const names = postData.authorNames || [postData.createdByName || "Writer"];
+      document.getElementById("nirmaan-authors-list").innerHTML = names.map(n =>
+        `<span class="nirmaan-author-chip" style="font-size:0.82rem;padding:4px 12px;">✍️ ${esc(n)}</span>`
+      ).join("");
+      if (postData.creditText) {
+        document.getElementById("nirmaan-credits").textContent = "📌 " + postData.creditText;
+      }
+    }
+
     document.getElementById("cnt-views").textContent = views;
     updateInteractionUI();
     showOwnerActions();
     setupExtBar();
     setState("state-content");
+
+    // Load author's limit interactions
+    if (postData.authorUid && (postSrc === "bloggerblogs")) {
+      try {
+        const authorDoc = await getDoc(doc(db, "bloggers", postData.authorUid));
+        if (authorDoc.exists()) {
+          authorLimits = authorDoc.data().limitInteractions || {};
+          applyInteractionLimits();
+        }
+      } catch {}
+    }
 
     if (postData.ad) {
       startAdGate(content);
@@ -444,13 +513,27 @@ async function load() {
   }
 }
 
+function applyInteractionLimits() {
+  if (authorLimits.likes) {
+    const btn = document.getElementById("act-like");
+    btn.disabled = true;
+    btn.title = "The author has disabled likes on this presentation.";
+    btn.style.opacity = "0.4";
+  }
+  if (authorLimits.shares) {
+    const btn = document.getElementById("act-share");
+    btn.disabled = true;
+    btn.title = "The author has disabled sharing on this presentation.";
+    btn.style.opacity = "0.4";
+  }
+}
+
 function updateInteractionUI() {
   if (!postData) return;
   const uid = currentUser?.uid;
   const isLiked = uid && postData.likedBy?.[uid];
   const isDisliked = uid && postData.dislikedBy?.[uid];
   const isSaved = uid && postData.savedBy?.[uid];
-
   document.getElementById("act-like").className = `action-btn${isLiked?" liked":""}`;
   document.getElementById("act-dislike").className = `action-btn${isDisliked?" disliked":""}`;
   document.getElementById("act-save").className = `action-btn${isSaved?" saved":""}`;
@@ -459,8 +542,15 @@ function updateInteractionUI() {
   document.getElementById("act-save-label").textContent = isSaved ? "Saved" : "Save";
 }
 
+// Points helper: use setDoc with merge so doc doesn't need to pre-exist
+function creditPoints(authorUid, delta) {
+  if (!authorUid) return;
+  setDoc(doc(db, "bloggers", authorUid), { points: increment(delta) }, { merge: true }).catch(() => {});
+}
+
 async function toggleLike() {
   if (!currentUser) { toast("Sign in to like.", "info"); location.href="/auth.html"; return; }
+  if (authorLimits.likes) { toast("The author has disabled likes on this presentation.", "info"); return; }
   const uid = currentUser.uid;
   const isLiked = postData.likedBy?.[uid];
   const isDisliked = postData.dislikedBy?.[uid];
@@ -470,12 +560,12 @@ async function toggleLike() {
     updates.likeCount = increment(-1);
     postData.likeCount = Math.max(0, (postData.likeCount||0) - 1);
     delete (postData.likedBy||{})[uid];
-    if (postData.authorUid) updateDoc(doc(db,"bloggers",postData.authorUid),{points:increment(-1)}).catch(()=>{});
+    creditPoints(postData.authorUid, -1);
   } else {
     updates[`likedBy.${uid}`] = true;
     updates.likeCount = increment(1);
     postData.likeCount = (postData.likeCount||0) + 1;
-    if (!postData.likedBy) postData.likedBy={};
+    if (!postData.likedBy) postData.likedBy = {};
     postData.likedBy[uid] = true;
     if (isDisliked) {
       updates[`dislikedBy.${uid}`] = deleteField();
@@ -483,7 +573,7 @@ async function toggleLike() {
       postData.dislikeCount = Math.max(0,(postData.dislikeCount||0)-1);
       delete (postData.dislikedBy||{})[uid];
     }
-    if (postData.authorUid) updateDoc(doc(db,"bloggers",postData.authorUid),{points:increment(1)}).catch(()=>{});
+    creditPoints(postData.authorUid, 1);
   }
   await updateDoc(doc(db, postSrc, postId), updates).catch(()=>toast("Error.","error"));
   updateInteractionUI();
@@ -501,21 +591,19 @@ async function toggleDislike() {
     updates.dislikeCount = increment(-1);
     postData.dislikeCount = Math.max(0, prevDC - 1);
     delete (postData.dislikedBy||{})[uid];
-    if (prevDC % 3 === 0 && postData.authorUid) updateDoc(doc(db,"bloggers",postData.authorUid),{points:increment(1)}).catch(()=>{});
   } else {
     updates[`dislikedBy.${uid}`] = true;
     updates.dislikeCount = increment(1);
     postData.dislikeCount = prevDC + 1;
-    if (!postData.dislikedBy) postData.dislikedBy={};
+    if (!postData.dislikedBy) postData.dislikedBy = {};
     postData.dislikedBy[uid] = true;
     if (isLiked) {
       updates[`likedBy.${uid}`] = deleteField();
       updates.likeCount = increment(-1);
       postData.likeCount = Math.max(0,(postData.likeCount||0)-1);
       delete (postData.likedBy||{})[uid];
-      if (postData.authorUid) updateDoc(doc(db,"bloggers",postData.authorUid),{points:increment(-1)}).catch(()=>{});
+      creditPoints(postData.authorUid, -1);
     }
-    if ((prevDC + 1) % 3 === 0 && postData.authorUid) updateDoc(doc(db,"bloggers",postData.authorUid),{points:increment(-1)}).catch(()=>{});
   }
   await updateDoc(doc(db, postSrc, postId), updates).catch(()=>toast("Error.","error"));
   updateInteractionUI();
@@ -536,7 +624,7 @@ async function toggleSave() {
     updates[`savedBy.${uid}`] = true;
     updates.saveCount = increment(1);
     postData.saveCount = (postData.saveCount||0)+1;
-    if (!postData.savedBy) postData.savedBy={};
+    if (!postData.savedBy) postData.savedBy = {};
     postData.savedBy[uid] = true;
     toast("Saved!", "success");
   }
@@ -545,6 +633,7 @@ async function toggleSave() {
 }
 
 async function sharePost() {
+  if (authorLimits.shares) { toast("The author has disabled sharing on this presentation.", "info"); return; }
   const url = `${location.origin}/presentation.html?id=${postId}&src=${postSrc}`;
   if (navigator.share) {
     try { await navigator.share({ title: postData?.Title || postData?.title || "Presentation", url }); return; } catch {}
@@ -565,12 +654,12 @@ async function loadRelated(isAVR, category) {
     });
     if (!related.length) return;
     const widget = document.getElementById("related-widget");
-    const list = document.getElementById("related-list");
     widget.style.display = "";
-    list.innerHTML = related.slice(0, 4).map(p => `
-      <div style="padding:10px 0;border-bottom:1px solid var(--border-light);cursor:pointer;" onclick="location.href='/presentation.html?id=${p.id}&src=${col}'">
-        <div style="font-family:'Lora',serif;font-size:0.88rem;font-weight:600;color:var(--espresso);margin-bottom:3px;">${esc(p.Title||p.title||"Untitled")}</div>
-        <div style="font-size:0.75rem;color:var(--stone);">${p.views||0} views</div>
+    const list = document.getElementById("related-list");
+    list.innerHTML = related.slice(0,5).map(p => `
+      <div class="avr-pick-preview" onclick="location.href='/presentation.html?id=${p.id}&src=${col}'">
+        <div class="avr-pick-title">${esc(p.Title||p.title||"Untitled")}</div>
+        <div class="avr-pick-meta">${esc(p.Category||p.category||"General")} · ${p.views||0} views</div>
       </div>`).join("");
   } catch {}
 }

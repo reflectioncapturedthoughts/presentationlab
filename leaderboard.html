@@ -21,6 +21,7 @@
     </a>
     <a href="/" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
     <a href="/leaderboard.html" class="nav-item active"><span class="nav-icon">🏆</span><span class="nav-label">Leaderboard</span></a>
+    <a href="/writers.html" class="nav-item"><span class="nav-icon">✍️</span><span class="nav-label">Writers</span></a>
     <a href="/creativecreator.html" class="nav-item"><span class="nav-icon">✏️</span><span class="nav-label">Create</span></a>
     <a href="/nirmaan.html" class="nav-item"><span class="nav-icon">🤝</span><span class="nav-label">Nirmaan</span></a>
     <a href="/kv.html" class="nav-item"><span class="nav-icon">🎖️</span><span class="nav-label">K V</span></a>
@@ -118,12 +119,15 @@ function toast(msg,type="info"){const c=document.getElementById("toast-container
 const KV_LABELS = { daily:"Daily Writer", language:"Lang Writer", multilingual:"Multi-lingual", sanskrit:"Sanskrit Writer", great:"The Greatest" };
 
 async function loadLeaderboard() {
-  const [bloggersSnap, postsSnap] = await Promise.all([
+  const [bloggersSnap, postsSnap, nirmaanSnap] = await Promise.all([
     getDocs(collection(db, "bloggers")),
-    getDocs(collection(db, "bloggerblogs"))
+    getDocs(collection(db, "bloggerblogs")),
+    getDocs(collection(db, "nirmaan"))
   ]);
 
+  // Build per-author stats from all community posts
   const authorStats = {};
+  const authorNames = {}; // uid → name from bloggerblogs
   postsSnap.forEach(d => {
     const data = d.data();
     const uid = data.authorUid;
@@ -132,24 +136,47 @@ async function loadLeaderboard() {
     authorStats[uid].postCount++;
     authorStats[uid].totalLikes += data.likeCount || 0;
     authorStats[uid].totalViews += data.views || 0;
+    if (data.authorName && !authorNames[uid]) authorNames[uid] = data.authorName;
+  });
+  // Count nirmaan live posts too
+  nirmaanSnap.forEach(d => {
+    const data = d.data();
+    if (data.status !== "live") return;
+    const uid = data.createdByUid;
+    if (!uid) return;
+    if (!authorStats[uid]) authorStats[uid] = { postCount: 0, totalLikes: 0, totalViews: 0 };
+    authorStats[uid].postCount++;
+    authorStats[uid].totalLikes += data.likeCount || 0;
   });
 
-  const users = [];
+  // Build users map from bloggers collection
+  const usersMap = {};
   bloggersSnap.forEach(d => {
     const data = d.data();
-    const stats = authorStats[d.id] || {};
-    if (!stats.postCount && !(data.points > 0)) return;
-    users.push({
+    const name = data.fullName || data.displayName || authorNames[d.id] || "";
+    usersMap[d.id] = {
       id: d.id,
-      name: data.fullName || data.displayName || "Anonymous",
+      name: name || "Anonymous",
       points: data.points || 0,
       kvRank: data.kvRank || "daily",
-      postCount: stats.postCount || 0,
-      totalLikes: stats.totalLikes || 0,
-      totalViews: stats.totalViews || 0
-    });
+      ...( authorStats[d.id] || { postCount: 0, totalLikes: 0, totalViews: 0 })
+    };
   });
 
+  // Also add authors found in bloggerblogs who aren't in bloggers collection yet
+  Object.entries(authorStats).forEach(([uid, stats]) => {
+    if (!usersMap[uid] && stats.postCount > 0) {
+      usersMap[uid] = {
+        id: uid,
+        name: authorNames[uid] || "Writer",
+        points: 0,
+        kvRank: "daily",
+        ...stats
+      };
+    }
+  });
+
+  const users = Object.values(usersMap).filter(u => u.postCount > 0 || u.points > 0);
   users.sort((a,b) => b.points - a.points || b.totalLikes - a.totalLikes);
 
   const podiumEl = document.getElementById("podium");
